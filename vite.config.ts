@@ -6,11 +6,11 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			$types: path.resolve('./types'),
-      $model: path.resolve('./src/model'),
-      $modules: path.resolve('./src/modules')
+			$model: path.resolve('./src/model'),
+			$modules: path.resolve('./src/modules')
 		}
 	},
-  plugins: [sveltekit()],
+	plugins: [sveltekit()],
 	ssr: {
 		external: ['firebase']
 	}

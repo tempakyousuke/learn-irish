@@ -2,7 +2,9 @@
 	import '../app.css';
 	import { onAuthStateChanged, signOut } from 'firebase/auth';
 	import { userStore } from '$modules/store';
-	import { auth } from '$modules/firebase';
+	import { app, auth } from '$modules/firebase';
+	import { getAnalytics } from 'firebase/analytics';
+
 	const logout = () => {
 		signOut(auth);
 	};
@@ -30,6 +32,7 @@
 		isLoggedIn = user.isLoggedIn;
 		loaded = true;
 	});
+	getAnalytics(app);
 </script>
 
 <div class="app">
