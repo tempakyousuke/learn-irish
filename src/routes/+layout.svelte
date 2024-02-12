@@ -1,5 +1,32 @@
-<script>
+<script lang="ts">
 	import '../app.css';
+	import { onAuthStateChanged } from 'firebase/auth';
+	import { userStore } from '$modules/store';
+	import { auth } from '$modules/firebase';
+
+	let loaded = false;
+	let isLoggedIn = false;
+	onAuthStateChanged(auth, async (firebaseUser) => {
+		if (firebaseUser) {
+			// const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+			// if (userDoc.exists()) {
+			// 	const userData = userDoc.data();
+			userStore.set({
+				uid: firebaseUser.uid,
+				isLoggedIn: true
+			});
+			// }
+		} else {
+			userStore.set({
+				uid: '',
+				isLoggedIn: false
+			});
+		}
+	});
+	userStore.subscribe((user) => {
+		isLoggedIn = user.isLoggedIn;
+		loaded = true;
+	});
 </script>
 
 <div class="app">
@@ -9,16 +36,18 @@
 			href="/about"
 			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white">About</a
 		>
-		<a
-			href="/signin"
-			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white"
-			>ログイン</a
-		>
-		<a
-			href="/signup"
-			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white"
-			>新規登録</a
-		>
+		{#if loaded && !isLoggedIn}
+			<a
+				href="/signin"
+				class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white"
+				>ログイン</a
+			>
+			<a
+				href="/signup"
+				class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white"
+				>新規登録</a
+			>
+		{/if}
 	</header>
 	<main class="bg-teal-100 min-h-screen">
 		<slot />
