@@ -1,8 +1,11 @@
 <script lang="ts">
 	import '../app.css';
-	import { onAuthStateChanged } from 'firebase/auth';
+	import { onAuthStateChanged, signOut } from 'firebase/auth';
 	import { userStore } from '$modules/store';
 	import { auth } from '$modules/firebase';
+	const logout = () => {
+		signOut(auth);
+	};
 
 	let loaded = false;
 	let isLoggedIn = false;
@@ -46,6 +49,12 @@
 				href="/signup"
 				class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white"
 				>新規登録</a
+			>
+		{/if}
+		{#if loaded && isLoggedIn}
+			<button
+				class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white"
+				on:click={logout}>ログアウト</button
 			>
 		{/if}
 	</header>
