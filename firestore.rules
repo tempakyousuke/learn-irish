@@ -2,8 +2,14 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if false;
+    match /users/{uid} {
+      allow read: if true;
+      allow update: if request.auth.uid == uid && request.resource.data.allowed == resource.data.allowed;
+      allow create: if request.auth.uid == uid && request.resource.data.allowed != true;
+    }
+    match /tunes/{id} {
+      allow read: if true;
+      allow write: if request.auth.uid == dci2JB1vI3VYruel4U6L6q7N0As1;
     }
   }
 }
