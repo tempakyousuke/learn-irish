@@ -61,7 +61,7 @@
 			>
 		{/if}
 	</header>
-	<main class="bg-teal-100 min-h-screen">
+	<main class="bg-teal-100 min-h-screen pt-10">
 		<slot />
 	</main>
 </div>
