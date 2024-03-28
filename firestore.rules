@@ -3,9 +3,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{uid} {
-      allow read: if true;
-      allow update: if request.auth.uid == uid && request.resource.data.allowed == resource.data.allowed;
-      allow create: if request.auth.uid == uid && request.resource.data.allowed != true;
+      allow read, write: if request.auth.uid == uid;
+      match /tunes/{tuneId} {
+        allow read, write: if request.auth.uid == uid;
+      }
     }
     match /tunes/{id} {
       allow read: if true;
