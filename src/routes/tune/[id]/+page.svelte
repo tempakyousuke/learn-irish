@@ -44,8 +44,36 @@
 			id: 'remember2'
 		}
 	];
+	const playingLevelOption = [
+		{
+			label: '1',
+			value: 1,
+			id: 'play1'
+		},
+		{
+			label: '2',
+			value: 2,
+			id: 'play2'
+		},
+		{
+			label: '3',
+			value: 3,
+			id: 'play3'
+		},
+		{
+			label: '4',
+			value: 4,
+			id: 'play4'
+		},
+		{
+			label: '5',
+			value: 5,
+			id: 'play5'
+		}
+	];
 	let rememberName = false;
 	let rememberMelody = false;
+	let playingLevel = 1;
 	let uid: string;
 
 	userStore.subscribe((value) => {
@@ -68,6 +96,15 @@
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
 		await setDoc(docRef, {
 			rememberMelody
+		});
+	};
+	const updatePlayingLevel = async (event: CustomEvent) => {
+		if (!uid) {
+			return;
+		}
+		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
+		await setDoc(docRef, {
+			playingLevel
 		});
 	};
 </script>
@@ -117,7 +154,14 @@
 	</div>
 	<div class="row">
 		<div class="item-name">満足のいく演奏ができる</div>
-		<div class="item-detail">ラジオボタン</div>
+		<div class="item-detail">
+			<RadioButtons
+				options={playingLevelOption}
+				bind:userSelected={playingLevel}
+				name="playingLevel"
+				on:input={updatePlayingLevel}
+			/>
+		</div>
 	</div>
 </div>
 
