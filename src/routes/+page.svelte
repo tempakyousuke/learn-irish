@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Tune } from '../types/tune';
+	import TuneListItem from '$lib/tune/TuneListItem.svelte';
 	export let data: {
 		tunes: Tune[];
 	};
@@ -11,8 +12,8 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<div>
+<div class="pt-5">
 	{#each tunes as tune}
-		<div>{tune.name}</div>
+		<TuneListItem {tune} />
 	{/each}
 </div>

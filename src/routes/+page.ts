@@ -1,9 +1,9 @@
 import { db } from '$modules/firebase';
-import { getDocs, collection, query } from 'firebase/firestore';
+import { getDocs, collection, query, orderBy } from 'firebase/firestore';
 import type { Tune } from '../types/tune';
 
 export async function load() {
-	const qu = query(collection(db, 'tunes'));
+	const qu = query(collection(db, 'tunes'), orderBy('tuneNo', 'asc'));
 	const snapshot = await getDocs(qu);
 	const tunes: Tune[] = [];
 	snapshot.forEach((doc) => {
