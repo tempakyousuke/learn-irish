@@ -3,7 +3,7 @@
 	import { getYoutubeId } from '$modules/youtubeId';
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
 	import { userStore } from '$modules/store';
-	import { getFirestore, doc, setDoc } from 'firebase/firestore';
+	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
@@ -24,24 +24,24 @@
 		{
 			label: 'はい',
 			value: true,
-			id: 'remember1'
+			id: 'rememberName1'
 		},
 		{
 			label: 'いいえ',
 			value: false,
-			id: 'remember2'
+			id: 'rememberName2'
 		}
 	];
 	const rememberMelodyOption = [
 		{
 			label: 'はい',
 			value: true,
-			id: 'remember1'
+			id: 'rememberMelody1'
 		},
 		{
 			label: 'いいえ',
 			value: false,
-			id: 'remember2'
+			id: 'rememberMelody2'
 		}
 	];
 	const playingLevelOption = [
@@ -76,36 +76,64 @@
 	let playingLevel = 1;
 	let uid: string;
 
-	userStore.subscribe((value) => {
+	userStore.subscribe(async (value) => {
 		uid = value.uid;
+		if (!uid) {
+			return;
+		}
+		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
+		const data = await getDoc(docRef);
+		const userTune = data.data();
+		if (userTune?.rememberName) {
+			rememberName = userTune.rememberName as boolean;
+		}
+		if (userTune?.rememberMelody) {
+			rememberMelody = userTune.rememberMelody as boolean;
+		}
+		if (userTune?.playingLevel) {
+			playingLevel = userTune.playingLevel as number;
+		}
 	});
 
 	const updateRememberName = async (event: CustomEvent) => {
 		if (!uid) {
 			return;
 		}
+		console.log(rememberName);
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		await setDoc(docRef, {
-			rememberName
-		});
+		await setDoc(
+			docRef,
+			{
+				rememberName
+			},
+			{ merge: true }
+		);
 	};
 	const updateRememberMelody = async (event: CustomEvent) => {
 		if (!uid) {
 			return;
 		}
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		await setDoc(docRef, {
-			rememberMelody
-		});
+		await setDoc(
+			docRef,
+			{
+				rememberMelody
+			},
+			{ merge: true }
+		);
 	};
 	const updatePlayingLevel = async (event: CustomEvent) => {
 		if (!uid) {
 			return;
 		}
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		await setDoc(docRef, {
-			playingLevel
-		});
+		await setDoc(
+			docRef,
+			{
+				playingLevel
+			},
+			{ merge: true }
+		);
 	};
 </script>
 
@@ -137,7 +165,7 @@
 				options={rememberNameOptions}
 				bind:userSelected={rememberName}
 				name="rememberName"
-				on:input={updateRememberName}
+				on:change={updateRememberName}
 			/>
 		</div>
 	</div>
@@ -148,7 +176,7 @@
 				options={rememberMelodyOption}
 				bind:userSelected={rememberMelody}
 				name="rememberMelody"
-				on:input={updateRememberMelody}
+				on:change={updateRememberMelody}
 			/>
 		</div>
 	</div>
@@ -159,7 +187,7 @@
 				options={playingLevelOption}
 				bind:userSelected={playingLevel}
 				name="playingLevel"
-				on:input={updatePlayingLevel}
+				on:change={updatePlayingLevel}
 			/>
 		</div>
 	</div>
