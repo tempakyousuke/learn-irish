@@ -37,7 +37,7 @@
 
 <div class="app">
 	<header class="flex border-b bg-teal-800 px-10">
-		<div class="text-white text-3xl grow my-auto">Learn Irish from hatao's youtube</div>
+		<a href="/" class="text-white text-3xl grow my-auto">Learn Irish from hatao's youtube</a>
 		<a
 			href="/about"
 			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white">About</a

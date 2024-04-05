@@ -13,5 +13,8 @@ export default defineConfig({
 	plugins: [sveltekit()],
 	ssr: {
 		external: ['firebase']
+	},
+	server: {
+		port: 5175
 	}
 });
