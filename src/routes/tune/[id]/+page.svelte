@@ -8,13 +8,6 @@
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
 
-	// 保存したいデータ
-	const tuneData = {
-		title: '曲のタイトル',
-		artist: 'アーティスト名'
-		// その他のデータ...
-	};
-
 	export let data: {
 		tune: Tune;
 	};
