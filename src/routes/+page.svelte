@@ -4,6 +4,7 @@
 	import TuneListItem from '$lib/tune/TuneListItem.svelte';
 	import { userStore } from '$modules/store';
 	import { getFirestore, collection, getDocs } from 'firebase/firestore';
+
 	export let data: {
 		tunes: Tune[];
 	};
@@ -12,6 +13,8 @@
 	let uid: string;
 	let rememberNameIds: string[] = [];
 	let rememberMelodyIds: string[] = [];
+	let onlyNotRememberName = true;
+	let onlyNotRememberMelody = false;
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
@@ -26,6 +29,11 @@
 		rememberNameIds = tunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
 		rememberMelodyIds = tunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
 	});
+	$: filteredTunes = tunes.filter((tune) => {
+		if (onlyNotRememberName && rememberNameIds.includes(tune.id)) return false;
+		if (onlyNotRememberMelody && rememberMelodyIds.includes(tune.id)) return false;
+		return true;
+	});
 </script>
 
 <svelte:head>
@@ -34,7 +42,19 @@
 </svelte:head>
 
 <div class="pt-5">
-	{#each tunes as tune}
+	<div class="flex">
+		<div>名前を覚えた曲</div>
+		<div>{rememberNameIds.length}/{tunes.length}</div>
+	</div>
+	<div class="flex">
+		<div>メロディーを覚えた曲</div>
+		<div>{rememberMelodyIds.length}/{tunes.length}</div>
+	</div>
+	<input type="checkbox" bind:checked={onlyNotRememberName} id="onlyNotRememberName" />
+	<label for="onlyNotRememberName"> 名前を覚えてない曲のみ表示 </label>
+	<input type="checkbox" bind:checked={onlyNotRememberMelody} id="onlyNotRememberMelody" />
+	<label for="onlyNotRememberMelody"> メロディーを覚えてない曲のみ表示 </label>
+	{#each filteredTunes as tune}
 		<TuneListItem {tune} />
 	{/each}
 </div>

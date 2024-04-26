@@ -73,7 +73,7 @@
 	];
 	let rememberName = false;
 	let rememberMelody = false;
-	let playingLevel = 1;
+	let playingLevel = 0;
 	let uid: string;
 
 	userStore.subscribe(async (value) => {
