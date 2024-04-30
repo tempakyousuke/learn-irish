@@ -13,7 +13,7 @@
 	};
 	const tune = data.tune;
 	const youtubeId = getYoutubeId(tune.link);
-	const rememberNameOptions = [
+	const rememberNameOption = [
 		{
 			label: 'はい',
 			value: true,
@@ -152,10 +152,10 @@
 		<div class="item-detail">{tune.name}</div>
 	</div>
 	<div class="row">
-		<div class="item-name">名前から何の曲が思い出せる</div>
+		<div class="item-name">名前を覚えた</div>
 		<div class="item-detail">
 			<RadioButtons
-				options={rememberNameOptions}
+				options={rememberNameOption}
 				bind:userSelected={rememberName}
 				name="rememberName"
 				on:change={updateRememberName}
@@ -163,7 +163,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="item-name">楽譜を見ずに演奏できる</div>
+		<div class="item-name">メロディーを覚えた</div>
 		<div class="item-detail">
 			<RadioButtons
 				options={rememberMelodyOption}
