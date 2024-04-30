@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { Tune } from '../types/tune';
 	import type { UserTune } from '../types/userTune';
 	import TuneListItem from '$lib/tune/TuneListItem.svelte';
 	import { userStore } from '$modules/store';
 	import { getFirestore, collection, getDocs } from 'firebase/firestore';
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
+	import { parse, serialize } from 'cookie';
 
 	export let data: {
 		tunes: Tune[];
@@ -48,8 +50,8 @@
 	let uid: string;
 	let rememberNameIds: string[] = [];
 	let rememberMelodyIds: string[] = [];
-	let rememberName = 'notSelected';
-	let rememberMelody = 'notSelected';
+	let rememberName: string;
+	let rememberMelody: string;
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
@@ -71,6 +73,23 @@
 		if (rememberMelody === 'no' && rememberMelodyIds.includes(tune.id)) return false;
 
 		return true;
+	});
+
+	function updateCookie(name: string, value: string) {
+		if (!value) return;
+		document.cookie = serialize(name, value, {
+			path: '/',
+			maxAge: 60 * 60 * 24 * 365
+		});
+	}
+
+	$: updateCookie('rememberName', rememberName);
+	$: updateCookie('rememberMelody', rememberMelody);
+
+	onMount(() => {
+		const cookies = parse(document.cookie);
+		rememberName = cookies.rememberName || 'notSelected';
+		rememberMelody = cookies.rememberMelody || 'notSelected';
 	});
 </script>
 
@@ -112,7 +131,6 @@
 		<TuneListItem {tune} />
 	{/each}
 </div>
-
 
 <style type="postcss">
 	.row {
