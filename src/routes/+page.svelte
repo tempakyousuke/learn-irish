@@ -52,6 +52,9 @@
 	let rememberMelodyIds: string[] = [];
 	let rememberName: string;
 	let rememberMelody: string;
+	let selectedRhythm = '';
+
+	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
@@ -71,6 +74,7 @@
 		if (rememberName === 'no' && rememberNameIds.includes(tune.id)) return false;
 		if (rememberMelody === 'yes' && !rememberMelodyIds.includes(tune.id)) return false;
 		if (rememberMelody === 'no' && rememberMelodyIds.includes(tune.id)) return false;
+		if (selectedRhythm && tune.rhythm !== selectedRhythm) return false;
 
 		return true;
 	});
@@ -85,11 +89,13 @@
 
 	$: updateCookie('rememberName', rememberName);
 	$: updateCookie('rememberMelody', rememberMelody);
+	$: updateCookie('selectedRhythm', selectedRhythm);
 
 	onMount(() => {
 		const cookies = parse(document.cookie);
 		rememberName = cookies.rememberName || 'notSelected';
 		rememberMelody = cookies.rememberMelody || 'notSelected';
+		selectedRhythm = cookies.selectedRhythm || '';
 	});
 </script>
 
@@ -125,6 +131,19 @@
 				bind:userSelected={rememberMelody}
 				name="rememberMelody"
 			/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="item-name">rhythm</div>
+		<div class="item-detail">
+			<select bind:value={selectedRhythm} name="selectedRhythm">
+				<option value=""></option>
+				{#each rhythms as rhythm}
+					<option value={rhythm}>
+						{rhythm}
+					</option>
+				{/each}
+			</select>
 		</div>
 	</div>
 	{#each filteredTunes as tune}
