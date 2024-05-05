@@ -92,7 +92,6 @@
 		if (!uid) {
 			return;
 		}
-		console.log(rememberName);
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
 		await setDoc(
 			docRef,
@@ -174,7 +173,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="item-name">満足のいく演奏ができる</div>
+		<div class="item-name">曲に対する自分の演奏の評価</div>
 		<div class="item-detail">
 			<RadioButtons
 				options={playingLevelOption}
