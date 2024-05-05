@@ -125,7 +125,7 @@
 		if (rememberName === 'no' && rememberNameIds.includes(tune.id)) return false;
 		if (rememberMelody === 'yes' && !rememberMelodyIds.includes(tune.id)) return false;
 		if (rememberMelody === 'no' && rememberMelodyIds.includes(tune.id)) return false;
-		if (selectedRhythm && tune.rhythm !== selectedRhythm) return false;
+		if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
 		if (selectedLevel === 1 && !userLevelIds[1].includes(tune.id)) return false;
 		if (selectedLevel === 2 && !userLevelIds[2].includes(tune.id)) return false;
 		if (selectedLevel === 3 && !userLevelIds[3].includes(tune.id)) return false;
@@ -199,7 +199,7 @@
 		<div class="item-name">rhythm</div>
 		<div class="item-detail">
 			<select bind:value={selectedRhythm} name="selectedRhythm">
-				<option value=""></option>
+				<option value="notSelected"></option>
 				{#each rhythms as rhythm}
 					<option value={rhythm}>
 						{rhythm}
