@@ -11,11 +11,10 @@
 		tune: Tune;
 	};
 	const tune = data.tune;
-  const submit = () => {
-    const ref = doc(db, 'tunes', tune.id)
-    updateDoc(ref, tune)
-  }
-  console.log(tune)
+	const submit = () => {
+		const ref = doc(db, 'tunes', tune.id);
+		updateDoc(ref, tune);
+	};
 </script>
 
 <svelte:head>
@@ -24,9 +23,9 @@
 </svelte:head>
 
 <div>
-  <form>
-    <Input bind:value={tune.name} label="名前"/>
-    <Input bind:value={tune.link} label="link"/>
-    <Button className="mt-6" on:click={submit} >更新</Button>
-  </form>
+	<form>
+		<Input bind:value={tune.name} label="名前" />
+		<Input bind:value={tune.link} label="link" />
+		<Button className="mt-6" on:click={submit}>更新</Button>
+	</form>
 </div>

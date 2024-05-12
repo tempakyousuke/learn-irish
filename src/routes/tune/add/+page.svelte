@@ -7,8 +7,8 @@
 
 	$: parsedValue = sheetText.split('\t');
 	$: saveData = {
-		setNo: parsedValue[0],
-		tuneNo: parsedValue[1],
+		setNo: parseInt(parsedValue[0]),
+		tuneNo: parseInt(parsedValue[1]),
 		name: parsedValue[2],
 		link: parsedValue[3],
 		genre: parsedValue[4],
@@ -16,7 +16,7 @@
 		rhythm: parsedValue[6],
 		key: parsedValue[7],
 		mode: parsedValue[8],
-		part: parsedValue[9],
+		part: parseInt(parsedValue[9]),
 		instrument: parsedValue[10],
 		spotify: parsedValue[11],
 		source: parsedValue[12],
