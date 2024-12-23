@@ -37,36 +37,9 @@
 			id: 'rememberMelody2'
 		}
 	];
-	const playingLevelOption = [
-		{
-			label: '1',
-			value: 1,
-			id: 'play1'
-		},
-		{
-			label: '2',
-			value: 2,
-			id: 'play2'
-		},
-		{
-			label: '3',
-			value: 3,
-			id: 'play3'
-		},
-		{
-			label: '4',
-			value: 4,
-			id: 'play4'
-		},
-		{
-			label: '5',
-			value: 5,
-			id: 'play5'
-		}
-	];
 	let rememberName = false;
 	let rememberMelody = false;
-	let playingLevel = 0;
+	let playCount = 0;
 	let uid: string;
 
 	userStore.subscribe(async (value) => {
@@ -83,8 +56,8 @@
 		if (userTune?.rememberMelody) {
 			rememberMelody = userTune.rememberMelody as boolean;
 		}
-		if (userTune?.playingLevel) {
-			playingLevel = userTune.playingLevel as number;
+		if (userTune?.playCount) {
+			playCount = userTune.playCount as number;
 		}
 	});
 
@@ -114,15 +87,16 @@
 			{ merge: true }
 		);
 	};
-	const updatePlayingLevel = async (event: CustomEvent) => {
+	const updatePlayCount = async () => {
 		if (!uid) {
 			return;
 		}
+		playCount++;
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
 		await setDoc(
 			docRef,
 			{
-				playingLevel
+				playCount
 			},
 			{ merge: true }
 		);
@@ -173,14 +147,10 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="item-name">曲に対する自分の演奏の評価</div>
+		<div class="item-name">この曲を演奏した回数</div>
 		<div class="item-detail">
-			<RadioButtons
-				options={playingLevelOption}
-				bind:userSelected={playingLevel}
-				name="playingLevel"
-				on:change={updatePlayingLevel}
-			/>
+			{playCount}
+			<button on:click={updatePlayCount}>+1</button>
 		</div>
 	</div>
 </div>
