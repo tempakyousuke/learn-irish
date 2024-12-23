@@ -4,7 +4,7 @@
 	import type { UserTune } from '../types/userTune';
 	import TuneListItem from '$lib/tune/TuneListItem.svelte';
 	import { userStore } from '$modules/store';
-	import { getFirestore, collection, getDocs } from 'firebase/firestore';
+	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
 	import { parse, serialize } from 'cookie';
 
@@ -55,6 +55,8 @@
 	let selectedRhythm = '';
 
 	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
+	const date = new Date().toISOString().split('T')[0];
+	let dailyData: { [key: string]: number } = {};
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
@@ -68,6 +70,9 @@
 		});
 		rememberNameIds = tunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
 		rememberMelodyIds = tunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
+
+		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
+		dailyData = (await getDoc(dailyDocRef)).data() || {};
 	});
 	$: filteredTunes = tunes.filter((tune) => {
 		if (rememberName === 'yes' && !rememberNameIds.includes(tune.id)) return false;
@@ -77,6 +82,14 @@
 		if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
 		return true;
 	});
+
+	$: tuneNames = tunes.reduce(
+		(acc, tune) => {
+			acc[tune.id] = tune.name || '';
+			return acc;
+		},
+		{} as { [key: string]: string }
+	);
 
 	function updateCookie(name: string, value: string) {
 		if (!value) return;
@@ -112,6 +125,15 @@
 		<div>メロディーを覚えた曲</div>
 		<div>{rememberMelodyIds.length}/{tunes.length}</div>
 	</div>
+	<div class="flex">
+		<div>今日演奏した回数</div>
+		<div>
+			{#each Object.entries(dailyData) as [tuneId, count]}
+				<div>{tuneNames[tuneId]}: {count}</div>
+			{/each}
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="item-name">名前を覚えた</div>
 		<div class="item-detail">

@@ -41,6 +41,9 @@
 	let rememberMelody = false;
 	let playCount = 0;
 	let uid: string;
+	let dailyPlayCount = 0;
+	let dailyData: { [key: string]: number } = {};
+	const date = new Date().toISOString().split('T')[0];
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
@@ -58,6 +61,11 @@
 		}
 		if (userTune?.playCount) {
 			playCount = userTune.playCount as number;
+		}
+		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
+		const dailyData = (await getDoc(dailyDocRef)).data() || {};
+		if (dailyData[tune.id]) {
+			dailyPlayCount = dailyData[tune.id];
 		}
 	});
 
@@ -92,6 +100,8 @@
 			return;
 		}
 		playCount++;
+		dailyPlayCount++;
+		dailyData[tune.id] = dailyPlayCount;
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
 		await setDoc(
 			docRef,
@@ -100,6 +110,8 @@
 			},
 			{ merge: true }
 		);
+		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
+		await setDoc(dailyDocRef, { [tune.id]: dailyPlayCount }, { merge: true });
 	};
 </script>
 

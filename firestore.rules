@@ -7,6 +7,9 @@ service cloud.firestore {
       match /tunes/{tuneId} {
         allow read, write: if request.auth.uid == uid;
       }
+      match /daily/{date} {
+        allow read, write: if request.auth.uid == uid;
+      }
     }
     match /tunes/{id} {
       allow read: if true;
