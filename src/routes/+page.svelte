@@ -52,7 +52,7 @@
 	let rememberMelodyIds: string[] = [];
 	let rememberName: string;
 	let rememberMelody: string;
-	let selectedRhythm = '';
+	let selectedRhythm = 'notSelected';
 
 	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
 	const date = new Date().toISOString().split('T')[0];
@@ -107,7 +107,7 @@
 		const cookies = parse(document.cookie);
 		rememberName = cookies.rememberName || 'notSelected';
 		rememberMelody = cookies.rememberMelody || 'notSelected';
-		selectedRhythm = cookies.selectedRhythm || '';
+		selectedRhythm = cookies.selectedRhythm || 'notSelected';
 	});
 </script>
 
