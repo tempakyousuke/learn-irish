@@ -117,56 +117,59 @@
 </svelte:head>
 
 <div class="pt-5">
-	<div class="flex">
-		<div>名前を覚えた曲</div>
-		<div>{rememberNameIds.length}/{tunes.length}</div>
-	</div>
-	<div class="flex">
-		<div>メロディーを覚えた曲</div>
-		<div>{rememberMelodyIds.length}/{tunes.length}</div>
-	</div>
-	<div class="flex">
-		<div>今日演奏した回数</div>
-		<div>
-			{#each Object.entries(dailyData) as [tuneId, count]}
-				<div>{tuneNames[tuneId]}: {count}</div>
-			{/each}
+	{#if uid}
+		<div class="flex">
+			<div>名前を覚えた曲</div>
+			<div>{rememberNameIds.length}/{tunes.length}</div>
 		</div>
-	</div>
-
-	<div class="row">
-		<div class="item-name">名前を覚えた</div>
-		<div class="item-detail">
-			<RadioButtons
-				options={rememberNameOption}
-				bind:userSelected={rememberName}
-				name="rememberName"
-			/>
+		<div class="flex">
+			<div>メロディーを覚えた曲</div>
+			<div>{rememberMelodyIds.length}/{tunes.length}</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="item-name">メロディーを覚えた</div>
-		<div class="item-detail">
-			<RadioButtons
-				options={rememberMelodyOption}
-				bind:userSelected={rememberMelody}
-				name="rememberMelody"
-			/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="item-name">rhythm</div>
-		<div class="item-detail">
-			<select bind:value={selectedRhythm} name="selectedRhythm">
-				<option value="notSelected"></option>
-				{#each rhythms as rhythm}
-					<option value={rhythm}>
-						{rhythm}
-					</option>
+		<div class="flex">
+			<div>今日演奏した回数</div>
+			<div>
+				{#each Object.entries(dailyData) as [tuneId, count]}
+					<div>{tuneNames[tuneId]}: {count}</div>
 				{/each}
-			</select>
+			</div>
 		</div>
-	</div>
+
+		<div class="row">
+			<div class="item-name">名前を覚えた</div>
+			<div class="item-detail">
+				<RadioButtons
+					options={rememberNameOption}
+					bind:userSelected={rememberName}
+					name="rememberName"
+				/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="item-name">メロディーを覚えた</div>
+			<div class="item-detail">
+				<RadioButtons
+					options={rememberMelodyOption}
+					bind:userSelected={rememberMelody}
+					name="rememberMelody"
+				/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="item-name">rhythm</div>
+			<div class="item-detail">
+				<select bind:value={selectedRhythm} name="selectedRhythm">
+					<option value="notSelected"></option>
+					{#each rhythms as rhythm}
+						<option value={rhythm}>
+							{rhythm}
+						</option>
+					{/each}
+				</select>
+			</div>
+		</div>
+	{/if}
+
 	{#each filteredTunes as tune}
 		<TuneListItem {tune} />
 	{/each}

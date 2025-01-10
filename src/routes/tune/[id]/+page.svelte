@@ -132,39 +132,37 @@
 			allowfullscreen
 		></iframe>
 	</div>
-	<div class="row">
-		<div class="item-name">名前</div>
-		<div class="item-detail">{tune.name}</div>
-	</div>
-	<div class="row">
-		<div class="item-name">名前を覚えた</div>
-		<div class="item-detail">
-			<RadioButtons
-				options={rememberNameOption}
-				bind:userSelected={rememberName}
-				name="rememberName"
-				on:change={updateRememberName}
-			/>
+	{#if uid}
+		<div class="row">
+			<div class="item-name">名前を覚えた</div>
+			<div class="item-detail">
+				<RadioButtons
+					options={rememberNameOption}
+					bind:userSelected={rememberName}
+					name="rememberName"
+					on:change={updateRememberName}
+				/>
+			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="item-name">メロディーを覚えた</div>
-		<div class="item-detail">
-			<RadioButtons
-				options={rememberMelodyOption}
-				bind:userSelected={rememberMelody}
-				name="rememberMelody"
-				on:change={updateRememberMelody}
-			/>
+		<div class="row">
+			<div class="item-name">メロディーを覚えた</div>
+			<div class="item-detail">
+				<RadioButtons
+					options={rememberMelodyOption}
+					bind:userSelected={rememberMelody}
+					name="rememberMelody"
+					on:change={updateRememberMelody}
+				/>
+			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="item-name">この曲を演奏した回数</div>
-		<div class="item-detail">
-			{playCount}
-			<button on:click={updatePlayCount}>+1</button>
+		<div class="row">
+			<div class="item-name">この曲を演奏した回数</div>
+			<div class="item-detail">
+				{playCount}
+				<button on:click={updatePlayCount}>+1</button>
+			</div>
 		</div>
-	</div>
+	{/if}
 </div>
 
 <style type="postcss">
