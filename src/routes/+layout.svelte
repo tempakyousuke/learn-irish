@@ -4,6 +4,8 @@
 	import { userStore } from '$modules/store';
 	import { app, auth } from '$modules/firebase';
 	import { getAnalytics } from 'firebase/analytics';
+	import Fa from 'svelte-fa';
+	import { faClover } from '@fortawesome/free-solid-svg-icons';
 
 	const logout = () => {
 		signOut(auth);
@@ -37,7 +39,10 @@
 
 <div class="app">
 	<header class="flex border-b bg-teal-800 px-10">
-		<a href="/" class="text-white text-3xl grow my-auto">Learn Irish from hatao's youtube</a>
+		<a href="/" class="text-white text-3xl grow my-auto flex">
+			<Fa class="mr-3 mt-0.5" icon={faClover} />
+			Learn Irish from hatao's youtube</a
+		>
 		<a
 			href="/about"
 			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white">About</a
