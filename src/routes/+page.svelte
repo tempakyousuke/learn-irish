@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { Tune } from '../types/tune';
 	import type { UserTune } from '../types/userTune';
-	import TuneListItem from '$lib/tune/TuneListItem.svelte';
+	import TuneList from '$lib/tune/TuneList.svelte';
 	import { userStore } from '$modules/store';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
@@ -52,7 +52,7 @@
 	let rememberMelodyIds: string[] = [];
 	let rememberName: string;
 	let rememberMelody: string;
-	let selectedRhythm = 'notSelected';
+	let selectedRhythm: string;
 
 	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
 	const date = new Date().toISOString().split('T')[0];
@@ -83,12 +83,12 @@
 		return true;
 	});
 
-	$: tuneNames = tunes.reduce(
+	$: tuneObjects = tunes.reduce(
 		(acc, tune) => {
-			acc[tune.id] = tune.name || '';
+			acc[tune.id] = tune;
 			return acc;
 		},
-		{} as { [key: string]: string }
+		{} as { [key: string]: Tune }
 	);
 
 	function updateCookie(name: string, value: string) {
@@ -118,21 +118,44 @@
 
 <div class="pt-5">
 	{#if uid}
-		<div class="flex">
-			<div>名前を覚えた曲</div>
-			<div>{rememberNameIds.length}/{tunes.length}</div>
-		</div>
-		<div class="flex">
-			<div>メロディーを覚えた曲</div>
-			<div>{rememberMelodyIds.length}/{tunes.length}</div>
-		</div>
-		<div class="flex">
-			<div>今日演奏した回数</div>
+		<div class="flex place-content-between w-[30rem] mx-auto">
 			<div>
-				{#each Object.entries(dailyData) as [tuneId, count]}
-					<div>{tuneNames[tuneId]}: {count}</div>
-				{/each}
+				<div class="text-2xl text-center">名前を覚えた曲</div>
+				<div
+					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center w-52"
+				>
+					{rememberNameIds.length}/{tunes.length}
+				</div>
 			</div>
+			<div>
+				<div class="text-2xl text-center">メロディーを覚えた曲</div>
+				<div
+					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center w-52"
+				>
+					{rememberMelodyIds.length}/{tunes.length}
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-5 mx-auto w-8/12">
+			<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto">
+				<thead>
+					<tr class="border bg-teal-800 text-white">
+						<th class="py-3 px-3 w-96">今日演奏した曲</th>
+						<th class="py-3 px-3 w-52">種類</th>
+						<th class="py-3 px-3 w-52">回数</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each Object.entries(dailyData) as [tuneId, count]}
+						<tr>
+							<td class="py-3 px-3">{tuneObjects[tuneId].name}</td>
+							<td class="py-3 px-3 text-center">{tuneObjects[tuneId].rhythm}</td>
+							<td class="py-3 px-3 text-center">{count}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
 
 		<div class="row">
@@ -156,7 +179,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="item-name">rhythm</div>
+			<div class="item-name">種類</div>
 			<div class="item-detail">
 				<select bind:value={selectedRhythm} name="selectedRhythm">
 					<option value="notSelected"></option>
@@ -169,10 +192,9 @@
 			</div>
 		</div>
 	{/if}
-
-	{#each filteredTunes as tune}
-		<TuneListItem {tune} />
-	{/each}
+	<div class="mx-auto">
+		<TuneList tunes={filteredTunes} />
+	</div>
 </div>
 
 <style type="postcss">
