@@ -4,6 +4,7 @@
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
 	import { userStore } from '$modules/store';
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+	import { getDate } from '$modules/getDate';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
@@ -43,7 +44,7 @@
 	let uid: string;
 	let dailyPlayCount = 0;
 	let dailyData: { [key: string]: number } = {};
-	const date = new Date().toISOString().split('T')[0];
+	const date = getDate();
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;

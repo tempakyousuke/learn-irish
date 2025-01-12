@@ -7,6 +7,7 @@
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
 	import { parse, serialize } from 'cookie';
+	import { getDate } from '$modules/getDate';
 
 	export let data: {
 		tunes: Tune[];
@@ -55,7 +56,7 @@
 	let selectedRhythm: string;
 
 	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
-	const date = new Date().toISOString().split('T')[0];
+	const date = getDate();
 	let dailyData: { [key: string]: number } = {};
 
 	userStore.subscribe(async (value) => {
@@ -70,7 +71,6 @@
 		});
 		rememberNameIds = tunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
 		rememberMelodyIds = tunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
-
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		dailyData = (await getDoc(dailyDocRef)).data() || {};
 	});
