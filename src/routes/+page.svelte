@@ -157,56 +157,58 @@
 				</tbody>
 			</table>
 		</div>
-
-		<div class="row">
-			<div class="item-name">名前を覚えた</div>
-			<div class="item-detail">
-				<RadioButtons
-					options={rememberNameOption}
-					bind:userSelected={rememberName}
-					name="rememberName"
-				/>
+		<div class="mt-10 w-8/12 mx-auto">
+			<div class="text-2xl font-bold mx-auto">検索フィルター</div>
+			<div class="row">
+				<div class="item-name">名前を覚えた</div>
+				<div class="item-detail">
+					<RadioButtons
+						options={rememberNameOption}
+						bind:userSelected={rememberName}
+						name="rememberName"
+					/>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="item-name">メロディーを覚えた</div>
-			<div class="item-detail">
-				<RadioButtons
-					options={rememberMelodyOption}
-					bind:userSelected={rememberMelody}
-					name="rememberMelody"
-				/>
+			<div class="row">
+				<div class="item-name">メロディーを覚えた</div>
+				<div class="item-detail">
+					<RadioButtons
+						options={rememberMelodyOption}
+						bind:userSelected={rememberMelody}
+						name="rememberMelody"
+					/>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="item-name">種類</div>
-			<div class="item-detail">
-				<select bind:value={selectedRhythm} name="selectedRhythm">
-					<option value="notSelected"></option>
-					{#each rhythms as rhythm}
-						<option value={rhythm}>
-							{rhythm}
-						</option>
-					{/each}
-				</select>
+			<div class="row">
+				<div class="item-name">種類</div>
+				<div class="item-detail">
+					<select bind:value={selectedRhythm} name="selectedRhythm">
+						<option value="notSelected"></option>
+						{#each rhythms as rhythm}
+							<option value={rhythm}>
+								{rhythm}
+							</option>
+						{/each}
+					</select>
+				</div>
 			</div>
 		</div>
 	{/if}
-	<div class="mx-auto">
+	<div class="mx-auto mt-10">
 		<TuneList tunes={filteredTunes} />
 	</div>
 </div>
 
 <style type="postcss">
 	.row {
-		@apply flex mt-5;
+		@apply flex mt-5 h-10;
 	}
 
 	.item-name {
-		@apply w-1/2 text-right pr-2;
+		@apply w-4/12 text-right pr-2 text-xl font-bold;
 	}
 
 	.item-detail {
-		@apply w-1/2 pl-2;
+		@apply w-8/12 pl-2 text-xl;
 	}
 </style>

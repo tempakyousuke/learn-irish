@@ -25,6 +25,7 @@
 <div class={className}>
 	{#each options as option}
 		<input
+			class="h-5 w-5 align-bottom mb-1"
 			type="radio"
 			{name}
 			id={option.id}
@@ -33,7 +34,7 @@
 			on:input={handleInput}
 			on:change={handleChange}
 		/>
-		<label for={option.id}> {option.label} </label>
+		<label class="mr-4" for={option.id}> {option.label} </label>
 	{/each}
 </div>
 
