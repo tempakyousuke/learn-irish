@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Tune } from '../../types/tune';
+	import type { UserTune } from '../types/userTune';
 	export let tunes: Tune[];
+	export let userTuneStatus: { [key: string]: UserTune };
 </script>
 
 <table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto">
@@ -10,6 +12,7 @@
 			<th class="py-3 px-3 w-52">種類</th>
 			<th class="py-3 px-3 w-52">Key</th>
 			<th class="py-3 px-3 w-52">Mode</th>
+			<th class="py-3 px-3 w-52">累計演奏回数</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -33,6 +36,11 @@
 				<td class="py-3 px-3 text-center">
 					<a class="block" href="/tune/{tune.id}">
 						{tune.mode}
+					</a>
+				</td>
+				<td class="py-3 px-3 text-center">
+					<a class="block" href="/tune/{tune.id}">
+						{userTuneStatus[tune.id]?.playCount || ''}
 					</a>
 				</td>
 			</tr>

@@ -54,6 +54,7 @@
 	let rememberName: string;
 	let rememberMelody: string;
 	let selectedRhythm: string;
+	let userTuneStatus: { [key: string]: UserTune } = {};
 
 	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
 	const date = getDate();
@@ -71,6 +72,9 @@
 		});
 		rememberNameIds = tunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
 		rememberMelodyIds = tunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
+		tunes.forEach((tune) => {
+			userTuneStatus[tune.id] = tune;
+		});
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		dailyData = (await getDoc(dailyDocRef)).data() || {};
 	});
@@ -143,7 +147,7 @@
 					<tr class="border bg-teal-800 text-white">
 						<th class="py-3 px-3 w-96">今日演奏した曲</th>
 						<th class="py-3 px-3 w-52">種類</th>
-						<th class="py-3 px-3 w-52">回数</th>
+						<th class="py-3 px-3 w-52">今日の演奏回数</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -195,7 +199,7 @@
 		</div>
 	{/if}
 	<div class="mx-auto mt-10">
-		<TuneList tunes={filteredTunes} />
+		<TuneList tunes={filteredTunes} {userTuneStatus} />
 	</div>
 </div>
 
