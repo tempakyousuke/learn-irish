@@ -124,4 +124,5 @@
 	<main class="bg-teal-50 min-h-screen pt-10">
 		<slot />
 	</main>
+	<footer class="pt-5 bg-teal-50"></footer>
 </div>
