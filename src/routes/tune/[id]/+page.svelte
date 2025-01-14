@@ -5,6 +5,8 @@
 	import { userStore } from '$modules/store';
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 	import { getDate } from '$modules/getDate';
+	import Fa from 'svelte-fa';
+	import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
@@ -70,7 +72,7 @@
 		}
 	});
 
-	const updateRememberName = async (event: CustomEvent) => {
+	const updateRememberName = async () => {
 		if (!uid) {
 			return;
 		}
@@ -83,7 +85,8 @@
 			{ merge: true }
 		);
 	};
-	const updateRememberMelody = async (event: CustomEvent) => {
+
+	const updateRememberMelody = async () => {
 		if (!uid) {
 			return;
 		}
@@ -121,7 +124,7 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<div class="mx-auto bg-white w-full md:w-[800px] rounded shadow-md">
+<div class="mx-auto w-full md:w-[800px]">
 	<div>
 		<iframe
 			class="mx-auto w-full md:w-[560px]"
@@ -135,32 +138,43 @@
 	</div>
 	{#if uid}
 		<div class="row">
-			<div class="item-name">名前を覚えた</div>
+			<div class="item-name py-2">名前を覚えた</div>
 			<div class="item-detail">
-				<RadioButtons
-					options={rememberNameOption}
-					bind:userSelected={rememberName}
-					name="rememberName"
-					on:change={updateRememberName}
-				/>
+				<button
+					class="px-4 py-2 rounded-lg {rememberName ? 'bg-teal-500 text-white' : 'bg-gray-200'}"
+					on:click={() => {
+						rememberName = !rememberName;
+						updateRememberName();
+					}}
+				>
+					{rememberName ? '覚えた！' : '未達成'}
+				</button>
 			</div>
 		</div>
 		<div class="row">
-			<div class="item-name">メロディーを覚えた</div>
+			<div class="item-name py-2">メロディーを覚えた</div>
 			<div class="item-detail">
-				<RadioButtons
-					options={rememberMelodyOption}
-					bind:userSelected={rememberMelody}
-					name="rememberMelody"
-					on:change={updateRememberMelody}
-				/>
+				<button
+					class="px-4 py-2 rounded-lg {rememberMelody ? 'bg-teal-500 text-white' : 'bg-gray-200'}"
+					on:click={() => {
+						rememberMelody = !rememberMelody;
+						updateRememberMelody();
+					}}
+				>
+					{rememberMelody ? '覚えた！' : '未達成'}
+				</button>
 			</div>
 		</div>
 		<div class="row">
-			<div class="item-name">この曲を演奏した回数</div>
+			<div class="item-name pt-2">この曲を演奏した回数</div>
 			<div class="item-detail">
 				{playCount}
-				<button on:click={updatePlayCount}>+1</button>
+				<button
+					class="ml-2 py-2 px-4 bg-blue-500 text-white rounded-lg font-bold text-xl"
+					on:click={updatePlayCount}
+				>
+					<Fa class="" icon={faPlus} />
+				</button>
 			</div>
 		</div>
 	{/if}
@@ -168,7 +182,7 @@
 
 <style type="postcss">
 	.row {
-		@apply flex mt-5;
+		@apply flex mt-5 text-xl;
 	}
 
 	.item-name {
