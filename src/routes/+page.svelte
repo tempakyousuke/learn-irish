@@ -218,6 +218,25 @@
 			</div>
 		</div>
 	{/if}
+	{#if !uid}
+		<div class="mt-10 md:w-8/12 w-11/12 mx-auto">
+			<div class="text-2xl font-bold mx-auto">検索フィルター</div>
+			<div class="row">
+				<div class="item-name">種類</div>
+				<div class="item-detail">
+					<select bind:value={selectedRhythm} name="selectedRhythm">
+						<option value="notSelected"></option>
+						{#each rhythms as rhythm}
+							<option value={rhythm}>
+								{rhythm}
+							</option>
+						{/each}
+					</select>
+				</div>
+			</div>
+		</div>
+	{/if}
+
 	<div class="mx-auto mt-10">
 		<TuneList tunes={filteredTunes} {userTuneStatus} />
 	</div>
