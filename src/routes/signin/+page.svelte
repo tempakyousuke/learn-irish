@@ -106,6 +106,11 @@
 				on:input={() => validate('password')}
 			/>
 			<Button block className="mt-6" on:click={submit} disabled={hasError}>ログイン</Button>
+			<div class="mt-4 text-center">
+				<a href="/reset-password" class="text-blue-600 hover:text-blue-800">
+					パスワードを忘れた方はこちら
+				</a>
+			</div>
 		</form>
 	</div>
 </div>
