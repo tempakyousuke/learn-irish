@@ -4,12 +4,16 @@
 </script>
 
 <div class="md:w-[50rem] w-11/12 mx-auto">
-	<h1 class="text-3xl font-bold">当サイトについて</h1>
+	<h2 class="text-3xl font-bold">当サイトについて</h2>
 	<div class="mt-5 text-xl">
 		このサイトはhataoさんがyoutubeにあげている「Learn an Irish Tune Every
 		Day」の動画を探しやすく、また自分の練習の進捗を記録してモチベーションを上げるために作成しました。
 	</div>
-	<div class="img-wrapper">
+	<h2 class="mt-10 text-3xl font-bold">製作者</h2>
+	<div class="mt-5 text-xl">丸山恭輔</div>
+
+	<h2 class="mt-10 text-3xl font-bold">機能について</h2>
+	<div class="mt-5 img-wrapper">
 		<img class="img" src={TunePage} alt="動画ページ画像" />
 		<p class="img-text">
 			ログインすると上の画像のように名前やメロディーを覚えたことや、演奏した回数など、自分の練習の記録を残せるようになります。
