@@ -3,6 +3,7 @@
 	import type { UserTune } from '../../types/userTune';
 	export let tunes: Tune[];
 	export let userTuneStatus: { [key: string]: UserTune };
+	$: countExist = Object.keys(userTuneStatus).length > 0;
 </script>
 
 <table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto xl:w-auto w-11/12">
@@ -12,14 +13,16 @@
 			<th class="py-3 px-3 w-52">種類</th>
 			<th class="py-3 px-3 w-52">Key</th>
 			<th class="py-3 px-3 w-52">Mode</th>
-			<th class="py-3 px-3 w-52">累計演奏回数</th>
+			{#if countExist}
+				<th class="py-3 px-3 w-52">累計演奏回数</th>
+			{/if}
 		</tr>
 		<tr class="border bg-teal-800 text-white table-row md:hidden">
 			<th class="py-3 px-3 w-96">曲名</th>
 			<th class="py-3 px-3 w-52">種類</th>
-			<th class="py-3 px-3 w-52">Key</th>
-			<th class="py-3 px-3 w-52">Mode</th>
-			<th class="py-3 px-3 w-52">累計演奏回数</th>
+			{#if countExist}
+				<th class="py-3 px-3 w-52">累計演奏回数</th>
+			{/if}
 		</tr>
 	</thead>
 	<tbody>
@@ -45,11 +48,13 @@
 						{tune.mode}
 					</a>
 				</td>
-				<td class="py-3 px-3 text-center">
-					<a class="block" href="/tune/{tune.id}">
-						{userTuneStatus[tune.id]?.playCount || ''}
-					</a>
-				</td>
+				{#if countExist}
+					<td class="py-3 px-3 text-center">
+						<a class="block" href="/tune/{tune.id}">
+							{userTuneStatus[tune.id]?.playCount || ''}
+						</a>
+					</td>
+				{/if}
 			</tr>
 			<tr class="border-b border-teal-400 hover:bg-teal-200 table-row md:hidden">
 				<td class="py-3 px-3">
@@ -62,21 +67,13 @@
 						{tune.rhythm}
 					</a>
 				</td>
-				<td class="py-3 px-3 text-center">
-					<a class="block" href="/tune/{tune.id}">
-						{tune.key}
-					</a>
-				</td>
-				<td class="py-3 px-3 text-center">
-					<a class="block" href="/tune/{tune.id}">
-						{tune.mode}
-					</a>
-				</td>
-				<td class="py-3 px-3 text-center">
-					<a class="block" href="/tune/{tune.id}">
-						{userTuneStatus[tune.id]?.playCount || ''}
-					</a>
-				</td>
+				{#if countExist}
+					<td class="py-3 px-3 text-center">
+						<a class="block" href="/tune/{tune.id}">
+							{userTuneStatus[tune.id]?.playCount || ''}
+						</a>
+					</td>
+				{/if}
 			</tr>
 		{/each}
 	</tbody>
