@@ -49,14 +49,14 @@
 
 <div class="app">
 	<header class="flex border-b bg-teal-800 md:px-10 pl-4 py-2">
+		<button
+			class="md:hidden bg-white rounded-lg py-1 px-1 mr-4 shadow-lg border text-3xl"
+			on:click={openDrawer}
+		>
+			<Fa class="text-teal-800" icon={faClover} />
+		</button>
 		<a href="/" class="text-white text-3xl grow my-auto flex">
 			<Fa class="mr-3 mt-0.5 md:block hidden" icon={faClover} />
-			<button
-				class="md:hidden bg-white rounded-lg py-1 px-1 mr-4 shadow-lg border"
-				on:click={openDrawer}
-			>
-				<Fa class="text-teal-800" icon={faClover} />
-			</button>
 			Learn Irish from hatao's youtube</a
 		>
 		<a
@@ -100,7 +100,7 @@
 					<h2 class="text-lg font-bold">Learn Irish</h2>
 					<ul class="mt-4 space-y-2">
 						<li><a href="/" class="block px-4 py-2 rounded hover:bg-gray-100">TOP</a></li>
-						<li><a href="/About" class="block px-4 py-2 rounded hover:bg-gray-100">About</a></li>
+						<li><a href="/about" class="block px-4 py-2 rounded hover:bg-gray-100">About</a></li>
 						{#if loaded && !isLoggedIn}
 							<li>
 								<a href="/signin" class="block px-4 py-2 rounded hover:bg-gray-100">ログイン</a>
