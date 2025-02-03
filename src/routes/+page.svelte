@@ -118,8 +118,8 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Learn Irish From hatao's youtube</title>
+	<meta name="description" content="learn irish music from hatao's youtube movie." />
 </svelte:head>
 
 <div class="pt-5">
