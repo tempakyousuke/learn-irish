@@ -27,6 +27,8 @@
 		<Input bind:value={tune.name} label="名前" />
 		<Input bind:value={tune.link} label="link" />
 		<Input bind:value={tune.rhythm} label="rhythm" />
+		<Input bind:value={tune.key} label="key" />
+		<Input bind:value={tune.mode} label="mode" />
 		<Button className="mt-6" on:click={submit}>更新</Button>
 	</form>
 </div>
