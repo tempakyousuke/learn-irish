@@ -3,6 +3,7 @@
 	import type { Tune } from '../../../types/tune';
 	import { db } from '$modules/firebase';
 	import { addDoc, collection } from 'firebase/firestore';
+	import { toast } from '$modules/toast';
 	let sheetText = '';
 
 	$: parsedValue = sheetText.split('\t');
@@ -17,16 +18,21 @@
 		key: parsedValue[7],
 		mode: parsedValue[8],
 		part: parseInt(parsedValue[9]),
-		instrument: parsedValue[10],
-		spotify: parsedValue[11],
-		source: parsedValue[12],
-		composer: parsedValue[13],
-		region: parsedValue[14],
-		alsoKnown: parsedValue[15]
+		commonness: parsedValue[10],
+		difficulty: parsedValue[11],
+		range: parsedValue[12],
+		spotify: parsedValue[14],
+		instrument: parsedValue[15],
+		source: parsedValue[16],
+		composer: parsedValue[17],
+		region: parsedValue[18],
+		alsoKnown: parsedValue[19]
 	};
 
-	const saveTune = () => {
-		addDoc(collection(db, 'tunes'), saveData);
+	const saveTune = async () => {
+		await addDoc(collection(db, 'tunes'), saveData);
+		toast.info(saveData.name + 'を保存しました。');
+		sheetText = '';
 	};
 </script>
 
@@ -52,6 +58,9 @@
 		<li>key: {saveData.key}</li>
 		<li>mode: {saveData.mode}</li>
 		<li>part: {saveData.part}</li>
+		<li>commonness: {saveData.commonness}</li>
+		<li>difficulty: {saveData.difficulty}</li>
+		<li>range: {saveData.range}</li>
 		<li>instrument: {saveData.instrument}</li>
 		<li>spotify: {saveData.spotify}</li>
 		<li>source: {saveData.source}</li>

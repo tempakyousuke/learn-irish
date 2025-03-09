@@ -6,6 +6,7 @@
 	import { getAnalytics } from 'firebase/analytics';
 	import Fa from 'svelte-fa';
 	import { faClover } from '@fortawesome/free-solid-svg-icons';
+	import { SvelteToast } from '@zerodevx/svelte-toast';
 
 	const logout = () => {
 		signOut(auth);
@@ -125,4 +126,5 @@
 		<slot />
 	</main>
 	<footer class="pt-5 bg-teal-50"></footer>
+	<SvelteToast />
 </div>
