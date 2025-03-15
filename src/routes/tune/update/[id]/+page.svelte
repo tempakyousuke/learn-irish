@@ -18,8 +18,12 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Learn Irish from hatao's youtube</title>
+	<meta
+		name="description"
+		content="このサイトはhataoさんがyoutubeにあげている「Learn an Irish Tune Every
+		Day」の動画を探しやすくし、練習の進捗を記録できるようにしたサイトです。"
+	/>
 </svelte:head>
 
 <div>
