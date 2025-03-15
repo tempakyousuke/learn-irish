@@ -1,5 +1,6 @@
-export const getDate = () => {
+export const getDate = (daysAgo: number = 0) => {
 	const currentDate = new Date();
+	currentDate.setDate(currentDate.getDate() - daysAgo);
 
 	// UTCをローカルタイムに変換
 	const year = currentDate.getFullYear();
