@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Tune } from '../../../types/tune';
 	import { getYoutubeId } from '$modules/youtubeId';
-	import RadioButtons from '$lib/forms/RadioButtons.svelte';
 	import { userStore } from '$modules/store';
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 	import { getDate } from '$modules/getDate';
@@ -16,30 +15,6 @@
 	};
 	const tune = data.tune;
 	const youtubeId = getYoutubeId(tune.link);
-	const rememberNameOption = [
-		{
-			label: 'はい',
-			value: true,
-			id: 'rememberName1'
-		},
-		{
-			label: 'いいえ',
-			value: false,
-			id: 'rememberName2'
-		}
-	];
-	const rememberMelodyOption = [
-		{
-			label: 'はい',
-			value: true,
-			id: 'rememberMelody1'
-		},
-		{
-			label: 'いいえ',
-			value: false,
-			id: 'rememberMelody2'
-		}
-	];
 	let rememberName = false;
 	let rememberMelody = false;
 	let playCount = 0;
