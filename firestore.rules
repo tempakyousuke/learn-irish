@@ -10,6 +10,9 @@ service cloud.firestore {
       match /daily/{date} {
         allow read, write: if request.auth.uid == uid;
       }
+      match /statistics/{yearmonth} {
+        allow read, write: if request.auth.uid == uid;
+      }
     }
     match /tunes/{id} {
       allow read: if true;
