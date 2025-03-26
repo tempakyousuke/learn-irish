@@ -37,7 +37,7 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>曲追加</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
