@@ -3,4 +3,5 @@ export type UserTune = {
 	rememberName: boolean;
 	rememberMelody: boolean;
 	playCount: number;
+	note: string;
 };

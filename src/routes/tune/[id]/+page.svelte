@@ -6,6 +6,7 @@
 	import { getDate } from '$modules/getDate';
 	import Fa from 'svelte-fa';
 	import { faPlus } from '@fortawesome/free-solid-svg-icons';
+	import { toast } from '$modules/toast';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
@@ -22,6 +23,7 @@
 	let uid: string;
 	let dailyPlayCount = 0;
 	let dailyData: { [key: string]: number } = {};
+	let note = '';
 	const date = getDate();
 
 	userStore.subscribe(async (value) => {
@@ -40,6 +42,9 @@
 		}
 		if (userTune?.playCount) {
 			playCount = userTune.playCount as number;
+		}
+		if (userTune?.note) {
+			note = userTune.note as string;
 		}
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		const dailyData = (await getDoc(dailyDocRef)).data() || {};
@@ -92,6 +97,20 @@
 		);
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		await setDoc(dailyDocRef, { [tune.id]: dailyPlayCount }, { merge: true });
+	};
+	const updateNote = async () => {
+		if (!uid) {
+			return;
+		}
+		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
+		await setDoc(
+			docRef,
+			{
+				note
+			},
+			{ merge: true }
+		);
+		toast.success('メモを保存しました');
 	};
 </script>
 
@@ -172,6 +191,25 @@
 					<Fa class="" icon={faPlus} />
 				</button>
 			</div>
+		</div>
+		<div class="row">
+			<div class="w-1/4 text-right pr-2 pt-2">メモ</div>
+			<div class="pl-2 w-2/4">
+				<textarea
+					bind:value={note}
+					class="w-full h-52 border-2 border-gray-300 rounded-lg p-2"
+					placeholder="メモを入力してください"
+				></textarea>
+			</div>
+		</div>
+		<!-- ボタン右よせ -->
+		<div class="flex justify-end w-3/4">
+			<button
+				class="py-1 px-2 bg-blue-500 text-white rounded-lg font-bold text-xl"
+				on:click={updateNote}
+			>
+				メモを保存
+			</button>
 		</div>
 	{/if}
 </div>
