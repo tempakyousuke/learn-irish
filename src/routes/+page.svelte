@@ -72,7 +72,7 @@
 	let dailyData: { [key: string]: number } = {};
 
 	// 追加: ソート方法を保存する変数
-	let sortBy = 'sort_by_number_asc';
+	let sortBy: string;
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
@@ -168,6 +168,7 @@
 	$: updateCookie('rememberName', rememberName);
 	$: updateCookie('rememberMelody', rememberMelody);
 	$: updateCookie('selectedRhythm', selectedRhythm);
+	$: updateCookie('sortBy', sortBy);
 
 	$: dailyTotal = Object.values(dailyData).reduce((acc, count) => acc + count, 0);
 
@@ -176,6 +177,7 @@
 		rememberName = cookies.rememberName || 'notSelected';
 		rememberMelody = cookies.rememberMelody || 'notSelected';
 		selectedRhythm = cookies.selectedRhythm || 'notSelected';
+		sortBy = cookies.sortBy || 'sort_by_number_asc';
 	});
 </script>
 
