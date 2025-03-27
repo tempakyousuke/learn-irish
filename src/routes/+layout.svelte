@@ -78,6 +78,11 @@
 			>
 		{/if}
 		{#if loaded && isLoggedIn}
+			<a
+				href="/mydata"
+				class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
+				>mydata</a
+			>
 			<button
 				class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
 				on:click={logout}>ログアウト</button
@@ -111,6 +116,9 @@
 							</li>
 						{/if}
 						{#if loaded && isLoggedIn}
+						<li>
+							<a href="/mydata" class="block px-4 py-2 rounded hover:bg-gray-100">mydata</a>
+						</li>
 							<li>
 								<button class="inline px-4 py-2 rounded hover:bg-gray-100" on:click={logout}
 									>ログアウト</button

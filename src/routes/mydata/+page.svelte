@@ -5,6 +5,8 @@
 	import { getDate } from '$modules/getDate';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import { getDailyTotal } from '$modules/statistics';
+	import { Line, Bar } from "svelte-chartjs";
+	import { Chart, registerables } from "chart.js";
 
 	let uid: string = '';
 	const db = getFirestore();
@@ -21,6 +23,8 @@
 		[key: string]: number;
 	} = {};
 
+	Chart.register(...registerables);
+
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
 		if (!uid) {
@@ -31,4 +35,25 @@
 			weeklyCounts[date] = dailyTotal;
 		}
 	});
+	$: lineData = {
+		labels: dates,
+		datasets: [
+			{
+				label: 'Weekly Counts',
+				data: Object.values(weeklyCounts),
+				backgroundColor: 'rgba(75, 192, 192, 0.6)',
+				borderColor: 'rgba(75, 192, 192, 1)',
+				borderWidth: 2
+			}
+		]
+	}
+	const options = {
+		responsive: true,
+		maintainAspectRatio: false
+	};
 </script>
+
+<h3>最近の演奏回数</h3>
+<div style="height: 300px;">
+    <Line data={lineData} {options} />
+</div>
