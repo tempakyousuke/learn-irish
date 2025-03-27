@@ -14,6 +14,7 @@
 		tune: Tune;
 	};
 	const tune = data.tune;
+	console.log(tune)
 	const youtubeId = getYoutubeId(tune.link);
 	let rememberName = false;
 	let rememberMelody = false;
@@ -111,6 +112,26 @@
 			allowfullscreen
 		></iframe>
 	</div>
+	<ul class="mt-5 border p-2 max-w-[560px] mx-auto">
+		<h3 class="text-xl">楽曲情報</h3>
+		<li class="flex text-xl">
+			<div class="text-right w-1/2 mr-5">No</div>
+			<div class="text-left w-1/2 grow">{tune.tuneNo}</div>
+		</li>
+		<li class="flex text-xl">
+			<div class="text-right w-1/2 mr-5">曲名</div>
+			<div class="text-left w-1/2">{tune.name}</div>
+		</li>
+		<li class="flex text-xl">
+			<div class="text-right w-1/2 mr-5">Tune Type</div>
+			<div class="text-left w-1/2">{tune.rhythm}</div>
+		</li>
+		<li class="flex text-xl">
+			<div class="text-right w-1/2 mr-5">Key・Mode</div>
+			<div class="text-left w-1/2">{tune.key} {tune.mode}</div>
+		</li>
+
+	</ul>
 	{#if uid}
 		<div class="row">
 			<div class="item-name py-2">名前を覚えた</div>
