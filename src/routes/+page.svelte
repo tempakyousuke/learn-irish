@@ -186,7 +186,7 @@
 
 <div class="pt-5">
 	{#if uid}
-		<div class="grid grid-cols-4 place-content-between md:w-[50rem] w-[25rem] mx-auto gap-x-1 gap-y-8">
+		<div class="grid grid-cols-4 place-content-between md:w-[50rem] w-[28rem] mx-auto gap-x-1 gap-y-8">
 			<div class="col-span-2">
 				<div class="md:text-2xl text-xl text-center">名前を覚えた曲</div>
 				<div
