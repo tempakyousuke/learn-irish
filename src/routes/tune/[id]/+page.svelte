@@ -15,7 +15,6 @@
 		tune: Tune;
 	};
 	const tune = data.tune;
-	console.log(tune)
 	const youtubeId = getYoutubeId(tune.link);
 	let rememberName = false;
 	let rememberMelody = false;
@@ -95,6 +94,7 @@
 			},
 			{ merge: true }
 		);
+		const date = getDate();
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		await setDoc(dailyDocRef, { [tune.id]: dailyPlayCount }, { merge: true });
 	};
