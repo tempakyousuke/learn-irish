@@ -169,6 +169,8 @@
 	$: updateCookie('rememberMelody', rememberMelody);
 	$: updateCookie('selectedRhythm', selectedRhythm);
 
+	$: dailyTotal = Object.values(dailyData).reduce((acc, count) => acc + count, 0);
+
 	onMount(() => {
 		const cookies = parse(document.cookie);
 		rememberName = cookies.rememberName || 'notSelected';
@@ -184,34 +186,42 @@
 
 <div class="pt-5">
 	{#if uid}
-		<div class="flex place-content-between md:w-[50rem] w-[25rem] mx-auto">
-			<div>
+		<div class="grid grid-cols-4 place-content-between md:w-[50rem] w-[25rem] mx-auto gap-x-1 gap-y-8">
+			<div class="col-span-2">
 				<div class="md:text-2xl text-xl text-center">名前を覚えた曲</div>
 				<div
-					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center md:w-52 w-44"
+					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
 				>
 					{rememberNameIds.length}/{tunes.length}
 				</div>
 			</div>
-			<div>
+			<div class="col-span-2">
 				<div class="md:text-2xl text-xl text-center">メロディーを覚えた曲</div>
 				<div
-					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center md:w-52 w-44"
+					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
 				>
 					{rememberMelodyIds.length}/{tunes.length}
 				</div>
 			</div>
-			<div class="md:block hidden">
+			<div class="col-span-2">
 				<div class="md:text-2xl text-xl text-center">累計演奏回数</div>
 				<div
-					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center md:w-52 w-44"
+					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
 				>
 					{totalCount}
 				</div>
 			</div>
+			<div class="col-span-2">
+				<div class="md:text-2xl text-xl text-center">今日の演奏回数</div>
+				<div
+					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
+				>
+					{dailyTotal}
+				</div>
+			</div>
 		</div>
 
-		<div class="mt-5 mx-auto md:w-8/12 w-11/12">
+		<div class="mt-7 mx-auto md:w-8/12 w-11/12">
 			<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto">
 				<thead>
 					<tr class="border bg-teal-800 text-white md:table-row hidden">
