@@ -102,7 +102,7 @@
 <div class="mx-auto w-full md:w-[800px]">
 	<div>
 		<iframe
-			class="mx-auto w-full md:w-[560px]"
+			class="mx-auto w-full sm:max-w-[560px] max-w-[400px] sm:h-[315px] h-[240px]"
 			height="315"
 			src="https://www.youtube.com/embed/{youtubeId}"
 			title="YouTube video player"
