@@ -13,6 +13,9 @@ service cloud.firestore {
       match /statistics/{yearmonth} {
         allow read, write: if request.auth.uid == uid;
       }
+      match /favorites/{favoriteId} {
+        allow read, write: if request.auth.uid == uid;
+      }
     }
     match /tunes/{id} {
       allow read: if true;
