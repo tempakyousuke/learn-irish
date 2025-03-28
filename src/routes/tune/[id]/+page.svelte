@@ -5,8 +5,9 @@
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 	import { getDate } from '$modules/getDate';
 	import Fa from 'svelte-fa';
-	import { faPlus } from '@fortawesome/free-solid-svg-icons';
+	import { faPlus, faHeart } from '@fortawesome/free-solid-svg-icons';
 	import { toast } from '$modules/toast';
+	import {checkFavorite, addFavorite, removeFavorite} from '$modules/favorites';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
@@ -23,6 +24,7 @@
 	let dailyPlayCount = 0;
 	let dailyData: { [key: string]: number } = {};
 	let note = '';
+	let isBookmarked = false;
 	const date = getDate();
 
 	userStore.subscribe(async (value) => {
@@ -50,6 +52,7 @@
 		if (dailyData[tune.id]) {
 			dailyPlayCount = dailyData[tune.id];
 		}
+		isBookmarked = await checkFavorite(uid, tune.id);
 	});
 
 	const updateRememberName = async () => {
@@ -190,6 +193,32 @@
 				>
 					<Fa class="" icon={faPlus} />
 				</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="item-name pt-2">お気に入り</div>
+			<div class="item-detail">
+				{#if isBookmarked}
+					<button
+						class="px-4 py-2 rounded-lg bg-teal-500 text-white"
+						on:click={async () => {
+							await removeFavorite(uid, tune.id);
+							isBookmarked = false;
+						}}
+					>
+						<Fa class="" icon={faHeart} />
+					</button>
+				{:else}
+					<button
+						class="px-4 py-2 rounded-lg bg-gray-200"
+						on:click={async () => {
+							await addFavorite(uid, tune.id);
+							isBookmarked = true;
+						}}
+					>
+						<Fa class="" icon={faHeart} />
+					</button>
+				{/if}
 			</div>
 		</div>
 		<div class="row">

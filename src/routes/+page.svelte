@@ -8,6 +8,7 @@
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
 	import { parse, serialize } from 'cookie';
 	import { getDate } from '$modules/getDate';
+	import { getFavorites } from '$modules/favorites';
 
 	export let data: {
 		tunes: Tune[];
@@ -48,6 +49,18 @@
 			id: 'rememberMelody3'
 		}
 	];
+	const onlyFavoriteOption = [
+		{
+			label: 'ON',
+			value: 'on',
+			id: 'onlyFavorite1'
+		},
+		{
+			label: 'OFF',
+			value: 'off',
+			id: 'onlyFavorite2'
+		}
+	];
 
 	const sortByNameOption = [
 		{ label: 'No(昇順)', value: 'sort_by_number_asc', id: 'sortByNumber_asc' },
@@ -64,8 +77,10 @@
 	let rememberName: string;
 	let rememberMelody: string;
 	let selectedRhythm: string;
+	let onlyFavorite: string;
 	let userTuneStatus: { [key: string]: UserTune } = {};
 	let totalCount: number = 0;
+	let favoriteTuneIds: string[] = [];
 
 	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
 	const date = getDate();
@@ -92,14 +107,19 @@
 		});
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		dailyData = (await getDoc(dailyDocRef)).data() || {};
+		favoriteTuneIds = await getFavorites(uid);
 	});
 
 	// フィルタリング（名前を覚えた・メロディーを覚えた・種類）
 	$: filteredTunes = tunes.filter((tune) => {
-		if (rememberName === 'yes' && !rememberNameIds.includes(tune.id)) return false;
-		if (rememberName === 'no' && rememberNameIds.includes(tune.id)) return false;
-		if (rememberMelody === 'yes' && !rememberMelodyIds.includes(tune.id)) return false;
-		if (rememberMelody === 'no' && rememberMelodyIds.includes(tune.id)) return false;
+		if (uid) {
+			// これらはログイン時のみ有効にする
+			if (rememberName === 'yes' && !rememberNameIds.includes(tune.id)) return false;
+			if (rememberName === 'no' && rememberNameIds.includes(tune.id)) return false;
+			if (rememberMelody === 'yes' && !rememberMelodyIds.includes(tune.id)) return false;
+			if (rememberMelody === 'no' && rememberMelodyIds.includes(tune.id)) return false;
+			if (onlyFavorite === 'on' && !favoriteTuneIds.includes(tune.id)) return false;
+		}
 		if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
 		return true;
 	});
@@ -169,6 +189,7 @@
 	$: updateCookie('rememberMelody', rememberMelody);
 	$: updateCookie('selectedRhythm', selectedRhythm);
 	$: updateCookie('sortBy', sortBy);
+	$: updateCookie('onlyFavorite', onlyFavorite);
 
 	$: dailyTotal = Object.values(dailyData).reduce((acc, count) => acc + count, 0);
 
@@ -178,6 +199,7 @@
 		rememberMelody = cookies.rememberMelody || 'notSelected';
 		selectedRhythm = cookies.selectedRhythm || 'notSelected';
 		sortBy = cookies.sortBy || 'sort_by_number_asc';
+		onlyFavorite = cookies.onlyFavorite || 'off';
 	});
 </script>
 
@@ -272,6 +294,17 @@
 						options={rememberMelodyOption}
 						bind:userSelected={rememberMelody}
 						name="rememberMelody"
+					/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="item-name">お気に入りのみ表示</div>
+				<div class="item-detail">
+					<RadioButtons
+						className="flex md:flex-row flex-col"
+						options={onlyFavoriteOption}
+						bind:userSelected={onlyFavorite}
+						name="onlyFavorite"
 					/>
 				</div>
 			</div>
