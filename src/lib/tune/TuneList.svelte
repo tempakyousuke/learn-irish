@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import type { Tune } from '../../types/tune';
 	import type { UserTune } from '../../types/userTune';
 	export let tunes: Tune[];
@@ -9,19 +10,19 @@
 <table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto xl:w-auto w-11/12">
 	<thead>
 		<tr class="border bg-teal-800 text-white md:table-row hidden">
-			<th class="py-3 px-3 w-96">曲名</th>
-			<th class="py-3 px-3 w-52">種類</th>
+			<th class="py-3 px-3 w-96">{$t('tune_name')}</th>
+			<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
 			<th class="py-3 px-3 w-52">Key</th>
 			<th class="py-3 px-3 w-52">Mode</th>
 			{#if countExist}
-				<th class="py-3 px-3 w-52">累計演奏回数</th>
+				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
 			{/if}
 		</tr>
 		<tr class="border bg-teal-800 text-white table-row md:hidden">
-			<th class="py-3 px-3 w-96">曲名</th>
-			<th class="py-3 px-3 w-52">種類</th>
+			<th class="py-3 px-3 w-96">{$t('tune_name')}</th>
+			<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
 			{#if countExist}
-				<th class="py-3 px-3 w-52">累計演奏回数</th>
+				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
 			{/if}
 		</tr>
 	</thead>

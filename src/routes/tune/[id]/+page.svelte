@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import type { Tune } from '../../../types/tune';
 	import { getYoutubeId } from '$modules/youtubeId';
 	import { userStore } from '$modules/store';
@@ -135,28 +136,28 @@
 		></iframe>
 	</div>
 	<ul class="mt-5 border p-2 max-w-[560px] mx-auto">
-		<h3 class="text-xl">楽曲情報</h3>
+		<h3 class="text-xl">{$t('tune_information')}</h3>
 		<li class="flex text-xl">
 			<div class="text-right w-1/2 mr-5">No</div>
 			<div class="text-left w-1/2 grow">{tune.tuneNo}</div>
 		</li>
 		<li class="flex text-xl">
-			<div class="text-right w-1/2 mr-5">曲名</div>
+			<div class="text-right w-1/2 mr-5">{$t('tune_name')}</div>
 			<div class="text-left w-1/2">{tune.name}</div>
 		</li>
 		<li class="flex text-xl">
-			<div class="text-right w-1/2 mr-5">Tune Type</div>
+			<div class="text-right w-1/2 mr-5">{$t('tune_type')}</div>
 			<div class="text-left w-1/2">{tune.rhythm}</div>
 		</li>
 		<li class="flex text-xl">
-			<div class="text-right w-1/2 mr-5">Key・Mode</div>
+			<div class="text-right w-1/2 mr-5">{$t('key')}・{$t('mode')}</div>
 			<div class="text-left w-1/2">{tune.key} {tune.mode}</div>
 		</li>
 
 	</ul>
 	{#if uid}
 		<div class="row">
-			<div class="item-name py-2">名前を覚えた</div>
+			<div class="item-name py-2">{$t('memorized_name')}</div>
 			<div class="item-detail">
 				<button
 					class="px-4 py-2 rounded-lg {rememberName ? 'bg-teal-500 text-white' : 'bg-gray-200'}"
@@ -170,7 +171,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="item-name py-2">メロディーを覚えた</div>
+			<div class="item-name py-2">{$t('memorized_melody')}</div>
 			<div class="item-detail">
 				<button
 					class="px-4 py-2 rounded-lg {rememberMelody ? 'bg-teal-500 text-white' : 'bg-gray-200'}"
@@ -184,7 +185,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="item-name pt-2">この曲を演奏した回数</div>
+			<div class="item-name pt-2">{$t('times_played')}</div>
 			<div class="item-detail">
 				{playCount}
 				<button
@@ -196,7 +197,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="item-name pt-2">お気に入り</div>
+			<div class="item-name pt-2">{$t('favorite')}</div>
 			<div class="item-detail">
 				{#if isBookmarked}
 					<button
@@ -222,12 +223,12 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="w-1/4 text-right pr-2 pt-2">メモ</div>
+			<div class="w-1/4 text-right pr-2 pt-2">{$t('notes')}</div>
 			<div class="pl-2 w-2/4">
 				<textarea
 					bind:value={note}
 					class="w-full h-52 border-2 border-gray-300 rounded-lg p-2"
-					placeholder="メモを入力してください"
+					placeholder="{$t('enter_notes')}"
 				></textarea>
 			</div>
 		</div>
@@ -237,7 +238,7 @@
 				class="py-1 px-2 bg-blue-500 text-white rounded-lg font-bold text-xl"
 				on:click={updateNote}
 			>
-				メモを保存
+				{$t('save_notes')}
 			</button>
 		</div>
 	{/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import type { Tune } from '../types/tune';
 	import type { UserTune } from '../types/userTune';
@@ -17,34 +18,34 @@
 	const db = getFirestore();
 	const rememberNameOption = [
 		{
-			label: '未選択',
+			label: $t('unselected'),
 			value: 'notSelected',
 			id: 'rememberName1'
 		},
 		{
-			label: '覚えた',
+			label: $t('memorized'),
 			value: 'yes',
 			id: 'rememberName2'
 		},
 		{
-			label: '覚えていない',
+			label: $t('not_memorized'),
 			value: 'no',
 			id: 'rememberName3'
 		}
 	];
 	const rememberMelodyOption = [
 		{
-			label: '未選択',
+			label: $t('unselected'),
 			value: 'notSelected',
 			id: 'rememberMelody1'
 		},
 		{
-			label: '覚えた',
+			label: $t('memorized'),
 			value: 'yes',
 			id: 'rememberMelody2'
 		},
 		{
-			label: '覚えていない',
+			label: $t('not_memorized'),
 			value: 'no',
 			id: 'rememberMelody3'
 		}
@@ -62,14 +63,14 @@
 		}
 	];
 
-	const sortByNameOption = [
-		{ label: 'No(昇順)', value: 'sort_by_number_asc', id: 'sortByNumber_asc' },
-		{ label: 'No(降順)', value: 'sort_by_number_desc', id: 'sortByNumber_desc' },
-		{ label: '曲名(昇順)', value: 'sort_by_name_asc', id: 'sortByName_asc' },
-		{ label: '曲名(降順)', value: 'sort_by_name_desc', id: 'sortByName_desc' },
-		{ label: 'Key(昇順)', value: 'sort_by_key_asc', id: 'sortByKey_desc' },
-		{ label: 'Key(降順)', value: 'sort_by_key_desc', id: 'sortByKey_desc' }
-	];
+	const sortByOption = [
+    { label: $t('sort_no_asc'), value: 'sort_by_number_asc', id: 'sortByNumber_asc' },
+    { label: $t('sort_no_desc'), value: 'sort_by_number_desc', id: 'sortByNumber_desc' },
+    { label: $t('sort_name_asc'), value: 'sort_by_name_asc', id: 'sortByName_asc' },
+    { label: $t('sort_name_desc'), value: 'sort_by_name_desc', id: 'sortByName_desc' },
+    { label: $t('sort_key_asc'), value: 'sort_by_key_asc', id: 'sortByKey_asc' },
+    { label: $t('sort_key_desc'), value: 'sort_by_key_desc', id: 'sortByKey_desc' }
+  ];
 
 	let uid: string;
 	let rememberNameIds: string[] = [];
@@ -212,7 +213,7 @@
 	{#if uid}
 		<div class="grid grid-cols-4 place-content-between md:w-[50rem] w-[28rem] mx-auto gap-x-1 gap-y-8">
 			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">名前を覚えた曲</div>
+				<div class="md:text-2xl text-xl text-center">{$t('tune_memorized_name')}</div>
 				<div
 					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
 				>
@@ -220,7 +221,7 @@
 				</div>
 			</div>
 			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">メロディーを覚えた曲</div>
+				<div class="md:text-2xl text-xl text-center">{$t('tune_memorized_melody')}</div>
 				<div
 					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
 				>
@@ -228,7 +229,7 @@
 				</div>
 			</div>
 			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">累計演奏回数</div>
+				<div class="md:text-2xl text-xl text-center">{$t('todays_plays')}</div>
 				<div
 					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
 				>
@@ -236,7 +237,7 @@
 				</div>
 			</div>
 			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">今日の演奏回数</div>
+				<div class="md:text-2xl text-xl text-center">{$t('todays_plays')}</div>
 				<div
 					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
 				>
@@ -249,13 +250,13 @@
 			<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto">
 				<thead>
 					<tr class="border bg-teal-800 text-white md:table-row hidden">
-						<th class="py-3 px-3 w-96">今日演奏した曲</th>
-						<th class="py-3 px-3 w-52">種類</th>
-						<th class="py-3 px-3 w-52">今日の演奏回数</th>
+						<th class="py-3 px-3 w-96">{$t('tunes_played_today')}</th>
+						<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
+						<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
 					</tr>
 					<tr class="border bg-teal-800 text-white table-row md:hidden">
-						<th class="py-3 px-3 w-96">今日演奏した曲</th>
-						<th class="py-3 px-3 w-60">今日の<br />演奏回数</th>
+						<th class="py-3 px-3 w-96">{$t('tunes_played_today')}</th>
+						<th class="py-3 px-3 w-60 whitespace-pre-wrap">{$t('todays_plays_with_break')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -274,9 +275,9 @@
 			</table>
 		</div>
 		<div class="mt-10 md:w-8/12 w-11/12 mx-auto">
-			<div class="text-2xl font-bold mx-auto">検索フィルター</div>
+			<div class="text-2xl font-bold mx-auto">{$t('search_filter')}</div>
 			<div class="row">
-				<div class="item-name">名前を覚えた</div>
+				<div class="item-name">{$t('memorized_name')}</div>
 				<div class="item-detail">
 					<RadioButtons
 						className="flex md:flex-row flex-col"
@@ -287,7 +288,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="item-name">メロディーを覚えた</div>
+				<div class="item-name">{$t('memorized_melody')}</div>
 				<div class="item-detail">
 					<RadioButtons
 						className="flex md:flex-row flex-col"
@@ -298,7 +299,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="item-name">お気に入りのみ表示</div>
+				<div class="item-name">{$t('show_favorites_only')}</div>
 				<div class="item-detail">
 					<RadioButtons
 						className="flex md:flex-row flex-col"
@@ -309,7 +310,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="item-name">種類</div>
+				<div class="item-name">{$t('tune_type')}</div>
 				<div class="item-detail">
 					<select bind:value={selectedRhythm} name="selectedRhythm">
 						<option value="notSelected"></option>
@@ -322,10 +323,10 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="item-name">並び替え</div>
+				<div class="item-name">{$t('sort')}</div>
 				<div class="item-detail">
 					<select id="sortByNameSelect" bind:value={sortBy}>
-						{#each sortByNameOption as opt}
+						{#each sortByOption as opt}
 							<option value={opt.value} id={opt.id}>{opt.label}</option>
 						{/each}
 					</select>
@@ -335,9 +336,9 @@
 	{/if}
 	{#if !uid}
 		<div class="mt-10 md:w-8/12 w-11/12 mx-auto">
-			<div class="text-2xl font-bold mx-auto">検索フィルター</div>
+			<div class="text-2xl font-bold mx-auto">{$t('search_filter')}</div>
 			<div class="row">
-				<div class="item-name">種類</div>
+				<div class="item-name">{$t('tune_type')}</div>
 				<div class="item-detail">
 					<select bind:value={selectedRhythm} name="selectedRhythm">
 						<option value="notSelected"></option>
@@ -351,10 +352,10 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="item-name">並び替え</div>
+			<div class="item-name">{$t('sort')}</div>
 			<div class="item-detail">
 				<select id="sortByNameSelect" bind:value={sortBy}>
-					{#each sortByNameOption as opt}
+					{#each sortByOption as opt}
 						<option value={opt.value} id={opt.id}>{opt.label}</option>
 					{/each}
 				</select>
