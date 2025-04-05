@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import * as yup from 'yup';
 	import { ValidationError } from 'yup';
 	import Input from '$lib/forms/Input.svelte';
@@ -26,12 +27,13 @@
 	const schema = yup.object().shape({
 		email: yup
 			.string()
-			.required('メールアドレスは必須です')
-			.email('メールアドレスが正しくありません'),
+			.required(() => $t('validation_email_required'))
+			.email(() => $t('validation_email_invalid')),
+
 		password: yup
 			.string()
-			.required('パスワードは必須です')
-			.min(6, 'パスワードは6文字以上入力してください')
+			.required(() => $t('validation_password_required'))
+			.min(6, () => $t('validation_password_min'))
 	});
 
 	const validate = (path: string) => {
@@ -88,12 +90,12 @@
 
 <div class="min-w-md flex justify-center items-center self-center pt-20">
 	<div class="flex flex-col px-4 py-6 bg-white rounded-lg shadow-md w-full max-w-md">
-		<h1>新規登録</h1>
+		<h1>{$t('create_account')}</h1>
 		<form>
 			<Input
 				bind:value={values.email}
 				type="email"
-				label="メールアドレス"
+				label="{$t('email')}"
 				className="mt-6"
 				error={errors.email}
 				on:input={() => validate('email')}
@@ -101,12 +103,12 @@
 			<Input
 				bind:value={values.password}
 				type="password"
-				label="パスワード"
+				label="{$t('password')}"
 				className="mt-6"
 				error={errors.password}
 				on:input={() => validate('password')}
 			/>
-			<Button block className="mt-5" on:click={submit}>登録</Button>
+			<Button block className="mt-5" on:click={submit}>{$t('register')}</Button>
 		</form>
 	</div>
 </div>

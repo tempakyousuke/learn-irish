@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import * as yup from 'yup';
 	import { ValidationError } from 'yup';
 	import Input from '$lib/forms/Input.svelte';
@@ -16,8 +17,8 @@
 	const schema = yup.object().shape({
 		email: yup
 			.string()
-			.required('メールアドレスは必須です')
-			.email('メールアドレスが正しくありません')
+			.required(() => $t('validation_email_required'))
+			.email(() => $t('validation_email_invalid')),
 	});
 
 	const validate = () => {
@@ -66,21 +67,21 @@
 
 <div class="min-w-md flex justify-center items-center self-center pt-20">
 	<div class="flex flex-col px-4 py-6 bg-white rounded-lg shadow-md w-full max-w-md">
-		<h1>パスワードリセット</h1>
+		<h1>{$t('reset_password_title')}</h1>
 		<p class="mt-2 text-gray-600">
-			登録したメールアドレスを入力してください。パスワードリセットのメールをお送りします。
+			{$t('reset_password_description')}
 		</p>
 		<form>
 			<Input
 				bind:value={email}
 				type="email"
-				label="メールアドレス"
+				label="{$t('email')}"
 				className="mt-4"
 				{error}
 				on:input={validate}
 			/>
 			<Button block className="mt-6" on:click={submit} disabled={error !== ''}>
-				パスワードリセットメールを送信
+				{$t('send_password_reset_email')}
 			</Button>
 		</form>
 	</div>

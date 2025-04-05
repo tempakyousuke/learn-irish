@@ -2,6 +2,7 @@
 	"sign_in": "Sign in",
 	"sign_out": "Sign out",
 	"create_account": "Create Account",
+	"register": "register",
 	"tune_memorized_name": "Name Memorized",
 	"tune_memorized_melody": "Melody Memorized",
 	"total_plays": "Total Plays",
@@ -33,5 +34,19 @@
 	"sort_name_asc": "Tune Name (A → Z)",
 	"sort_name_desc": "Tune Name (Z → A)",
 	"sort_key_asc": "Key (Ascending)",
-	"sort_key_desc": "Key (Descending)"
+	"sort_key_desc": "Key (Descending)",
+	"email": "Email",
+	"password": "Password",
+	"validation_email_required": "Email is required",
+	"validation_email_invalid": "Please enter a valid email address",
+	"validation_password_required": "Password is required",
+	"validation_password_min": "Password must be at least 6 characters",
+	"forgot_password": "Forgot your password?",
+	"reset_password_title": "Reset Password",
+	"reset_password_description": "Please enter your registered email address. We will send you a password reset email.",
+	"send_password_reset_email": "Send Password Reset Email",
+	"password_reset_sent_title": "Password Reset Email Sent",
+	"password_reset_sent_description": "We've sent you a password reset email. Please follow the instructions in the email to reset your password.",
+	"check_spam_folder": "If you do not receive the email, please check your spam folder.",
+	"return_to_signin": "Return to Sign In Page"
 }

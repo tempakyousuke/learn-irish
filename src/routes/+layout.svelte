@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { t } from 'svelte-i18n';
 	import { onAuthStateChanged, signOut } from 'firebase/auth';
 	import { userStore } from '$modules/store';
 	import { app, auth } from '$modules/firebase';
@@ -75,12 +76,12 @@
 				<a
 					href="/signin"
 					class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
-					>ログイン</a
+					>{$t('sign_in')}</a
 				>
 				<a
 					href="/signup"
 					class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
-					>新規登録</a
+					>{$t('create_account')}</a
 				>
 			{/if}
 			{#if loaded && isLoggedIn}
@@ -91,7 +92,7 @@
 				>
 				<button
 					class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
-					on:click={logout}>ログアウト</button
+					on:click={logout}>{$t('sign_out')}</button
 				>
 			{/if}
 		</header>
@@ -115,10 +116,10 @@
 							<li><a href="/about" class="block px-4 py-2 rounded hover:bg-gray-100">About</a></li>
 							{#if loaded && !isLoggedIn}
 								<li>
-									<a href="/signin" class="block px-4 py-2 rounded hover:bg-gray-100">ログイン</a>
+									<a href="/signin" class="block px-4 py-2 rounded hover:bg-gray-100">{$t('sign_in')}</a>
 								</li>
 								<li>
-									<a href="/signup" class="block px-4 py-2 rounded hover:bg-gray-100">新規登録</a>
+									<a href="/signup" class="block px-4 py-2 rounded hover:bg-gray-100">{$t('create_account')}</a>
 								</li>
 							{/if}
 							{#if loaded && isLoggedIn}
@@ -127,7 +128,7 @@
 							</li>
 								<li>
 									<button class="inline px-4 py-2 rounded hover:bg-gray-100" on:click={logout}
-										>ログアウト</button
+										>{$t('sign_out')}</button
 									>
 								</li>
 							{/if}

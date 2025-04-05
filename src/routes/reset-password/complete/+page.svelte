@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import { siteTitle } from '$modules/config';
 	import { page } from '$app/stores';
 
-	const title = `パスワードリセット完了 - ${siteTitle}`;
+	const title = `${$t('password_reset_sent_title')} - ${siteTitle}`;
 	const description = `パスワードリセットメールを送信しました。`;
 	const currentPageUrl = $page.url.href;
 </script>
@@ -20,13 +21,13 @@
 
 <div class="min-w-md flex justify-center items-center self-center pt-20">
 	<div class="flex flex-col px-4 py-6 bg-white rounded-lg shadow-md w-full max-w-md">
-		<h1>パスワードリセットメール送信完了</h1>
+		<h1>{$t('password_reset_sent_title')}</h1>
 		<p class="mt-4 text-gray-600">
-			パスワードリセットのメールを送信しました。メールの内容に従ってパスワードの再設定を行ってください。
+			{$t('password_reset_sent_description')}
 		</p>
-		<p class="mt-2 text-gray-600">メールが届かない場合は、迷惑メールフォルダをご確認ください。</p>
+		<p class="mt-2 text-gray-600">{$t('check_spam_folder')}</p>
 		<div class="mt-6 text-center">
-			<a href="/signin" class="text-blue-600 hover:text-blue-800"> ログインページに戻る </a>
+			<a href="/signin" class="text-blue-600 hover:text-blue-800"> {$t('return_to_signin')} </a>
 		</div>
 	</div>
 </div>

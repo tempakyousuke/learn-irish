@@ -1,7 +1,8 @@
 {
 	"sign_in": "Sign in",
 	"sign_out": "Sign out",
-	"create_account": "Create Account",
+	"create_account": "新規登録",
+	"register": "登録",
 	"tune_memorized_name": "名前を覚えた曲",
 	"tune_memorized_melody": "メロディーを覚えた曲",
 	"total_plays": "累計演奏回数",
@@ -33,5 +34,19 @@
 	"sort_name_asc": "曲名(昇順)",
 	"sort_name_desc": "曲名(降順)",
 	"sort_key_asc": "Key(昇順)",
-	"sort_key_desc": "Key(降順)"
+	"sort_key_desc": "Key(降順)",
+	"email": "メールアドレス",
+	"password": "パスワード",
+	"validation_email_required": "メールアドレスは必須です",
+	"validation_email_invalid": "メールアドレスが正しくありません",
+	"validation_password_required": "パスワードは必須です",
+	"validation_password_min": "パスワードは6文字以上入力してください",
+	"forgot_password": "パスワードを忘れた方はこちら",
+	"reset_password_title": "パスワードリセット",
+	"reset_password_description": "登録したメールアドレスを入力してください。パスワードリセットのメールをお送りします。",
+	"send_password_reset_email": "パスワードリセットメールを送信",
+	"password_reset_sent_title": "パスワードリセットメール送信完了",
+	"password_reset_sent_description": "パスワードリセットのメールを送信しました。メールの内容に従ってパスワードの再設定を行ってください。",
+	"check_spam_folder": "メールが届かない場合は、迷惑メールフォルダをご確認ください。",
+	"return_to_signin": "サインインページに戻る"
 }
