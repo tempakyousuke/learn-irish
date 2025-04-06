@@ -38,7 +38,7 @@
 		console.log(monthlyDatas);
 	});
 	$: lineData = {
-		labels: dates,
+		labels: dates.map((date) => date.slice(5)),
 		datasets: [
 			{
 				label: 'Weekly Counts',
