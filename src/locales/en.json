@@ -49,5 +49,6 @@
 	"password_reset_sent_title": "Password Reset Email Sent",
 	"password_reset_sent_description": "We've sent you a password reset email. Please follow the instructions in the email to reset your password.",
 	"check_spam_folder": "If you do not receive the email, please check your spam folder.",
-	"return_to_signin": "Return to Sign In Page"
+	"return_to_signin": "Return to Sign In Page",
+	"play_history": "Play History"
 }

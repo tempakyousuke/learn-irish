@@ -250,6 +250,17 @@
 				{$t('save_notes')}
 			</button>
 		</div>
+		{#if Object.entries(playHistory).length > 0}
+			<div class="mt-5 border p-2 max-w-[560px] mx-auto">
+			<h3 class="text-xl">{$t('play_history')}</h3>
+				{#each Object.entries(playHistory) as [date, count]}
+					<div class="flex text-xl">
+						<div class="item-name">{date}</div>
+						<div class="item-detail">{count}</div>
+					</div>
+				{/each}
+			</div>
+		{/if}
 	{/if}
 </div>
 
