@@ -4,7 +4,7 @@
 	import type { UserTune } from '../../types/userTune';
 	import { getDate } from '$modules/getDate';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
-	import { getDailyTotal } from '$modules/statistics';
+	import { getDailyTotal, getMonthlyDatas } from '$modules/statistics';
 	import { Line, Bar } from "svelte-chartjs";
 	import { Chart, registerables } from "chart.js";
 
@@ -34,6 +34,8 @@
 			const dailyTotal = await getDailyTotal(date, uid);
 			weeklyCounts[date] = dailyTotal;
 		}
+		const monthlyDatas = await getMonthlyDatas(uid);
+		console.log(monthlyDatas);
 	});
 	$: lineData = {
 		labels: dates,
@@ -55,5 +57,8 @@
 
 <h3>最近の演奏回数</h3>
 <div style="height: 300px;">
-    <Line data={lineData} {options} />
+	<Line data={lineData} {options} />
 </div>
+
+<h3>月ごとの記録</h3>
+
