@@ -166,7 +166,7 @@
 						updateRememberName();
 					}}
 				>
-					{rememberName ? '覚えた！' : '未達成'}
+					{rememberName ?  $t('memorized') + '！': $t('incomplete')}
 				</button>
 			</div>
 		</div>
@@ -180,7 +180,7 @@
 						updateRememberMelody();
 					}}
 				>
-					{rememberMelody ? '覚えた！' : '未達成'}
+					{rememberMelody ? $t('memorized') + '！' : $t('incomplete')}
 				</button>
 			</div>
 		</div>
