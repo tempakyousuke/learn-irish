@@ -9,6 +9,8 @@
 	import { faPlus, faHeart } from '@fortawesome/free-solid-svg-icons';
 	import { toast } from '$modules/toast';
 	import {checkFavorite, addFavorite, removeFavorite} from '$modules/favorites';
+	import { siteTitle } from '$modules/config';
+
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
@@ -116,11 +118,12 @@
 		);
 		toast.success('メモを保存しました');
 	};
+	const title = `${tune.name} - ${siteTitle}`;
 </script>
 
 <svelte:head>
-	<title>{tune.name}</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>{title}</title>
+	<meta name="description" content="{title}" />
 </svelte:head>
 
 <div class="mx-auto w-full md:w-[800px]">
