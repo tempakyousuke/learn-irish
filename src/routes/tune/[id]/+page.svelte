@@ -92,15 +92,18 @@
 		playCount++;
 		dailyPlayCount++;
 		dailyData[tune.id] = dailyPlayCount;
+		const date = getDate();
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
 		await setDoc(
 			docRef,
 			{
-				playCount
+				playCount,
+				playHistory: {
+					[date]: dailyPlayCount
+				}
 			},
 			{ merge: true }
 		);
-		const date = getDate();
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		await setDoc(dailyDocRef, { [tune.id]: dailyPlayCount }, { merge: true });
 	};
