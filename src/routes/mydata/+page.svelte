@@ -5,21 +5,24 @@
 	import { getDate } from '$modules/getDate';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import { getDailyTotal, getMonthlyDatas } from '$modules/statistics';
-	import { Line, Bar } from "svelte-chartjs";
-	import { Chart, registerables } from "chart.js";
+	import { Line, Bar } from 'svelte-chartjs';
+	import { Chart, registerables } from 'chart.js';
 
 	let uid: string = '';
 	const db = getFirestore();
 	// 直近7日間の日付の配列を保存
-	let dates =
-		(() => {
-			let dates = [];
-			for (let i = 7; i--; i > -1) {
-				dates.push(getDate(i));
-			}
-			return dates;
-		})();
+	let dates = (() => {
+		let dates = [];
+		for (let i = 7; i--; i > -1) {
+			dates.push(getDate(i));
+		}
+		return dates;
+	})();
 	let weeklyCounts: {
+		[key: string]: number;
+	} = {};
+
+	let monthlyDatas: {
 		[key: string]: number;
 	} = {};
 
@@ -34,8 +37,7 @@
 			const dailyTotal = await getDailyTotal(date, uid);
 			weeklyCounts[date] = dailyTotal;
 		}
-		const monthlyDatas = await getMonthlyDatas(uid);
-		console.log(monthlyDatas);
+		monthlyDatas = await getMonthlyDatas(uid);
 	});
 	$: lineData = {
 		labels: dates.map((date) => date.slice(5)),
@@ -48,7 +50,7 @@
 				borderWidth: 2
 			}
 		]
-	}
+	};
 	const options = {
 		responsive: true,
 		maintainAspectRatio: false
@@ -60,5 +62,14 @@
 	<Line data={lineData} {options} />
 </div>
 
-<h3>月ごとの記録</h3>
-
+<div class="max-w-[800px] mx-auto">
+	<h3>月ごとの記録</h3>
+	<div class="grid grid-cols-12">
+		{#each Object.entries(monthlyDatas) as [key, value]}
+			<div class="flex col-span-4 border">
+				<div class="w-1/2">{key}</div>
+				<div class="w-1/2">{value}</div>
+			</div>
+		{/each}
+	</div>
+</div>
