@@ -10,67 +10,13 @@
 	import { parse, serialize } from 'cookie';
 	import { getDate } from '$modules/getDate';
 	import { getFavorites } from '$modules/favorites';
+	import { rememberNameOption, rememberMelodyOption, onlyFavoriteOption, sortByOption } from './__options';
 
 	export let data: {
 		tunes: Tune[];
 	};
 	const tunes = data.tunes;
 	const db = getFirestore();
-	const rememberNameOption = [
-		{
-			label: $t('unselected'),
-			value: 'notSelected',
-			id: 'rememberName1'
-		},
-		{
-			label: $t('memorized'),
-			value: 'yes',
-			id: 'rememberName2'
-		},
-		{
-			label: $t('not_memorized'),
-			value: 'no',
-			id: 'rememberName3'
-		}
-	];
-	const rememberMelodyOption = [
-		{
-			label: $t('unselected'),
-			value: 'notSelected',
-			id: 'rememberMelody1'
-		},
-		{
-			label: $t('memorized'),
-			value: 'yes',
-			id: 'rememberMelody2'
-		},
-		{
-			label: $t('not_memorized'),
-			value: 'no',
-			id: 'rememberMelody3'
-		}
-	];
-	const onlyFavoriteOption = [
-		{
-			label: 'ON',
-			value: 'on',
-			id: 'onlyFavorite1'
-		},
-		{
-			label: 'OFF',
-			value: 'off',
-			id: 'onlyFavorite2'
-		}
-	];
-
-	const sortByOption = [
-    { label: $t('sort_no_asc'), value: 'sort_by_number_asc', id: 'sortByNumber_asc' },
-    { label: $t('sort_no_desc'), value: 'sort_by_number_desc', id: 'sortByNumber_desc' },
-    { label: $t('sort_name_asc'), value: 'sort_by_name_asc', id: 'sortByName_asc' },
-    { label: $t('sort_name_desc'), value: 'sort_by_name_desc', id: 'sortByName_desc' },
-    { label: $t('sort_key_asc'), value: 'sort_by_key_asc', id: 'sortByKey_asc' },
-    { label: $t('sort_key_desc'), value: 'sort_by_key_desc', id: 'sortByKey_desc' }
-  ];
 
 	let uid: string;
 	let rememberNameIds: string[] = [];
@@ -281,7 +227,7 @@
 				<div class="item-detail">
 					<RadioButtons
 						className="flex md:flex-row flex-col"
-						options={rememberNameOption}
+						options={$rememberNameOption}
 						bind:userSelected={rememberName}
 						name="rememberName"
 					/>
@@ -292,7 +238,7 @@
 				<div class="item-detail">
 					<RadioButtons
 						className="flex md:flex-row flex-col"
-						options={rememberMelodyOption}
+						options={$rememberMelodyOption}
 						bind:userSelected={rememberMelody}
 						name="rememberMelody"
 					/>
@@ -303,7 +249,7 @@
 				<div class="item-detail">
 					<RadioButtons
 						className="flex md:flex-row flex-col"
-						options={onlyFavoriteOption}
+						options={$onlyFavoriteOption}
 						bind:userSelected={onlyFavorite}
 						name="onlyFavorite"
 					/>
@@ -326,7 +272,7 @@
 				<div class="item-name">{$t('sort')}</div>
 				<div class="item-detail">
 					<select id="sortByNameSelect" bind:value={sortBy}>
-						{#each sortByOption as opt}
+						{#each $sortByOption as opt}
 							<option value={opt.value} id={opt.id}>{opt.label}</option>
 						{/each}
 					</select>
