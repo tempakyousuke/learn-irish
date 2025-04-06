@@ -28,6 +28,7 @@
 	let dailyData: { [key: string]: number } = {};
 	let note = '';
 	let isBookmarked = false;
+	let playHistory: { [key: string]: number } = {};
 	const date = getDate();
 
 	userStore.subscribe(async (value) => {
@@ -49,6 +50,9 @@
 		}
 		if (userTune?.note) {
 			note = userTune.note as string;
+		}
+		if (userTune?.playHistory) {
+			playHistory = userTune.playHistory as { [key: string]: number };
 		}
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		const dailyData = (await getDoc(dailyDocRef)).data() || {};
@@ -94,13 +98,12 @@
 		dailyData[tune.id] = dailyPlayCount;
 		const date = getDate();
 		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
+		playHistory[date] = dailyPlayCount;
 		await setDoc(
 			docRef,
 			{
 				playCount,
-				playHistory: {
-					[date]: dailyPlayCount
-				}
+				playHistory
 			},
 			{ merge: true }
 		);
