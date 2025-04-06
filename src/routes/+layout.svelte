@@ -12,6 +12,7 @@
   import { onMount } from 'svelte';
 	import LanguageSwitcher from '$lib/layout/LanguageSwitcher.svelte';
 	import { writable } from 'svelte/store';
+	import { setCreationTime } from '$modules/user';
 
 	const logout = () => {
 		signOut(auth);
@@ -26,6 +27,7 @@
 				uid: firebaseUser.uid,
 				isLoggedIn: true
 			});
+			setCreationTime(firebaseUser.uid, firebaseUser.metadata.creationTime);
 		} else {
 			userStore.set({
 				uid: '',
