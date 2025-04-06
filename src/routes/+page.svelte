@@ -301,7 +301,7 @@
 			<div class="item-name">{$t('sort')}</div>
 			<div class="item-detail">
 				<select id="sortByNameSelect" bind:value={sortBy}>
-					{#each sortByOption as opt}
+					{#each $sortByOption as opt}
 						<option value={opt.value} id={opt.id}>{opt.label}</option>
 					{/each}
 				</select>
