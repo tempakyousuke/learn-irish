@@ -4,7 +4,7 @@
 	import type { UserTune } from '../../types/userTune';
 	import { getDate } from '$modules/getDate';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
-	import { getDailyTotal, getMonthlyDatas } from '$modules/statistics';
+	import { getDailyTotal, getMonthlyDatas, getMonthlyStatistics } from '$modules/statistics';
 	import { Line, Bar } from 'svelte-chartjs';
 	import { Chart, registerables } from 'chart.js';
 
@@ -23,6 +23,11 @@
 	} = {};
 
 	let monthlyDatas: {
+		[key: string]: number;
+	} = {};
+
+	let selectedMonth: string = '';
+	let MonthlyStatistics: {
 		[key: string]: number;
 	} = {};
 
@@ -55,6 +60,15 @@
 		responsive: true,
 		maintainAspectRatio: false
 	};
+	const selectMonth = (month: string) => {
+		if (monthlyDatas[month] === 0) {
+			return;
+		}
+		selectedMonth = month;
+		getMonthlyStatistics(month, uid).then((data) => {
+			MonthlyStatistics = data;
+		});
+	};
 </script>
 
 <h3>最近の演奏回数</h3>
@@ -66,10 +80,28 @@
 	<h3>月ごとの記録</h3>
 	<div class="grid grid-cols-12">
 		{#each Object.entries(monthlyDatas) as [key, value]}
-			<div class="flex col-span-4 border">
+			<button
+				class="flex col-span-4 border"
+				on:click={() => selectMonth(key)}
+				aria-label={`Select month ${key}`}
+			>
 				<div class="w-1/2">{key}</div>
 				<div class="w-1/2">{value}</div>
-			</div>
+			</button>
 		{/each}
 	</div>
 </div>
+
+{#if selectedMonth}
+	<div class="max-w-[800px] mx-auto">
+		<h3>{selectedMonth}の演奏回数</h3>
+		<div class="grid grid-cols-12">
+			{#each Object.entries(MonthlyStatistics) as [key, value]}
+				<div class="flex col-span-4 border">
+					<div class="w-1/2">{key}</div>
+					<div class="w-1/2">{value}</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+{/if}

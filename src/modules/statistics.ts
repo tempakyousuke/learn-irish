@@ -22,7 +22,10 @@ export const getDailyTotal = async (date: string, uid: string) => {
 	// キャッシュに保存
 	cache[yearMonth] = statisticsData;
 
-	if (statisticsData[date] === undefined || date === currentDate) {
+	if (statisticsData[date] === undefined || date >= currentDate) {
+		if (date > currentDate) {
+			return 0; // future date
+		}
 		// 情報がない場合、または当日のdataはdailyから計算
 		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 		const dailyData = (await getDoc(dailyDocRef)).data() || {};
@@ -31,7 +34,7 @@ export const getDailyTotal = async (date: string, uid: string) => {
 			total += count;
 		}
 		// 統計情報を更新
-		if (date !== currentDate) {
+		if (date < currentDate) {
 			setDoc(
 				statisticsRef,
 				{
@@ -121,4 +124,14 @@ export const getDatesOfMonth = (yearMonth: string): string[] => {
 	}
 
 	return dates;
+};
+
+export const getMonthlyStatistics = async (yearMonth: string, uid: string) => {
+	const dates = getDatesOfMonth(yearMonth);
+	const statistics: { [key: string]: number } = {};
+	for (const date of dates) {
+		const dailyTotal = await getDailyTotal(date, uid);
+		statistics[date] = dailyTotal;
+	}
+	return statistics;
 };
