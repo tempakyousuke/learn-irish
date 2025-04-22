@@ -165,6 +165,7 @@
 
 		<DailyPlaysTable {dailyData} {tuneObjects} />
 		<FilterControls
+			isLoggedIn={!!uid}
 			bind:rememberName
 			bind:rememberMelody
 			bind:onlyFavorite
@@ -172,34 +173,6 @@
 			bind:sortBy
 			{rhythms}
 		/>
-	{/if}
-	{#if !uid}
-		<div class="mt-10 md:w-8/12 w-11/12 mx-auto">
-			<div class="text-2xl font-bold mx-auto">{$t('search_filter')}</div>
-			<div class="row">
-				<div class="item-name">{$t('tune_type')}</div>
-				<div class="item-detail">
-					<select bind:value={selectedRhythm} name="selectedRhythm">
-						<option value="notSelected"></option>
-						{#each rhythms as rhythm}
-							<option value={rhythm}>
-								{rhythm}
-							</option>
-						{/each}
-					</select>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="item-name">{$t('sort')}</div>
-			<div class="item-detail">
-				<select id="sortByNameSelect" bind:value={sortBy}>
-					{#each $sortByOption as opt}
-						<option value={opt.value} id={opt.id}>{opt.label}</option>
-					{/each}
-				</select>
-			</div>
-		</div>
 	{/if}
 
 	<div class="mx-auto mt-10">
