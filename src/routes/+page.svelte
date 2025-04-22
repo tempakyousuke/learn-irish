@@ -11,6 +11,7 @@
 	import { getDate } from '$modules/getDate';
 	import { getFavorites } from '$modules/favorites';
 	import { rememberNameOption, rememberMelodyOption, onlyFavoriteOption, sortByOption } from './__options';
+	import TuneStats from './TuneStats.svelte';
 
 	export let data: {
 		tunes: Tune[];
@@ -157,40 +158,13 @@
 
 <div class="pt-5">
 	{#if uid}
-		<div class="grid grid-cols-4 place-content-between md:w-[50rem] w-[28rem] mx-auto gap-x-1 gap-y-8">
-			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">{$t('tune_memorized_name')}</div>
-				<div
-					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
-				>
-					{rememberNameIds.length}/{tunes.length}
-				</div>
-			</div>
-			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">{$t('tune_memorized_melody')}</div>
-				<div
-					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
-				>
-					{rememberMelodyIds.length}/{tunes.length}
-				</div>
-			</div>
-			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">{$t('todays_plays')}</div>
-				<div
-					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
-				>
-					{totalCount}
-				</div>
-			</div>
-			<div class="col-span-2">
-				<div class="md:text-2xl text-xl text-center">{$t('todays_plays')}</div>
-				<div
-					class="mt-2 mx-auto border-2 border-teal-300 bg-teal-100 rounded-xl text-4xl shadow-xl py-2 text-center max-w-56"
-				>
-					{dailyTotal}
-				</div>
-			</div>
-		</div>
+    <TuneStats
+			{tunes}
+			{rememberNameIds}
+			{rememberMelodyIds}
+			{totalCount}
+			{dailyTotal}
+		/>
 
 		<div class="mt-7 mx-auto md:w-8/12 w-11/12">
 			<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto">
