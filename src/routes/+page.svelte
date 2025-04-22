@@ -10,8 +10,14 @@
 	import { parse, serialize } from 'cookie';
 	import { getDate } from '$modules/getDate';
 	import { getFavorites } from '$modules/favorites';
-	import { rememberNameOption, rememberMelodyOption, onlyFavoriteOption, sortByOption } from './__options';
+	import {
+		rememberNameOption,
+		rememberMelodyOption,
+		onlyFavoriteOption,
+		sortByOption
+	} from './__options';
 	import TuneStats from './TuneStats.svelte';
+	import FilterControls from './FilterControls.svelte';
 
 	export let data: {
 		tunes: Tune[];
@@ -30,7 +36,7 @@
 	let totalCount: number = 0;
 	let favoriteTuneIds: string[] = [];
 
-	const rhythms = [...new Set(tunes.map((tune) => tune.rhythm))].sort();
+	const rhythms: string[] = [...new Set(tunes.map((tune) => tune.rhythm))].sort() as string[] || [];
 	const date = getDate();
 	let dailyData: { [key: string]: number } = {};
 
@@ -158,13 +164,7 @@
 
 <div class="pt-5">
 	{#if uid}
-    <TuneStats
-			{tunes}
-			{rememberNameIds}
-			{rememberMelodyIds}
-			{totalCount}
-			{dailyTotal}
-		/>
+		<TuneStats {tunes} {rememberNameIds} {rememberMelodyIds} {totalCount} {dailyTotal} />
 
 		<div class="mt-7 mx-auto md:w-8/12 w-11/12">
 			<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto">
@@ -194,65 +194,14 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="mt-10 md:w-8/12 w-11/12 mx-auto">
-			<div class="text-2xl font-bold mx-auto">{$t('search_filter')}</div>
-			<div class="row">
-				<div class="item-name">{$t('memorized_name')}</div>
-				<div class="item-detail">
-					<RadioButtons
-						className="flex md:flex-row flex-col"
-						options={$rememberNameOption}
-						bind:userSelected={rememberName}
-						name="rememberName"
-					/>
-				</div>
-			</div>
-			<div class="row">
-				<div class="item-name">{$t('memorized_melody')}</div>
-				<div class="item-detail">
-					<RadioButtons
-						className="flex md:flex-row flex-col"
-						options={$rememberMelodyOption}
-						bind:userSelected={rememberMelody}
-						name="rememberMelody"
-					/>
-				</div>
-			</div>
-			<div class="row">
-				<div class="item-name">{$t('show_favorites_only')}</div>
-				<div class="item-detail">
-					<RadioButtons
-						className="flex md:flex-row flex-col"
-						options={$onlyFavoriteOption}
-						bind:userSelected={onlyFavorite}
-						name="onlyFavorite"
-					/>
-				</div>
-			</div>
-			<div class="row">
-				<div class="item-name">{$t('tune_type')}</div>
-				<div class="item-detail">
-					<select bind:value={selectedRhythm} name="selectedRhythm">
-						<option value="notSelected"></option>
-						{#each rhythms as rhythm}
-							<option value={rhythm}>
-								{rhythm}
-							</option>
-						{/each}
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				<div class="item-name">{$t('sort')}</div>
-				<div class="item-detail">
-					<select id="sortByNameSelect" bind:value={sortBy}>
-						{#each $sortByOption as opt}
-							<option value={opt.value} id={opt.id}>{opt.label}</option>
-						{/each}
-					</select>
-				</div>
-			</div>
-		</div>
+		<FilterControls
+			bind:rememberName
+			bind:rememberMelody
+			bind:onlyFavorite
+			bind:selectedRhythm
+			bind:sortBy
+			{rhythms}
+		/>
 	{/if}
 	{#if !uid}
 		<div class="mt-10 md:w-8/12 w-11/12 mx-auto">
