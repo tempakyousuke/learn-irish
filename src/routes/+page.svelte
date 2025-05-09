@@ -9,9 +9,6 @@
 	import { parse, serialize } from 'cookie';
 	import { getDate } from '$modules/getDate';
 	import { getFavorites } from '$modules/favorites';
-	import {
-		sortByOption
-	} from './__options';
 	import TuneStats from './TuneStats.svelte';
 	import FilterControls from './FilterControls.svelte';
 	import DailyPlaysTable from './DailyPlaysTable.svelte';
@@ -33,7 +30,8 @@
 	let totalCount: number = 0;
 	let favoriteTuneIds: string[] = [];
 
-	const rhythms: string[] = [...new Set(tunes.map((tune) => tune.rhythm))].sort() as string[] || [];
+	const rhythms: string[] =
+		([...new Set(tunes.map((tune) => tune.rhythm))].sort() as string[]) || [];
 	const date = getDate();
 	let dailyData: { [key: string]: number } = {};
 
