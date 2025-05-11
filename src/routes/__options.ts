@@ -37,7 +37,7 @@ export const rememberMelodyOption = derived(t, ($t) => [
 	}
 ]);
 
-export const onlyFavoriteOption = derived(t, ($t) => [
+export const onlyFavoriteOption = derived(t, () => [
 	{
 		label: 'ON',
 		value: 'on',

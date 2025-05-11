@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { t } from 'svelte-i18n';
-	import { onMount } from 'svelte';
 	import type { Tune } from '../types/tune';
 	import type { UserTune } from '../types/userTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
 	import { userStore } from '$modules/store';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
-	import { parse, serialize } from 'cookie';
+	import { serialize } from 'cookie';
 	import { getDate } from '$modules/getDate';
 	import { getFavorites } from '$modules/favorites';
 	import TuneStats from './TuneStats.svelte';
@@ -15,6 +13,13 @@
 
 	export let data: {
 		tunes: Tune[];
+		formValues: {
+			rememberName: string;
+			rememberMelody: string;
+			selectedRhythm: string;
+			sortBy: string;
+			onlyFavorite: string;
+		};
 	};
 	const tunes = data.tunes;
 	const db = getFirestore();
@@ -22,10 +27,10 @@
 	let uid: string;
 	let rememberNameIds: string[] = [];
 	let rememberMelodyIds: string[] = [];
-	let rememberName: string;
-	let rememberMelody: string;
-	let selectedRhythm: string;
-	let onlyFavorite: string;
+	let rememberName: string = data.formValues.rememberName;
+	let rememberMelody: string = data.formValues.rememberMelody;
+	let selectedRhythm: string = data.formValues.selectedRhythm;
+	let onlyFavorite: string = data.formValues.onlyFavorite;
 	let userTuneStatus: { [key: string]: UserTune } = {};
 	let totalCount: number = 0;
 	let favoriteTuneIds: string[] = [];
@@ -36,7 +41,7 @@
 	let dailyData: { [key: string]: number } = {};
 
 	// 追加: ソート方法を保存する変数
-	let sortBy: string;
+	let sortBy: string = data.formValues.sortBy;
 
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
@@ -141,15 +146,6 @@
 	$: updateCookie('onlyFavorite', onlyFavorite);
 
 	$: dailyTotal = Object.values(dailyData).reduce((acc, count) => acc + count, 0);
-
-	onMount(() => {
-		const cookies = parse(document.cookie);
-		rememberName = cookies.rememberName || 'notSelected';
-		rememberMelody = cookies.rememberMelody || 'notSelected';
-		selectedRhythm = cookies.selectedRhythm || 'notSelected';
-		sortBy = cookies.sortBy || 'sort_by_number_asc';
-		onlyFavorite = cookies.onlyFavorite || 'off';
-	});
 </script>
 
 <svelte:head>
