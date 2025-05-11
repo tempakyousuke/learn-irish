@@ -6,7 +6,7 @@
 	import Button from '$lib/button/Button.svelte';
 	import { auth } from '$modules/firebase';
 	import { sendPasswordResetEmail } from 'firebase/auth';
-	import { customToast } from '$modules/toast';
+	import { toast } from 'svelte-sonner';
 	import { siteTitle } from '$modules/config';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -41,7 +41,7 @@
 						goto('/reset-password/complete');
 					})
 					.catch((error) => {
-						customToast.error(error.message);
+						toast.error(error.message);
 					});
 			})
 			.catch((err) => {

@@ -3,7 +3,7 @@
 	import type { Tune } from '../../../types/tune';
 	import { db } from '$modules/firebase';
 	import { addDoc, collection } from 'firebase/firestore';
-	import { customToast } from '$modules/toast';
+	import { toast } from 'svelte-sonner';
 	let sheetText = '';
 
 	$: parsedValue = sheetText.split('\t');
@@ -31,7 +31,7 @@
 
 	const saveTune = async () => {
 		await addDoc(collection(db, 'tunes'), saveData);
-		customToast.info(saveData.name + 'を保存しました。');
+		toast.info(saveData.name + 'を保存しました。');
 		sheetText = '';
 	};
 </script>

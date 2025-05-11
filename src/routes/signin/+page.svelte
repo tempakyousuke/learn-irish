@@ -7,7 +7,7 @@
 	import { auth } from '$modules/firebase';
 	import { signInWithEmailAndPassword } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-	import { customToast } from '$modules/toast';
+	import { toast } from 'svelte-sonner';
 	import { siteTitle } from '$modules/config';
 	import { page } from '$app/stores';
 
@@ -67,7 +67,7 @@
 				goto('/');
 			})
 			.catch((error) => {
-				customToast.error(error.message);
+				toast.error(error.message);
 			});
 	};
 

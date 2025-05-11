@@ -7,7 +7,7 @@
 	import { getDate } from '$modules/getDate';
 	import Fa from 'svelte-fa';
 	import { faPlus, faHeart } from '@fortawesome/free-solid-svg-icons';
-	import { customToast } from '$modules/toast';
+	import { toast } from 'svelte-sonner';
 	import { checkFavorite, addFavorite, removeFavorite } from '$modules/favorites';
 	import { siteTitle } from '$modules/config';
 
@@ -121,7 +121,7 @@
 			},
 			{ merge: true }
 		);
-		customToast.success('メモを保存しました');
+		toast.success('メモを保存しました');
 	};
 	const title = `${tune.name} - ${siteTitle}`;
 </script>
