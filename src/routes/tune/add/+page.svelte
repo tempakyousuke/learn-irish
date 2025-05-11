@@ -46,7 +46,7 @@
 		class="w-full"
 		bind:value={sheetText}
 		placeholder="ここにスプレッドシートの内容を貼り付け"
-	/>
+	></textarea>
 	<ul>
 		<li>setNo: {saveData.setNo}</li>
 		<li>tuneNo: {saveData.tuneNo}</li>

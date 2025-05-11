@@ -179,15 +179,4 @@
 </div>
 
 <style type="postcss">
-	.row {
-		@apply flex mt-7 md:h-10;
-	}
-
-	.item-name {
-		@apply md:w-4/12 w-5/12 text-right pr-2 text-xl font-bold;
-	}
-
-	.item-detail {
-		@apply md:w-8/12 w-7/12 pl-2 text-xl;
-	}
 </style>

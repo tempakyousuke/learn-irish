@@ -7,7 +7,7 @@
 	$: countExist = Object.keys(userTuneStatus).length > 0;
 </script>
 
-{#snippet desktopTuneRow(tune)}
+{#snippet desktopTuneRow(tune: Tune)}
 	<tr class="border-b border-teal-400 hover:bg-teal-200 md:table-row hidden">
 		<td class="py-3 px-3">
 			<a class="block" href="/tune/{tune.id}">
@@ -39,7 +39,7 @@
 	</tr>
 {/snippet}
 
-{#snippet mobileTuneRow(tune)}
+{#snippet mobileTuneRow(tune: Tune)}
 	<tr class="border-b border-teal-400 hover:bg-teal-200 table-row md:hidden">
 		<td class="py-3 px-3">
 			<a class="block" href="/tune/{tune.id}">
