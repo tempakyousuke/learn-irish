@@ -7,10 +7,9 @@
 	import { getDate } from '$modules/getDate';
 	import Fa from 'svelte-fa';
 	import { faPlus, faHeart } from '@fortawesome/free-solid-svg-icons';
-	import { toast } from '$modules/toast';
-	import {checkFavorite, addFavorite, removeFavorite} from '$modules/favorites';
+	import { customToast } from '$modules/toast';
+	import { checkFavorite, addFavorite, removeFavorite } from '$modules/favorites';
 	import { siteTitle } from '$modules/config';
-
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
@@ -122,14 +121,14 @@
 			},
 			{ merge: true }
 		);
-		toast.success('メモを保存しました');
+		customToast.success('メモを保存しました');
 	};
 	const title = `${tune.name} - ${siteTitle}`;
 </script>
 
 <svelte:head>
 	<title>{title}</title>
-	<meta name="description" content="{title}" />
+	<meta name="description" content={title} />
 </svelte:head>
 
 <div class="mx-auto w-full md:w-[800px]">
@@ -162,7 +161,6 @@
 			<div class="text-right w-1/2 mr-5">{$t('key')}・{$t('mode')}</div>
 			<div class="text-left w-1/2">{tune.key} {tune.mode}</div>
 		</li>
-
 	</ul>
 	{#if uid}
 		<div class="row">
@@ -175,7 +173,7 @@
 						updateRememberName();
 					}}
 				>
-					{rememberName ?  $t('memorized') + '！': $t('incomplete')}
+					{rememberName ? $t('memorized') + '！' : $t('incomplete')}
 				</button>
 			</div>
 		</div>
@@ -237,7 +235,7 @@
 				<textarea
 					bind:value={note}
 					class="w-full h-52 border-2 border-gray-300 rounded-lg p-2"
-					placeholder="{$t('enter_notes')}"
+					placeholder={$t('enter_notes')}
 				></textarea>
 			</div>
 		</div>
@@ -253,7 +251,7 @@
 		{#if Object.entries(playHistory).length > 0}
 			<div class="mt-5 border p-2 max-w-[560px] mx-auto">
 				<h3 class="text-xl">{$t('play_history')}</h3>
-				{#each Object.entries(playHistory).sort(([dateA], [dateB]) => dateA.localeCompare(dateB)) as [date, count]}
+				{#each Object.entries(playHistory).sort( ([dateA], [dateB]) => dateA.localeCompare(dateB) ) as [date, count]}
 					<div class="flex text-xl">
 						<div class="item-name">{date}</div>
 						<div class="item-detail">{count}</div>

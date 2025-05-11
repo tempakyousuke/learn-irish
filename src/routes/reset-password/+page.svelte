@@ -6,7 +6,7 @@
 	import Button from '$lib/button/Button.svelte';
 	import { auth } from '$modules/firebase';
 	import { sendPasswordResetEmail } from 'firebase/auth';
-	import { toast } from '$modules/toast';
+	import { customToast } from '$modules/toast';
 	import { siteTitle } from '$modules/config';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -18,7 +18,7 @@
 		email: yup
 			.string()
 			.required(() => $t('validation_email_required'))
-			.email(() => $t('validation_email_invalid')),
+			.email(() => $t('validation_email_invalid'))
 	});
 
 	const validate = () => {
@@ -41,7 +41,7 @@
 						goto('/reset-password/complete');
 					})
 					.catch((error) => {
-						toast.error(error.message);
+						customToast.error(error.message);
 					});
 			})
 			.catch((err) => {
@@ -75,7 +75,7 @@
 			<Input
 				bind:value={email}
 				type="email"
-				label="{$t('email')}"
+				label={$t('email')}
 				className="mt-4"
 				{error}
 				on:input={validate}

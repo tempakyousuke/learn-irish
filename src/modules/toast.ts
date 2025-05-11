@@ -1,28 +1,15 @@
-import { toast as stoast } from '@zerodevx/svelte-toast';
+import { toast } from 'svelte-sonner';
 
-export const toast = {
+export const customToast = {
 	info: (message: string): void => {
-		stoast.push(message, {
-			theme: {
-				'--toastBackground': '#3181D5',
-				'--toastBarBackground': '#8BC4FF'
-			}
+		toast(message, {
+			style: 'background: #3181D5; color: white;'
 		});
 	},
 	success: (message: string): void => {
-		stoast.push(message, {
-			theme: {
-				'--toastBackground': '#48BB78',
-				'--toastBarBackground': '#2F855A'
-			}
-		});
+		toast.success(message);
 	},
 	error: (message: string): void => {
-		stoast.push(message, {
-			theme: {
-				'--toastBackground': '#F56565',
-				'--toastBarBackground': '#C53030'
-			}
-		});
+		toast.error(message);
 	}
 };

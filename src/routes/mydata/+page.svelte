@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { userStore } from '$modules/store';
 	import type { UserTune } from '../../types/userTune';
@@ -104,4 +104,4 @@
 			{/each}
 		</div>
 	</div>
-{/if}
+{/if} -->
