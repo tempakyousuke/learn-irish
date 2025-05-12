@@ -2,7 +2,7 @@
 	import type { Tune } from '../types/tune';
 	import type { UserTune } from '../types/userTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
-	import { userStore } from '$modules/store';
+	import { userId } from '$modules/auth/authService';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import { serialize } from 'cookie';
 	import { getDate } from '$modules/getDate';
@@ -24,7 +24,6 @@
 	const tunes = data.tunes;
 	const db = getFirestore();
 
-	let uid: string;
 	let rememberNameIds: string[] = [];
 	let rememberMelodyIds: string[] = [];
 	let rememberName: string = data.formValues.rememberName;
@@ -43,30 +42,74 @@
 	// 追加: ソート方法を保存する変数
 	let sortBy: string = data.formValues.sortBy;
 
-	userStore.subscribe(async (value) => {
-		uid = value.uid;
+	// ユーザーデータの読み込み状態
+	let isUserDataLoading = false;
+	
+	// userId変更時にデータを取得
+	$: {
+		if ($userId) {
+			isUserDataLoading = true;
+			getUserData($userId).finally(() => {
+				isUserDataLoading = false;
+			});
+		} else {
+			// ログアウト時にデータをリセット
+			rememberNameIds = [];
+			rememberMelodyIds = [];
+			userTuneStatus = {};
+			totalCount = 0;
+			dailyData = {};
+			favoriteTuneIds = [];
+		}
+	}
+	
+	async function getUserData(uid: string) {
 		if (!uid) {
 			return;
 		}
-		const tunesCollectionRef = collection(db, `users/${uid}/tunes`);
-		const querySnapshot = await getDocs(tunesCollectionRef);
-		const tunes = querySnapshot.docs.map((doc) => {
-			return { id: doc.id, ...doc.data() } as UserTune;
-		});
-		rememberNameIds = tunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
-		rememberMelodyIds = tunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
-		tunes.forEach((tune) => {
-			userTuneStatus[tune.id] = tune;
-			totalCount += tune.playCount || 0;
-		});
-		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
-		dailyData = (await getDoc(dailyDocRef)).data() || {};
-		favoriteTuneIds = await getFavorites(uid);
-	});
+		
+		try {
+			// 曲データの取得
+			const tunesCollectionRef = collection(db, `users/${uid}/tunes`);
+			const querySnapshot = await getDocs(tunesCollectionRef);
+			const userTunes = querySnapshot.docs.map((doc) => {
+				return { id: doc.id, ...doc.data() } as UserTune;
+			});
+			
+			// 覚えた曲のID抽出
+			rememberNameIds = userTunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
+			rememberMelodyIds = userTunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
+			
+			// 曲の状態とカウント
+			totalCount = 0;
+			userTuneStatus = {};
+			userTunes.forEach((tune) => {
+				userTuneStatus[tune.id] = tune;
+				totalCount += tune.playCount || 0;
+			});
+			
+			// 日次データの取得
+			const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
+			const dailySnapshot = await getDoc(dailyDocRef);
+			dailyData = dailySnapshot.data() || {};
+			
+			// お気に入りの取得
+			favoriteTuneIds = await getFavorites(uid);
+		} catch (error) {
+			console.error('Error fetching user data:', error);
+			// エラー時はデータを初期化
+			rememberNameIds = [];
+			rememberMelodyIds = [];
+			userTuneStatus = {};
+			totalCount = 0;
+			dailyData = {};
+			favoriteTuneIds = [];
+		}
+	}
 
 	// フィルタリング（名前を覚えた・メロディーを覚えた・種類）
 	$: filteredTunes = tunes.filter((tune) => {
-		if (uid) {
+		if ($userId) {
 			// これらはログイン時のみ有効にする
 			if (rememberName === 'yes' && !rememberNameIds.includes(tune.id)) return false;
 			if (rememberName === 'no' && rememberNameIds.includes(tune.id)) return false;
@@ -154,19 +197,25 @@
 </svelte:head>
 
 <div class="pt-5">
-	{#if uid}
-		<TuneStats {tunes} {rememberNameIds} {rememberMelodyIds} {totalCount} {dailyTotal} />
+	{#if $userId}
+		{#if isUserDataLoading}
+			<div class="text-center py-10">
+				<p class="text-lg">データを読み込み中...</p>
+			</div>
+		{:else}
+			<TuneStats {tunes} {rememberNameIds} {rememberMelodyIds} {totalCount} {dailyTotal} />
 
-		<DailyPlaysTable {dailyData} {tuneObjects} />
-		<FilterControls
-			isLoggedIn={!!uid}
-			bind:rememberName
-			bind:rememberMelody
-			bind:onlyFavorite
-			bind:selectedRhythm
-			bind:sortBy
-			{rhythms}
-		/>
+			<DailyPlaysTable {dailyData} {tuneObjects} />
+			<FilterControls
+				isLoggedIn={!!$userId}
+				bind:rememberName
+				bind:rememberMelody
+				bind:onlyFavorite
+				bind:selectedRhythm
+				bind:sortBy
+				{rhythms}
+			/>
+		{/if}
 	{/if}
 
 	<div class="mx-auto mt-10">
