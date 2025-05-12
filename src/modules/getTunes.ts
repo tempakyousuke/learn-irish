@@ -1,8 +1,14 @@
 import { db } from '$modules/firebase';
 import { getDocs, collection, query, orderBy, FirestoreError } from 'firebase/firestore';
 import type { Tune } from '../types/tune';
+import { createCache } from '$lib/utils/cacheStorage';
 
-// キャッシュされた曲データ
+// キャッシュの設定
+// 1日 = 24時間 × 60分 × 60秒 × 1000ミリ秒
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
+const tunesCache = createCache<Tune[]>('tunes', CACHE_EXPIRY);
+
+// メモリキャッシュ（後方互換性のため保持）
 const tunes: Tune[] = [];
 
 // データ取得時のエラーを保持するストア
@@ -10,17 +16,35 @@ let lastError: Error | null = null;
 
 /**
  * 全ての曲データを取得する
+ * @param forceRefresh 強制的に再取得するかどうか
  * @returns 曲データの配列
  * @throws {Error} データ取得に失敗した場合
  */
-export const getTunes = async (): Promise<Tune[]> => {
-	// キャッシュがある場合はそれを返す
-	if (tunes.length) {
-		// 前回エラーがあった場合は投げる
-		if (lastError) {
-			throw lastError;
+export const getTunes = async (forceRefresh = false): Promise<Tune[]> => {
+	// 強制更新でない場合はキャッシュをチェック
+	if (!forceRefresh) {
+		// まずローカルストレージキャッシュをチェック
+		const cachedTunes = tunesCache.get();
+		if (cachedTunes) {
+			// メモリキャッシュも更新（後方互換性のため）
+			tunes.length = 0;
+			tunes.push(...cachedTunes);
+			return cachedTunes;
 		}
-		return tunes;
+		
+		// 後方互換性: メモリキャッシュがある場合はそれを返す
+		if (tunes.length) {
+			// 前回エラーがあった場合は投げる
+			if (lastError) {
+				throw lastError;
+			}
+			// メモリキャッシュをローカルストレージに保存
+			tunesCache.set([...tunes]);
+			return tunes;
+		}
+	} else {
+		// 強制更新の場合はメモリキャッシュをクリア
+		tunes.length = 0;
 	}
 
 	try {
@@ -29,18 +53,26 @@ export const getTunes = async (): Promise<Tune[]> => {
 		const snapshot = await getDocs(qu);
 		
 		// 取得したデータを処理
+		const fetchedTunes: Tune[] = [];
 		snapshot.forEach((doc) => {
 			const data = doc.data();
 			const tune = {
 				id: doc.id,
 				...data
 			} as Tune;
-			tunes.push(tune);
+			fetchedTunes.push(tune);
 		});
+		
+		// キャッシュを更新
+		tunesCache.set(fetchedTunes);
+		
+		// メモリキャッシュも更新（後方互換性のため）
+		tunes.length = 0;
+		tunes.push(...fetchedTunes);
 
 		// エラー状態をクリア
 		lastError = null;
-		return tunes;
+		return fetchedTunes;
 	} catch (error) {
 		// エラーをより具体的に変換
 		let errorMessage = '曲データの取得に失敗しました';
@@ -67,4 +99,18 @@ export const getTunes = async (): Promise<Tune[]> => {
 		console.error('曲データ取得エラー:', error);
 		throw enhancedError;
 	}
+};
+
+/**
+ * キャッシュをクリアして強制的に再取得する
+ * @returns 最新の曲データ
+ */
+export const refreshTunes = async (): Promise<Tune[]> => {
+	// キャッシュをクリア
+	tunesCache.clear();
+	tunes.length = 0;
+	lastError = null;
+	
+	// 強制的に再取得
+	return getTunes(true);
 };

@@ -1,9 +1,14 @@
 import { parse } from 'cookie';
 import { getTunes } from '$modules/getTunes';
 
-export async function load() {
+export const ssr = false;
+
+export async function load({ url }: { url: URL }) {
+  // Check for cache refresh parameter
+  const forceRefresh = url.searchParams.has('refresh');
+  
   // Fetch tunes data using the existing getTunes function
-  const tunes = await getTunes();
+  const tunes = await getTunes(forceRefresh);
   
   // Get cookies - client-side only
   const cookies = typeof document !== 'undefined' ? parse(document.cookie) : {};
