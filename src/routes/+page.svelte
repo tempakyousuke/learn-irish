@@ -10,6 +10,8 @@
 	import TuneStats from './TuneStats.svelte';
 	import FilterControls from './FilterControls.svelte';
 	import DailyPlaysTable from './DailyPlaysTable.svelte';
+	import ErrorMessage from '$lib/ui/ErrorMessage.svelte';
+	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 
 	export let data: {
 		tunes: Tune[];
@@ -44,11 +46,13 @@
 
 	// ユーザーデータの読み込み状態
 	let isUserDataLoading = false;
+	let errorMessage: string | null = null;
 	
 	// userId変更時にデータを取得
 	$: {
 		if ($userId) {
 			isUserDataLoading = true;
+			errorMessage = null;
 			getUserData($userId).finally(() => {
 				isUserDataLoading = false;
 			});
@@ -96,7 +100,7 @@
 			// お気に入りの取得
 			favoriteTuneIds = await getFavorites(uid);
 		} catch (error) {
-			console.error('Error fetching user data:', error);
+			console.error('ユーザーデータ取得エラー:', error);
 			// エラー時はデータを初期化
 			rememberNameIds = [];
 			rememberMelodyIds = [];
@@ -104,6 +108,9 @@
 			totalCount = 0;
 			dailyData = {};
 			favoriteTuneIds = [];
+			
+			// エラーメッセージを設定
+			errorMessage = getFirebaseErrorMessage(error, 'ユーザーデータの取得に失敗しました');
 		}
 	}
 
@@ -198,6 +205,10 @@
 
 <div class="pt-5">
 	{#if $userId}
+		{#if errorMessage}
+			<ErrorMessage message={errorMessage} dismissable={true} type="error" />
+		{/if}
+		
 		{#if isUserDataLoading}
 			<div class="text-center py-10">
 				<p class="text-lg">データを読み込み中...</p>
