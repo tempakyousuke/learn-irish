@@ -1,19 +1,4 @@
-export type Tune = {
-	id: string;
-	setNo?: string;
-	tuneNo?: string;
-	name?: string;
-	link?: string;
-	genre?: string;
-	date?: string;
-	rhythm?: string;
-	key?: string;
-	mode?: string;
-	part?: string;
-	instrument?: string;
-	spotify?: string;
-	source?: string;
-	composer?: string;
-	region?: string;
-	alsoKnown?: string;
-};
+/**
+ * @deprecated 代わりに models/Tune.ts を使用してください
+ */
+export type { TuneFull as Tune } from './models/Tune';

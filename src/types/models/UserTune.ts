@@ -1,0 +1,112 @@
+/**
+ * ユーザーの曲に関する情報の型定義
+ */
+
+import type { TuneReference } from './Tune';
+
+/**
+ * 曲の学習状態を表す列挙型
+ */
+export enum LearningStatus {
+  /** まだ学習を始めていない */
+  NOT_STARTED = 'not_started',
+  /** 学習中 */
+  IN_PROGRESS = 'in_progress',
+  /** 学習完了 */
+  COMPLETED = 'completed'
+}
+
+/**
+ * 再生履歴のエントリ
+ */
+export interface PlayHistoryEntry {
+  /** 日付（YYYY-MM-DD形式） */
+  date: string;
+  /** その日の再生回数 */
+  count: number;
+}
+
+/**
+ * ユーザーの曲に関する基本情報インターフェース
+ */
+export interface UserTuneBase extends TuneReference {
+  /** 曲名を覚えたかどうか */
+  rememberName: boolean;
+  /** メロディーを覚えたかどうか */
+  rememberMelody: boolean;
+  /** 再生回数 */
+  playCount: number;
+}
+
+/**
+ * ユーザーの曲に関する詳細情報インターフェース
+ */
+export interface UserTuneDetails {
+  /** ユーザーのノート */
+  note: string;
+  /** 曲の学習状態 */
+  learningStatus?: LearningStatus;
+  /** 日付ごとの再生履歴 */
+  playHistory: {
+    [key: string]: number;
+  };
+  /** 最後に再生した日時 */
+  lastPlayed?: string;
+  /** 最初に再生した日時 */
+  firstPlayed?: string;
+}
+
+/**
+ * 完全なユーザー曲情報インターフェース
+ */
+export interface UserTuneFull extends UserTuneBase, UserTuneDetails {}
+
+/**
+ * 既存のUserTune型との後方互換性を維持するための型
+ * @deprecated UserTuneFullを使用してください
+ */
+export type UserTune = UserTuneFull;
+
+/**
+ * ユーザー曲情報の必須フィールドを指定して新しいオブジェクトを作成する関数
+ */
+export function createUserTune(
+  base: UserTuneBase,
+  details: Partial<UserTuneDetails> = {}
+): UserTuneFull {
+  return {
+    ...base,
+    note: details.note || '',
+    learningStatus: details.learningStatus || LearningStatus.NOT_STARTED,
+    playHistory: details.playHistory || {},
+    lastPlayed: details.lastPlayed,
+    firstPlayed: details.firstPlayed
+  };
+}
+
+/**
+ * 再生回数を増やす関数
+ * @param userTune ユーザー曲情報
+ * @param date 日付（YYYY-MM-DD形式、デフォルトは今日）
+ * @param count 増やす回数（デフォルトは1）
+ * @returns 更新されたユーザー曲情報
+ */
+export function incrementPlayCount(
+  userTune: UserTuneFull,
+  date?: string,
+  count: number = 1
+): UserTuneFull {
+  const today = date || new Date().toISOString().split('T')[0];
+  const now = new Date().toISOString();
+  
+  const playHistory = { ...userTune.playHistory };
+  playHistory[today] = (playHistory[today] || 0) + count;
+  
+  return {
+    ...userTune,
+    playCount: userTune.playCount + count,
+    playHistory,
+    lastPlayed: now,
+    firstPlayed: userTune.firstPlayed || now
+  };
+}

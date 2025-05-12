@@ -1,6 +1,7 @@
 import { db } from '$modules/firebase';
 import { getDocs, collection, query, orderBy, FirestoreError } from 'firebase/firestore';
 import type { Tune } from '../types/tune';
+import { parseTuneData } from '../types/models/Tune';
 import { createCache } from '$lib/utils/cacheStorage';
 
 // キャッシュの設定
@@ -56,10 +57,9 @@ export const getTunes = async (forceRefresh = false): Promise<Tune[]> => {
 		const fetchedTunes: Tune[] = [];
 		snapshot.forEach((doc) => {
 			const data = doc.data();
-			const tune = {
-				id: doc.id,
-				...data
-			} as Tune;
+			// 型安全な変換関数を使用
+			const tune = parseTuneData(data, doc.id);
+			
 			fetchedTunes.push(tune);
 		});
 		

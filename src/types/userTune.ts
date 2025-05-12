@@ -1,10 +1,4 @@
-export type UserTune = {
-	id: string;
-	rememberName: boolean;
-	rememberMelody: boolean;
-	playCount: number;
-	note: string;
-	playHistory: {
-		[key: string]: number;
-	};
-};
+/**
+ * @deprecated 代わりに models/UserTune.ts を使用してください
+ */
+export type { UserTuneFull as UserTune } from './models/UserTune';
