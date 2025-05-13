@@ -36,10 +36,6 @@ export interface UserTuneDetails {
 	playHistory: {
 		[key: string]: number;
 	};
-	/** 最後に再生した日時 */
-	lastPlayed?: string;
-	/** 最初に再生した日時 */
-	firstPlayed?: string;
 }
 
 /**
@@ -63,9 +59,7 @@ export function createUserTune(
 	return {
 		...base,
 		note: details.note || '',
-		playHistory: details.playHistory || {},
-		lastPlayed: details.lastPlayed,
-		firstPlayed: details.firstPlayed
+		playHistory: details.playHistory || {}
 	};
 }
 
@@ -82,7 +76,6 @@ export function incrementPlayCount(
 	count: number = 1
 ): UserTuneFull {
 	const today = date || new Date().toISOString().split('T')[0];
-	const now = new Date().toISOString();
 
 	const playHistory = { ...userTune.playHistory };
 	playHistory[today] = (playHistory[today] || 0) + count;
@@ -90,8 +83,6 @@ export function incrementPlayCount(
 	return {
 		...userTune,
 		playCount: userTune.playCount + count,
-		playHistory,
-		lastPlayed: now,
-		firstPlayed: userTune.firstPlayed || now
+		playHistory
 	};
 }
