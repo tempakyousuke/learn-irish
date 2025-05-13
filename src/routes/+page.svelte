@@ -143,11 +143,11 @@
 		switch (sortBy) {
 			case 'sort_by_number_asc':
 				// tuneNo(文字列)を昇順
-				arr.sort((a, b) => parseInt(a.tuneNo!) - parseInt(b.tuneNo!));
+				arr.sort((a, b) => a.tuneNo - b.tuneNo);
 				break;
 			case 'sort_by_number_desc':
 				// tuneNo(文字列)を降順
-				arr.sort((a, b) => parseInt(b.tuneNo!) - parseInt(a.tuneNo!));
+				arr.sort((a, b) => b.tuneNo - a.tuneNo);
 				break;
 			case 'sort_by_name_asc':
 				// 曲名 (The を除去) 昇順
