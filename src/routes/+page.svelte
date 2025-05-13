@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Tune } from '../types/tune';
-	import type { UserTune } from '../types/userTune';
+	import type { Tune } from '$core/data/models/Tune';
+	import type { UserTune } from '$core/data/models/UserTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
 	import { userId } from '$core/auth/authService';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';

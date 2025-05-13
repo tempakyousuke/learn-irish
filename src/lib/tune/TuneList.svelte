@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { Tune } from '../../types/tune';
-	import type { UserTune } from '../../types/userTune';
+	import type { Tune } from '$core/data/models/Tune';
+	import type { UserTune } from '$core/data/models/UserTune';
 	export let tunes: Tune[] = [];
 	export let userTuneStatus: { [key: string]: UserTune } = {};
 	$: countExist = Object.keys(userTuneStatus).length > 0;

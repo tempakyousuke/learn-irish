@@ -1,6 +1,6 @@
 import { db } from '$core/data/firebase/firebaseClient';
 import { doc, getDoc } from 'firebase/firestore';
-import { parseTuneData } from '../../../types/models/Tune';
+import { parseTuneData } from '$data/models/Tune';
 
 export async function load({ params }: { params: { id: string } }) {
 	const d = await getDoc(doc(db, 'tunes', params.id));

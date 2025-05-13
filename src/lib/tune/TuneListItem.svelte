@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Tune } from '../../types/tune';
+	import type { Tune } from '$core/data/models/Tune';
 	export let tune!: Tune;
 </script>
 

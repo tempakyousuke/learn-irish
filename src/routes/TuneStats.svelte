@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { Tune } from '../types/tune';
+	import type { Tune } from '$core/data/models/Tune';
 	import StatCard from './StatCard.svelte';
 
 	export let tunes: Tune[] = [];

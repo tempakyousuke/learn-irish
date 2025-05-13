@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { Tune } from '../../../types/tune';
+	import type { Tune } from '$core/data/models/Tune';
 	import { getYoutubeId } from '$core/utils/youtubeUtils';
 	import { userStore } from '$core/store/userStore';
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';

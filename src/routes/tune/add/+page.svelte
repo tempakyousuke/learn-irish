@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Papa from 'papaparse';
-	import type { Tune } from '../../../types/tune';
+	import type { Tune } from '$core/data/models/Tune';
 	import { db } from '$core/data/firebase/firebaseClient';
 	import { addDoc, collection } from 'firebase/firestore';
 	import { toast } from 'svelte-sonner';
