@@ -2,7 +2,7 @@
 	import { t } from 'svelte-i18n';
 	import Fa from 'svelte-fa';
 	import { faClover } from '@fortawesome/free-solid-svg-icons';
-	import { isAuthenticated, authLoaded, logout } from '$modules/auth/authService';
+	import { isAuthenticated, authLoaded, logout } from '$core/auth/authService';
 
 	export let openDrawer: () => void;
 </script>

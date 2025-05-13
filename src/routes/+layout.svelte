@@ -1,15 +1,15 @@
 <script lang="ts">
 	import '../app.css';
-	import { app } from '$modules/firebase';
+	import { app } from '$core/data/firebase/firebaseClient';
 	import { getAnalytics } from 'firebase/analytics';
 	import { Toaster } from 'svelte-sonner';
-	import { setupI18n } from '$modules/i18n';
+	import { setupI18n } from '$core/i18n/i18nService';
 	import { onMount } from 'svelte';
 	import LanguageSwitcher from '$lib/layout/LanguageSwitcher.svelte';
 	import { writable } from 'svelte/store';
 	import Header from '$lib/layout/navigation/Header.svelte';
 	import Drawer from '$lib/layout/navigation/Drawer.svelte';
-	import { initializeAuth } from '$modules/auth/authService';
+	import { initializeAuth } from '$core/auth/authService';
 
 	// 認証サービスを初期化
 	initializeAuth();

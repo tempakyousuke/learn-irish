@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { isAuthenticated, authLoaded, logout } from '$modules/auth/authService';
+	import { isAuthenticated, authLoaded, logout } from '$core/auth/authService';
 
 	export let isOpen = false;
 	export let closeDrawer: (event: Event) => void;
@@ -35,7 +35,9 @@
 					<a href="/signin" class="block px-4 py-2 rounded hover:bg-gray-100">{$t('sign_in')}</a>
 				</li>
 				<li>
-					<a href="/signup" class="block px-4 py-2 rounded hover:bg-gray-100">{$t('create_account')}</a>
+					<a href="/signup" class="block px-4 py-2 rounded hover:bg-gray-100"
+						>{$t('create_account')}</a
+					>
 				</li>
 			{/if}
 			{#if $authLoaded && $isAuthenticated}

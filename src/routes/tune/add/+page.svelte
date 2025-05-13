@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Papa from 'papaparse';
 	import type { Tune } from '../../../types/tune';
-	import { db } from '$modules/firebase';
+	import { db } from '$core/data/firebase/firebaseClient';
 	import { addDoc, collection } from 'firebase/firestore';
 	import { toast } from 'svelte-sonner';
 	let sheetText = '';

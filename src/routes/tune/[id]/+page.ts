@@ -1,4 +1,4 @@
-import { db } from '$modules/firebase';
+import { db } from '$core/data/firebase/firebaseClient';
 import { doc, getDoc } from 'firebase/firestore';
 import { parseTuneData } from '../../../types/models/Tune';
 

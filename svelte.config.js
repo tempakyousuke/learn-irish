@@ -17,7 +17,11 @@ const config = {
 			$lib: './src/lib',
 			$model: './src/model',
 			$modules: './src/modules',
-			$types: './types'
+			$types: './types',
+			$core: './src/core',
+			$app: './src/app',
+			$data: './src/core/data',
+			$utils: './src/lib/utils'
 		}
 	}
 };

@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { userStore } from '$modules/store';
-	import { getDate } from '$modules/getDate';
-	import { getDailyTotal, getMonthlyDatas, getMonthlyStatistics } from '$modules/statistics';
+	import { userStore } from '$core/store/userStore';
+	import { getDate } from '$core/utils/dateUtils';
+	import {
+		getDailyTotal,
+		getMonthlyDatas,
+		getMonthlyStatistics
+	} from '$core/data/repositories/statisticsRepository';
 	import { onMount } from 'svelte';
 	import Chart from 'chart.js/auto';
 

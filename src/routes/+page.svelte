@@ -2,11 +2,11 @@
 	import type { Tune } from '../types/tune';
 	import type { UserTune } from '../types/userTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
-	import { userId } from '$modules/auth/authService';
+	import { userId } from '$core/auth/authService';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 	import { serialize } from 'cookie';
-	import { getDate } from '$modules/getDate';
-	import { getFavorites } from '$modules/favorites';
+	import { getDate } from '$core/utils/dateUtils';
+	import { getFavorites } from '$core/data/repositories/favoritesRepository';
 	import TuneStats from './TuneStats.svelte';
 	import FilterControls from './FilterControls.svelte';
 	import DailyPlaysTable from './DailyPlaysTable.svelte';
@@ -47,7 +47,7 @@
 	// ユーザーデータの読み込み状態
 	let isUserDataLoading = false;
 	let errorMessage: string | null = null;
-	
+
 	// userId変更時にデータを取得
 	$: {
 		if ($userId) {
@@ -66,12 +66,12 @@
 			favoriteTuneIds = [];
 		}
 	}
-	
+
 	async function getUserData(uid: string) {
 		if (!uid) {
 			return;
 		}
-		
+
 		try {
 			// 曲データの取得
 			const tunesCollectionRef = collection(db, `users/${uid}/tunes`);
@@ -79,11 +79,11 @@
 			const userTunes = querySnapshot.docs.map((doc) => {
 				return { id: doc.id, ...doc.data() } as UserTune;
 			});
-			
+
 			// 覚えた曲のID抽出
 			rememberNameIds = userTunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
 			rememberMelodyIds = userTunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
-			
+
 			// 曲の状態とカウント
 			totalCount = 0;
 			userTuneStatus = {};
@@ -91,12 +91,12 @@
 				userTuneStatus[tune.id] = tune;
 				totalCount += tune.playCount || 0;
 			});
-			
+
 			// 日次データの取得
 			const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
 			const dailySnapshot = await getDoc(dailyDocRef);
 			dailyData = dailySnapshot.data() || {};
-			
+
 			// お気に入りの取得
 			favoriteTuneIds = await getFavorites(uid);
 		} catch (error) {
@@ -108,7 +108,7 @@
 			totalCount = 0;
 			dailyData = {};
 			favoriteTuneIds = [];
-			
+
 			// エラーメッセージを設定
 			errorMessage = getFirebaseErrorMessage(error, 'ユーザーデータの取得に失敗しました');
 		}
@@ -223,7 +223,7 @@
 		{#if errorMessage}
 			<ErrorMessage message={errorMessage} dismissable={true} type="error" />
 		{/if}
-		
+
 		{#if isUserDataLoading}
 			<div class="text-center py-10">
 				<p class="text-lg">データを読み込み中...</p>

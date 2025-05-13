@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import type { Tune } from '../../../types/tune';
-	import { getYoutubeId } from '$modules/youtubeId';
-	import { userStore } from '$modules/store';
+	import { getYoutubeId } from '$core/utils/youtubeUtils';
+	import { userStore } from '$core/store/userStore';
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
-	import { getDate } from '$modules/getDate';
+	import { getDate } from '$core/utils/dateUtils';
 	import Fa from 'svelte-fa';
 	import { faPlus, faHeart } from '@fortawesome/free-solid-svg-icons';
 	import { toast } from 'svelte-sonner';
-	import { checkFavorite, addFavorite, removeFavorite } from '$modules/favorites';
-	import { siteTitle } from '$modules/config';
+	import {
+		checkFavorite,
+		addFavorite,
+		removeFavorite
+	} from '$core/data/repositories/favoritesRepository';
+	import { siteTitle } from '$core/config/configService';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();

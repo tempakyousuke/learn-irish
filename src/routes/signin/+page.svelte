@@ -4,11 +4,11 @@
 	import { ValidationError } from 'yup';
 	import Input from '$lib/forms/Input.svelte';
 	import Button from '$lib/button/Button.svelte';
-	import { auth } from '$modules/firebase';
+	import { auth } from '$core/data/firebase/firebaseClient';
 	import { signInWithEmailAndPassword } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
-	import { siteTitle } from '$modules/config';
+	import { siteTitle } from '$core/config/configService';
 	import { page } from '$app/stores';
 
 	let values = {
