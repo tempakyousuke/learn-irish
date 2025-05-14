@@ -3,6 +3,9 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
+/**
+ * Firebaseの設定情報
+ */
 const firebaseConfig = {
 	apiKey: 'AIzaSyBKP-Mr5bF7ww1e3qfZ68Q6Y8g0VJuHDqQ',
 	authDomain: 'learn-irish-82f09.firebaseapp.com',
@@ -13,7 +16,17 @@ const firebaseConfig = {
 	measurementId: 'G-RM6K6NZ0LL'
 };
 
-// Initialize Firebase
+/**
+ * Firebase初期化
+ */
 export const app = initializeApp(firebaseConfig);
+
+/**
+ * Firebase認証インスタンス
+ */
 export const auth = getAuth();
+
+/**
+ * Firestoreデータベースインスタンス
+ */
 export const db = getFirestore();

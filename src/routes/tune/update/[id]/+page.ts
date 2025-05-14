@@ -1,6 +1,6 @@
-import { db } from '$modules/firebase';
+import { db } from '$core/data/firebase/firebaseClient';
 import { doc, getDoc } from 'firebase/firestore';
-import type { Tune } from '../../../../types/tune';
+import type { Tune } from '$core/data/models/Tune';
 
 export async function load({ params }) {
 	const d = await getDoc(doc(db, 'tunes', params.id));

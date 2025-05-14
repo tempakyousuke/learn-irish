@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Papa from 'papaparse';
-	import type { Tune } from '../../../types/tune';
-	import { db } from '$modules/firebase';
+	import type { Tune } from '$core/data/models/Tune';
+	import { db } from '$core/data/firebase/firebaseClient';
 	import { addDoc, collection } from 'firebase/firestore';
-	import { toast } from '$modules/toast';
+	import { toast } from 'svelte-sonner';
 	let sheetText = '';
 
 	$: parsedValue = sheetText.split('\t');
@@ -46,7 +46,7 @@
 		class="w-full"
 		bind:value={sheetText}
 		placeholder="ここにスプレッドシートの内容を貼り付け"
-	/>
+	></textarea>
 	<ul>
 		<li>setNo: {saveData.setNo}</li>
 		<li>tuneNo: {saveData.tuneNo}</li>

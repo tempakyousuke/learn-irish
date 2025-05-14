@@ -4,10 +4,10 @@
 	import { ValidationError } from 'yup';
 	import Input from '$lib/forms/Input.svelte';
 	import Button from '$lib/button/Button.svelte';
-	import { auth } from '$modules/firebase';
+	import { auth } from '$core/data/firebase/firebaseClient';
 	import { sendPasswordResetEmail } from 'firebase/auth';
-	import { toast } from '$modules/toast';
-	import { siteTitle } from '$modules/config';
+	import { toast } from 'svelte-sonner';
+	import { siteTitle } from '$core/config/configService';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
@@ -18,7 +18,7 @@
 		email: yup
 			.string()
 			.required(() => $t('validation_email_required'))
-			.email(() => $t('validation_email_invalid')),
+			.email(() => $t('validation_email_invalid'))
 	});
 
 	const validate = () => {
@@ -75,7 +75,7 @@
 			<Input
 				bind:value={email}
 				type="email"
-				label="{$t('email')}"
+				label={$t('email')}
 				className="mt-4"
 				{error}
 				on:input={validate}

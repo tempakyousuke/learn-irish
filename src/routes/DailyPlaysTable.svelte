@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { Tune } from '../types/tune';
+	import type { Tune } from '$core/data/models/Tune';
 
 	export let dailyData: { [key: string]: number } = {};
 	export let tuneObjects: { [key: string]: Tune } = {};

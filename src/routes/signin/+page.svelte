@@ -4,11 +4,11 @@
 	import { ValidationError } from 'yup';
 	import Input from '$lib/forms/Input.svelte';
 	import Button from '$lib/button/Button.svelte';
-	import { auth } from '$modules/firebase';
+	import { auth } from '$core/data/firebase/firebaseClient';
 	import { signInWithEmailAndPassword } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-	import { toast } from '$modules/toast';
-	import { siteTitle } from '$modules/config';
+	import { toast } from 'svelte-sonner';
+	import { siteTitle } from '$core/config/configService';
 	import { page } from '$app/stores';
 
 	let values = {
@@ -94,7 +94,7 @@
 			<Input
 				bind:value={values.email}
 				type="email"
-				label="{$t('email')}"
+				label={$t('email')}
 				className="mt-2"
 				error={errors.email}
 				on:input={() => validate('email')}
@@ -102,7 +102,7 @@
 			<Input
 				bind:value={values.password}
 				type="password"
-				label="{$t('password')}"
+				label={$t('password')}
 				className="mt-6"
 				error={errors.password}
 				on:input={() => validate('password')}

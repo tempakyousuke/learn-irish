@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { siteTitle } from '$modules/config';
+	import { siteTitle } from '$core/config/configService';
 	import { page } from '$app/stores';
 
 	const title = `${$t('password_reset_sent_title')} - ${siteTitle}`;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Tune } from '../../../../types/tune';
+	import type { Tune } from '$core/data/models/Tune';
 	import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 	import Input from '$lib/forms/Input.svelte';
 	import Button from '$lib/button/Button.svelte';
@@ -13,7 +13,9 @@
 	const tune = data.tune;
 	const submit = () => {
 		const ref = doc(db, 'tunes', tune.id);
-		updateDoc(ref, tune);
+		// Firestore用にオブジェクトを変換（idを除外）
+		const { id, ...tuneData } = tune;
+		updateDoc(ref, tuneData);
 	};
 </script>
 
