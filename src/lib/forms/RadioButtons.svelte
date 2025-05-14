@@ -24,9 +24,9 @@
 
 <div class={className}>
 	{#each options as option}
-		<div>
+		<div class="flex items-center gap-3 mb-2">
 			<input
-				class="h-5 w-5 align-bottom mb-1"
+				class="h-4 w-4 accent-cyan-400 transition"
 				type="radio"
 				{name}
 				id={option.id}
@@ -35,18 +35,30 @@
 				on:input={handleInput}
 				on:change={handleChange}
 			/>
-			<label class="mr-4" for={option.id}> {option.label} </label>
+			<label class="cursor-pointer select-none text-sm" for={option.id}>{option.label}</label>
 		</div>
 	{/each}
 </div>
 
 <style>
-	.radio input ~ label {
-		background-color: rgb(233, 225, 225);
-		color: rgb(158, 146, 146);
+	.radio input {
+		width: 1.25rem;
+		height: 1.25rem;
+		accent-color: #10b981;
+		transition: background-color 0.3s ease;
 	}
-	.radio input:checked ~ label {
-		background-color: rgb(70, 230, 22);
-		color: white;
+
+	.radio input:checked {
+		background-color: #10b981;
+	}
+
+	.radio label {
+		font-size: 1rem;
+		color: #374151;
+		transition: color 0.3s ease;
+	}
+
+	.radio label:hover {
+		color: #10b981;
 	}
 </style>
