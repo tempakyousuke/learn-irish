@@ -15,7 +15,7 @@
 	>
 		<Fa class="text-teal-800" icon={faClover} />
 	</button>
-	<a href="/" class="text-white text-3xl grow my-auto flex">
+	<a href="/" class="text-white text-3xl grow my-auto flex hover:text-white">
 		<Fa class="mr-3 mt-0.5 md:block hidden" icon={faClover} />
 		Learn Irish from hatao's youtube</a
 	>
