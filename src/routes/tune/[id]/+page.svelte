@@ -6,7 +6,7 @@
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 	import { getDate } from '$core/utils/dateUtils';
 	import Fa from 'svelte-fa';
-	import { faPlus, faHeart } from '@fortawesome/free-solid-svg-icons';
+	import { faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
 	import { toast } from 'svelte-sonner';
 	import {
 		checkFavorite,
@@ -218,7 +218,7 @@
 							isBookmarked = false;
 						}}
 					>
-						<Fa class="" icon={faHeart} />
+						<Fa class="" icon={faStar} />
 					</button>
 				{:else}
 					<button
@@ -228,7 +228,7 @@
 							isBookmarked = true;
 						}}
 					>
-						<Fa class="" icon={faHeart} />
+						<Fa class="" icon={faStar} />
 					</button>
 				{/if}
 			</div>

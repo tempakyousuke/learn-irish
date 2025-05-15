@@ -9,7 +9,7 @@
 	import RadioButtons from '$lib/forms/RadioButtons.svelte';
 	import {
 		faFilter,
-		faUserCheck,
+		faBook,
 		faMusic,
 		faStar,
 		faList,
@@ -40,7 +40,7 @@
 		{#if isLoggedIn}
 			<div class="filter-block">
 				<div class="label flex items-center">
-					<Fa icon={faUserCheck} class="w-5 h-5 text-emerald-500 mr-2" />{$t('memorized_name')}
+					<Fa icon={faBook} class="w-5 h-5 text-emerald-500 mr-2" />{$t('memorized_name')}
 				</div>
 				<RadioButtons
 					className="radio-row"
