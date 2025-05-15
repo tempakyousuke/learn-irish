@@ -69,14 +69,14 @@
 			<th class="py-3 px-3 w-52">Key</th>
 			<th class="py-3 px-3 w-52">Mode</th>
 			{#if countExist}
-				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
+				<th class="py-3 px-3 w-52">{$t('total_plays')}</th>
 			{/if}
 		</tr>
 		<tr class="border bg-teal-800 text-white table-row md:hidden">
 			<th class="py-3 px-3 w-96">{$t('tune_name')}</th>
 			<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
 			{#if countExist}
-				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
+				<th class="py-3 px-3 w-52">{$t('total_plays')}</th>
 			{/if}
 		</tr>
 	</thead>
