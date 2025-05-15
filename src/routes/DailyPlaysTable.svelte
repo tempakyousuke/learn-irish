@@ -6,31 +6,36 @@
 	export let tuneObjects: { [key: string]: Tune } = {};
 </script>
 
-<div class="mt-7 mx-auto md:w-8/12 w-11/12">
-	<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto">
+<div class="mt-7 mx-auto w-full max-w-screen-lg px-2">
+	<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl w-full">
 		<thead>
-			<tr class="border bg-teal-800 text-white md:table-row hidden">
-				<th class="py-3 px-3 w-96">{$t('tunes_played_today')}</th>
-				<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
-				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
-			</tr>
-			<tr class="border bg-teal-800 text-white table-row md:hidden">
-				<th class="py-3 px-3 w-96">{$t('tunes_played_today')}</th>
-				<th class="py-3 px-3 w-60 whitespace-pre-wrap">{$t('todays_plays_with_break')}</th>
+			<tr class="border bg-teal-800 text-white">
+				<th class="py-3 px-3 text-left w-2/5">{$t('tunes_played_today')}</th>
+				<th class="py-3 px-3 text-center w-1/4 hidden md:table-cell">{$t('tune_type')}</th>
+				<th class="py-3 px-3 text-center w-1/4">{$t('todays_plays')}</th>
 			</tr>
 		</thead>
 		<tbody>
-			{#each Object.entries(dailyData) as [tuneId, count]}
-				<tr class="border-b border-teal-400 md:table-row hidden">
-					<td class="py-3 px-3">{tuneObjects[tuneId]?.name}</td>
-					<td class="py-3 px-3 text-center">{tuneObjects[tuneId]?.rhythm}</td>
-					<td class="py-3 px-3 text-center">{count}</td>
-				</tr>
-				<tr class="border-b border-teal-400 table-row md:hidden">
-					<td class="py-3 px-3">{tuneObjects[tuneId]?.name}</td>
+			{#each Object.entries(dailyData) as [tuneId, count], i}
+				<tr
+					class="border-b border-teal-400 odd:bg-white even:bg-teal-50 hover:bg-emerald-50 transition-colors"
+				>
+					<td class="py-3 px-3 text-left max-w-xs truncate" title={tuneObjects[tuneId]?.name}
+						>{tuneObjects[tuneId]?.name}</td
+					>
+					<td class="py-3 px-3 text-center hidden md:table-cell">{tuneObjects[tuneId]?.rhythm}</td>
 					<td class="py-3 px-3 text-center">{count}</td>
 				</tr>
 			{/each}
 		</tbody>
 	</table>
 </div>
+
+<style>
+	@media (max-width: 600px) {
+		td,
+		th {
+			font-size: 1rem;
+		}
+	}
+</style>
