@@ -2,12 +2,7 @@
 	import { t } from 'svelte-i18n';
 	import type { Tune } from '$core/data/models/Tune';
 	import StatCard from './StatCard.svelte';
-	import {
-		faUserCheck,
-		faMusic,
-		faChartBar,
-		faCalendarDay
-	} from '@fortawesome/free-solid-svg-icons';
+	import { faBook, faMusic, faChartBar, faCalendarDay } from '@fortawesome/free-solid-svg-icons';
 
 	export let tunes: Tune[] = [];
 	export let rememberNameIds: string[] = [];
@@ -20,7 +15,7 @@
 	<StatCard
 		title={$t('tune_memorized_name')}
 		value={`${rememberNameIds.length}/${tunes.length}`}
-		icon={faUserCheck}
+		icon={faBook}
 		color="teal"
 	/>
 	<StatCard
