@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# プロジェクト構成ガイド
+
+このプロジェクトはSvelteKitをベースに構築されており、主要なエントリーポイントやディレクトリの役割は以下の通りです。
+
+- [src/app.html](mdc:src/app.html): SvelteKitアプリのHTMLエントリーポイント。
+- [src/app.css](mdc:src/app.css): グローバルCSS。Tailwind CSSを利用。
+- [src/app.d.ts](mdc:src/app.d.ts): 型定義ファイル。
+- [src/routes/](mdc:src/routes): ルーティングとページコンポーネント。+page.svelte, +page.ts, +layout.svelte, +layout.ts などが含まれる。
+- [src/routes/+page.svelte](mdc:src/routes/+page.svelte): トップページの実装。
+- [src/routes/+page.ts](mdc:src/routes/+page.ts): トップページのデータロードロジック。
+- [src/routes/+layout.svelte](mdc:src/routes/+layout.svelte): 全体レイアウト。ヘッダーやドロワー、i18nの初期化など。
+- [src/routes/+layout.ts](mdc:src/routes/+layout.ts): ルートレベルのロード設定（CSRのみ、SSR無効）。
+- [src/routes/__options.ts](mdc:src/routes/__options.ts): フィルタやソート等のオプション定義。
+- [src/routes/FilterControls.svelte](mdc:src/routes/FilterControls.svelte): 検索・フィルタUI。
+- [src/routes/TuneStats.svelte](mdc:src/routes/TuneStats.svelte): 統計表示。
+- [src/routes/DailyPlaysTable.svelte](mdc:src/routes/DailyPlaysTable.svelte): 日次再生数テーブル。
+- [src/routes/StatCard.svelte](mdc:src/routes/StatCard.svelte): 統計カード。
+- [src/routes/tune/](mdc:src/routes/tune): 楽曲詳細・追加・更新ページ。
+- [src/lib/](mdc:src/lib): UIコンポーネントやユーティリティ群。
+- [svelte.config.js](mdc:svelte.config.js): SvelteKitの設定。エイリアスやアダプター設定。
+- [vite.config.ts](mdc:vite.config.ts): Viteの設定。サーバーポート（5175）やエイリアス。
+- [package.json](mdc:package.json): 依存パッケージとスクリプト。
+
+## 開発サーバー
+
+- `npm run dev` で http://localhost:5175 で開発サーバーが起動します。
+- SSRは無効（CSRのみ）です。
+
+## スタイル
+
+- Tailwind CSSを利用し、レスポンシブなデザインが適用されています。
+
+## その他
+
+- Firebaseを利用した認証・データ管理。
+- i18n（多言語対応）あり。
