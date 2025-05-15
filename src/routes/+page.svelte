@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Tune } from '$core/data/models/Tune';
-	import type { UserTune } from '$core/data/models/UserTune';
+	import type { TuneFull } from '$core/data/models/Tune';
+	import type { UserTuneFull } from '$core/data/models/UserTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
 	import { userId } from '$core/auth/authService';
 	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
@@ -14,7 +14,7 @@
 	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 
 	export let data: {
-		tunes: Tune[];
+		tunes: TuneFull[];
 		formValues: {
 			rememberName: string;
 			rememberMelody: string;
@@ -32,7 +32,7 @@
 	let rememberMelody: string = data.formValues.rememberMelody;
 	let selectedRhythm: string = data.formValues.selectedRhythm;
 	let onlyFavorite: string = data.formValues.onlyFavorite;
-	let userTuneStatus: { [key: string]: UserTune } = {};
+	let userTuneStatus: { [key: string]: UserTuneFull } = {};
 	let totalCount: number = 0;
 	let favoriteTuneIds: string[] = [];
 
@@ -77,7 +77,7 @@
 			const tunesCollectionRef = collection(db, `users/${uid}/tunes`);
 			const querySnapshot = await getDocs(tunesCollectionRef);
 			const userTunes = querySnapshot.docs.map((doc) => {
-				return { id: doc.id, ...doc.data() } as UserTune;
+				return { id: doc.id, ...doc.data() } as UserTuneFull;
 			});
 
 			// 覚えた曲のID抽出
@@ -178,7 +178,7 @@
 			acc[tune.id] = tune;
 			return acc;
 		},
-		{} as { [key: string]: Tune }
+		{} as { [key: string]: TuneFull }
 	);
 
 	function updateCookie(name: string, value: string) {
