@@ -21,29 +21,29 @@
 	>
 	<a
 		href="/about"
-		class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
+		class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
 		>About</a
 	>
 	{#if $authLoaded && !$isAuthenticated}
 		<a
 			href="/signin"
-			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
+			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
 			>{$t('sign_in')}</a
 		>
 		<a
 			href="/signup"
-			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
+			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
 			>{$t('create_account')}</a
 		>
 	{/if}
 	{#if $authLoaded && $isAuthenticated}
 		<a
 			href="/mydata"
-			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
+			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
 			>mydata</a
 		>
 		<button
-			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hidden md:block"
+			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
 			on:click={logout}>{$t('sign_out')}</button
 		>
 	{/if}
