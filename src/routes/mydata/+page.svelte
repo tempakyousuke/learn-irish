@@ -8,6 +8,10 @@
 	} from '$core/data/repositories/statisticsRepository';
 	import { onMount } from 'svelte';
 	import Chart from 'chart.js/auto';
+	import { getUserTunes } from '$core/data/repositories/tuneRepository';
+	import { calcUserTuneStats, type UserTuneStats } from '$lib/utils/userTuneStats';
+	import StatCard from '$lib/components/stats/StatCard.svelte';
+	import { faChartBar, faBook, faMusic } from '@fortawesome/free-solid-svg-icons';
 
 	let uid: string = '';
 	// 直近7日間の日付の配列を保存
@@ -37,6 +41,20 @@
 	let weeklyChart: Chart;
 	let monthlyChart: Chart;
 
+	let userTuneStats: UserTuneStats = {
+		rememberNameCount: 0,
+		rememberMelodyCount: 0,
+		totalPlayCount: 0,
+		melodyByRhythm: {}
+	};
+
+	// ユーザーの習得状況を取得し集計
+	async function fetchUserTuneStats(uid: string) {
+		if (!uid) return;
+		const userTunes = await getUserTunes(uid);
+		userTuneStats = calcUserTuneStats(userTunes);
+	}
+
 	userStore.subscribe(async (value) => {
 		uid = value.uid;
 		if (!uid) {
@@ -52,6 +70,9 @@
 		if (weeklyChart) {
 			updateWeeklyChart();
 		}
+
+		// ユーザー統計も取得
+		await fetchUserTuneStats(uid);
 	});
 
 	onMount(() => {
@@ -182,3 +203,36 @@
 		</div>
 	</div>
 {/if}
+
+<div class="max-w-[800px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+	<StatCard
+		title="累計演奏回数"
+		value={userTuneStats.totalPlayCount}
+		icon={faChartBar}
+		color="orange"
+	/>
+	<StatCard
+		title="名前を覚えた曲数"
+		value={userTuneStats.rememberNameCount}
+		icon={faBook}
+		color="teal"
+	/>
+	<StatCard
+		title="メロディーを覚えた曲数"
+		value={userTuneStats.rememberMelodyCount}
+		icon={faMusic}
+		color="emerald"
+	/>
+</div>
+
+<div class="max-w-[800px] mx-auto my-4">
+	<h3>種類ごとのメロディーを覚えた曲数</h3>
+	<div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+		{#each Object.entries(userTuneStats.melodyByRhythm) as [rhythm, count]}
+			<div class="border rounded p-2 flex flex-col items-center">
+				<div class="font-bold">{rhythm}</div>
+				<div class="text-lg">{count}</div>
+			</div>
+		{/each}
+	</div>
+</div>

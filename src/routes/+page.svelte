@@ -12,6 +12,8 @@
 	import DailyPlaysTable from './DailyPlaysTable.svelte';
 	import ErrorMessage from '$lib/ui/ErrorMessage.svelte';
 	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
+	import { getUserTunes } from '$core/data/repositories/tuneRepository';
+	import { calcUserTuneStats } from '$lib/utils/userTuneStats';
 
 	export let data: {
 		tunes: TuneFull[];
@@ -73,23 +75,17 @@
 		}
 
 		try {
-			// 曲データの取得
-			const tunesCollectionRef = collection(db, `users/${uid}/tunes`);
-			const querySnapshot = await getDocs(tunesCollectionRef);
-			const userTunes = querySnapshot.docs.map((doc) => {
-				return { id: doc.id, ...doc.data() } as UserTuneFull;
-			});
+			// 共通化: ユーザーの習得状況一覧を取得
+			const userTunes = await getUserTunes(uid);
 
-			// 覚えた曲のID抽出
+			// 共通化: 集計ユーティリティで一括集計
+			const stats = calcUserTuneStats(userTunes);
 			rememberNameIds = userTunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
 			rememberMelodyIds = userTunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
-
-			// 曲の状態とカウント
-			totalCount = 0;
+			totalCount = stats.totalPlayCount;
 			userTuneStatus = {};
 			userTunes.forEach((tune) => {
 				userTuneStatus[tune.id] = tune;
-				totalCount += tune.playCount || 0;
 			});
 
 			// 日次データの取得
