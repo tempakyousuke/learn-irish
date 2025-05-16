@@ -50,5 +50,9 @@
 	"password_reset_sent_description": "パスワードリセットのメールを送信しました。メールの内容に従ってパスワードの再設定を行ってください。",
 	"check_spam_folder": "メールが届かない場合は、迷惑メールフォルダをご確認ください。",
 	"return_to_signin": "サインインページに戻る",
-	"play_history": "演奏記録"
+	"play_history": "演奏記録",
+	"recent_plays": "最近の演奏回数",
+	"monthly_records": "月ごとの記録",
+	"select_month": "月を選択",
+	"remembered_melody_by_rhythm": "種類ごとのメロディーを覚えた曲数"
 }

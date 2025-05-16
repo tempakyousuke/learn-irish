@@ -50,5 +50,9 @@
 	"password_reset_sent_description": "We've sent you a password reset email. Please follow the instructions in the email to reset your password.",
 	"check_spam_folder": "If you do not receive the email, please check your spam folder.",
 	"return_to_signin": "Return to Sign In Page",
-	"play_history": "Play History"
+	"play_history": "Play History",
+	"recent_plays": "Recent Plays",
+	"monthly_records": "Monthly Records",
+	"select_month": "Select month",
+	"remembered_melody_by_rhythm": "Memorized Melodies by Rhythm"
 }

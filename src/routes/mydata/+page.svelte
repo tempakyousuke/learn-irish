@@ -19,6 +19,7 @@
 	import { faChartBar, faBook, faMusic } from '@fortawesome/free-solid-svg-icons';
 	import type { TuneFull } from '$core/data/models/Tune';
 	import { getTunes } from '$core/data/repositories/tuneRepository';
+	import { t } from 'svelte-i18n';
 
 	let uid: string = '';
 	// 直近7日間の日付の配列を保存
@@ -187,19 +188,19 @@
 	};
 </script>
 
-<h3>最近の演奏回数</h3>
+<h3>{$t('recent_plays')}</h3>
 <div style="height: 300px;">
 	<canvas bind:this={weeklyChartCanvas}></canvas>
 </div>
 
 <div class="max-w-[800px] mx-auto">
-	<h3>月ごとの記録</h3>
+	<h3>{$t('monthly_records')}</h3>
 	<div class="grid grid-cols-12">
 		{#each Object.entries(monthlyDatas) as [key, value]}
 			<button
 				class="flex col-span-4 border"
 				on:click={() => selectMonth(key)}
-				aria-label={`Select month ${key}`}
+				aria-label={`${$t('select_month')} ${key}`}
 			>
 				<div class="w-1/2">{key}</div>
 				<div class="w-1/2">{value}</div>
@@ -218,19 +219,19 @@
 
 <div class="max-w-[800px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
 	<StatCard
-		title="累計演奏回数"
+		title={$t('total_plays')}
 		value={userTuneStats.totalPlayCount}
 		icon={faChartBar}
 		color="orange"
 	/>
 	<StatCard
-		title="名前を覚えた曲数"
+		title={$t('memorized_name')}
 		value={userTuneStats.rememberNameCount}
 		icon={faBook}
 		color="teal"
 	/>
 	<StatCard
-		title="メロディーを覚えた曲数"
+		title={$t('memorized_melody')}
 		value={userTuneStats.rememberMelodyCount}
 		icon={faMusic}
 		color="emerald"
@@ -238,7 +239,7 @@
 </div>
 
 <div class="max-w-[800px] mx-auto my-4">
-	<h3>種類ごとのメロディーを覚えた曲数</h3>
+	<h3>{$t('remembered_melody_by_rhythm')}</h3>
 	<div class="grid grid-cols-2 md:grid-cols-4 gap-2">
 		{#each Object.entries(rhythmMelodyStats) as [rhythm, stats]}
 			<div class="border rounded p-2 flex flex-col items-center">
