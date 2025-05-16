@@ -4,7 +4,7 @@
 	import {
 		getDailyTotal,
 		getMonthlyDatas,
-		getMonthlyStatistics
+		getMonthlyStatisticsWithLocalCache
 	} from '$core/data/repositories/statisticsRepository';
 	import { onMount } from 'svelte';
 	import Chart from 'chart.js/auto';
@@ -179,7 +179,7 @@
 			return;
 		}
 		selectedMonth = month;
-		getMonthlyStatistics(month, uid).then((data) => {
+		getMonthlyStatisticsWithLocalCache(month, uid).then((data) => {
 			MonthlyStatistics = data;
 			// データ取得後にチャートを初期化
 			setTimeout(initMonthlyChart, 0);
@@ -210,16 +210,6 @@
 
 {#if selectedMonth}
 	<div class="max-w-[800px] mx-auto">
-		<h3>{selectedMonth}の演奏回数</h3>
-		<div class="grid grid-cols-12">
-			{#each Object.entries(MonthlyStatistics) as [key, value]}
-				<div class="flex col-span-4 border">
-					<div class="w-1/2">{key}</div>
-					<div class="w-1/2">{value}</div>
-				</div>
-			{/each}
-		</div>
-
 		<div style="height: 300px; margin-top: 20px;">
 			<canvas bind:this={monthlyChartCanvas}></canvas>
 		</div>
