@@ -9,9 +9,16 @@
 	import { onMount } from 'svelte';
 	import Chart from 'chart.js/auto';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
-	import { calcUserTuneStats, type UserTuneStats } from '$lib/utils/userTuneStats';
+	import {
+		calcUserTuneStats,
+		type UserTuneStats,
+		countRememberedMelodyByRhythm,
+		type RhythmMelodyStats
+	} from '$lib/utils/userTuneStats';
 	import StatCard from '$lib/stats/StatCard.svelte';
 	import { faChartBar, faBook, faMusic } from '@fortawesome/free-solid-svg-icons';
+	import type { TuneFull } from '$core/data/models/Tune';
+	import { getTunes } from '$core/data/repositories/tuneRepository';
 
 	let uid: string = '';
 	// 直近7日間の日付の配列を保存
@@ -44,15 +51,29 @@
 	let userTuneStats: UserTuneStats = {
 		rememberNameCount: 0,
 		rememberMelodyCount: 0,
-		totalPlayCount: 0,
-		melodyByRhythm: {}
+		totalPlayCount: 0
 	};
+
+	let rhythmMelodyStats: RhythmMelodyStats = {};
+	let tunes: TuneFull[] = [];
+	let userTunes: any[] = [];
 
 	// ユーザーの習得状況を取得し集計
 	async function fetchUserTuneStats(uid: string) {
 		if (!uid) return;
-		const userTunes = await getUserTunes(uid);
+		userTunes = await getUserTunes(uid);
 		userTuneStats = calcUserTuneStats(userTunes);
+		if (tunes.length > 0) {
+			rhythmMelodyStats = countRememberedMelodyByRhythm(userTunes, tunes);
+		}
+	}
+
+	// 全曲データを取得
+	async function fetchTunes() {
+		tunes = await getTunes();
+		if (userTunes.length > 0) {
+			rhythmMelodyStats = countRememberedMelodyByRhythm(userTunes, tunes);
+		}
 	}
 
 	userStore.subscribe(async (value) => {
@@ -78,6 +99,7 @@
 	onMount(() => {
 		// ウィークリーチャートを初期化
 		initWeeklyChart();
+		fetchTunes();
 	});
 
 	// ウィークリーチャートの初期化
@@ -228,10 +250,10 @@
 <div class="max-w-[800px] mx-auto my-4">
 	<h3>種類ごとのメロディーを覚えた曲数</h3>
 	<div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-		{#each Object.entries(userTuneStats.melodyByRhythm) as [rhythm, count]}
+		{#each Object.entries(rhythmMelodyStats) as [rhythm, stats]}
 			<div class="border rounded p-2 flex flex-col items-center">
 				<div class="font-bold">{rhythm}</div>
-				<div class="text-lg">{count}</div>
+				<div class="text-lg">{stats.remembered} / {stats.total}</div>
 			</div>
 		{/each}
 	</div>
