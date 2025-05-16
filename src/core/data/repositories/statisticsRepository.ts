@@ -53,8 +53,6 @@ export const getMonthlyDatas = async (uid: string): Promise<{ [key: string]: num
 	const user = await getUser(uid);
 	if (!user) return {};
 	const createdAt = new Date(user.creationTime);
-
-	// creattionTimeから現在までの年月を取得
 	const currentDate = getDate();
 	const yearMonth = currentDate.slice(0, 7);
 	const yearMonthList: string[] = [];
@@ -62,7 +60,6 @@ export const getMonthlyDatas = async (uid: string): Promise<{ [key: string]: num
 	const startMonth = createdAt.getMonth() + 1;
 
 	for (let i = startYear; i <= parseInt(yearMonth.split('-')[0]); i++) {
-		// 年が変わる場合、開始月を1月にリセット
 		const monthStart = i === startYear ? startMonth : 1;
 		for (let j = monthStart; j <= 12; j++) {
 			const ym = `${i}-${String(j).padStart(2, '0')}`;
@@ -71,10 +68,21 @@ export const getMonthlyDatas = async (uid: string): Promise<{ [key: string]: num
 		}
 	}
 
+	// statisticsコレクションから一括取得
+	const db = getFirestore();
 	const monthlyDatas: { [key: string]: number } = {};
-	for (const yearMonth of yearMonthList) {
-		monthlyDatas[yearMonth] = await getMonthlyTotal(yearMonth, uid);
-	}
+	await Promise.all(
+		yearMonthList.map(async (yearMonth) => {
+			const statisticsRef = doc(db, `users/${uid}/statistics/${yearMonth}`);
+			const statisticsData = (await getDoc(statisticsRef)).data() || {};
+			if (Object.prototype.hasOwnProperty.call(statisticsData, 'monthlyTotal')) {
+				monthlyDatas[yearMonth] = statisticsData.monthlyTotal;
+			} else {
+				// なければ集計して保存
+				monthlyDatas[yearMonth] = await getMonthlyTotal(yearMonth, uid);
+			}
+		})
+	);
 	return monthlyDatas;
 };
 
@@ -82,21 +90,14 @@ export const getMonthlyTotal = async (yearMonth: string, uid: string) => {
 	const db = getFirestore();
 	const statisticsRef = doc(db, `users/${uid}/statistics/${yearMonth}`);
 	const statisticsData = (await getDoc(statisticsRef)).data() || {};
-	// monthlyTotalのkeyが存在している場合はその値を返す ただし、yearMonthが現在の年月の場合は計算する
-	if (
-		Object.prototype.hasOwnProperty.call(statisticsData, 'monthlyTotal') &&
-		yearMonth !== getDate().slice(0, 7)
-	) {
+	// monthlyTotalのkeyが存在している場合はその値を返す
+	if (Object.prototype.hasOwnProperty.call(statisticsData, 'monthlyTotal')) {
 		return statisticsData.monthlyTotal;
 	}
-	// monthlyTotalのkeyが存在しない場合は1日から末日までgetDailyTotalを呼び出して合計を計算
+	// なければ集計して保存
 	const dates = getDatesOfMonth(yearMonth);
-	let total = 0;
-	for (const date of dates) {
-		const dailyTotal = await getDailyTotal(date, uid);
-		total += dailyTotal;
-	}
-	// monthlyTotalをstatisticsRefに保存
+	const results = await Promise.all(dates.map((date) => getDailyTotal(date, uid)));
+	const total = results.reduce((sum, val) => sum + val, 0);
 	await setDoc(
 		statisticsRef,
 		{
@@ -104,7 +105,6 @@ export const getMonthlyTotal = async (yearMonth: string, uid: string) => {
 		},
 		{ merge: true }
 	);
-
 	return total;
 };
 
@@ -127,11 +127,64 @@ export const getDatesOfMonth = (yearMonth: string): string[] => {
 };
 
 export const getMonthlyStatistics = async (yearMonth: string, uid: string) => {
+	const db = getFirestore();
+	const statisticsRef = doc(db, `users/${uid}/statistics/${yearMonth}`);
+	const statisticsData = (await getDoc(statisticsRef)).data() || {};
 	const dates = getDatesOfMonth(yearMonth);
 	const statistics: { [key: string]: number } = {};
+	let needUpdate = false;
 	for (const date of dates) {
-		const dailyTotal = await getDailyTotal(date, uid);
-		statistics[date] = dailyTotal;
+		if (statisticsData[date] !== undefined) {
+			statistics[date] = statisticsData[date];
+		} else {
+			// なければ集計して保存
+			const dailyTotal = await getDailyTotal(date, uid);
+			statistics[date] = dailyTotal;
+			statisticsData[date] = dailyTotal;
+			needUpdate = true;
+		}
+	}
+	if (needUpdate) {
+		await setDoc(statisticsRef, statisticsData, { merge: true });
 	}
 	return statistics;
+};
+
+function getLocalMonthlyStatsKey(uid: string, yearMonth: string) {
+	return `monthlyStats_${uid}_${yearMonth}`;
+}
+
+/**
+ * 当月のみlocalStorageで1日キャッシュし、それ以外はFirestoreのサマリーを利用する
+ */
+export const getMonthlyStatisticsWithLocalCache = async (yearMonth: string, uid: string) => {
+	const isCurrentMonth = yearMonth === getDate().slice(0, 7);
+	console.log('isCurrentMonth', isCurrentMonth);
+	if (isCurrentMonth) {
+		const key = getLocalMonthlyStatsKey(uid, yearMonth);
+		const cached = localStorage.getItem(key);
+		if (cached) {
+			try {
+				const { data, expires } = JSON.parse(cached);
+				if (Date.now() < expires) {
+					return data;
+				}
+			} catch {
+				// パースエラー時は無視して再集計
+			}
+		}
+		// キャッシュがない or 期限切れ → 再集計
+		const data = await getMonthlyStatistics(yearMonth, uid);
+		localStorage.setItem(
+			key,
+			JSON.stringify({
+				data,
+				expires: Date.now() + 24 * 60 * 60 * 1000 // 1日後
+			})
+		);
+		return data;
+	} else {
+		// 当月以外はFirestoreキャッシュを使う
+		return getMonthlyStatistics(yearMonth, uid);
+	}
 };
