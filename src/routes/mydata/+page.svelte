@@ -10,7 +10,7 @@
 	import Chart from 'chart.js/auto';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
 	import { calcUserTuneStats, type UserTuneStats } from '$lib/utils/userTuneStats';
-	import StatCard from '$lib/components/stats/StatCard.svelte';
+	import StatCard from '$lib/stats/StatCard.svelte';
 	import { faChartBar, faBook, faMusic } from '@fortawesome/free-solid-svg-icons';
 
 	let uid: string = '';
