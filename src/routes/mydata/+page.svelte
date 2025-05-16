@@ -188,22 +188,27 @@
 	};
 </script>
 
-<h3>{$t('recent_plays')}</h3>
-<div style="height: 300px;">
-	<canvas bind:this={weeklyChartCanvas}></canvas>
+<div class="bg-white shadow-md rounded-lg p-4 mb-8">
+	<h3 class="text-xl font-bold mb-4">{$t('recent_plays')}</h3>
+	<div style="height: 300px;">
+		<canvas bind:this={weeklyChartCanvas}></canvas>
+	</div>
 </div>
 
 <div class="max-w-[800px] mx-auto">
 	<h3>{$t('monthly_records')}</h3>
-	<div class="grid grid-cols-12">
+	<div class="grid grid-cols-4 md:grid-cols-6 gap-2">
 		{#each Object.entries(monthlyDatas) as [key, value]}
 			<button
-				class="flex col-span-4 border"
+				class="flex flex-col items-center justify-center rounded-lg border transition min-h-[56px] p-2
+					{selectedMonth === key
+					? 'border-2 border-emerald-500 bg-emerald-50'
+					: 'hover:bg-emerald-50 hover:text-emerald-800'}"
 				on:click={() => selectMonth(key)}
 				aria-label={`${$t('select_month')} ${key}`}
 			>
-				<div class="w-1/2">{key}</div>
-				<div class="w-1/2">{value}</div>
+				<div class="text-gray-800 font-bold">{key}</div>
+				<div class="text-emerald-700 text-lg group-hover:text-emerald-800">{value}</div>
 			</button>
 		{/each}
 	</div>
@@ -240,11 +245,11 @@
 
 <div class="max-w-[800px] mx-auto my-4">
 	<h3>{$t('remembered_melody_by_rhythm')}</h3>
-	<div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
 		{#each Object.entries(rhythmMelodyStats) as [rhythm, stats]}
-			<div class="border rounded p-2 flex flex-col items-center">
-				<div class="font-bold">{rhythm}</div>
-				<div class="text-lg">{stats.remembered} / {stats.total}</div>
+			<div class="bg-white shadow rounded-lg p-3 flex flex-col items-center min-h-[90px]">
+				<div class="font-bold text-gray-800 mb-1">{rhythm}</div>
+				<div class="text-emerald-700 text-lg font-mono">{stats.remembered} / {stats.total}</div>
 			</div>
 		{/each}
 	</div>

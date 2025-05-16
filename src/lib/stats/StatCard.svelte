@@ -12,13 +12,13 @@
 </script>
 
 <div
-	class="stat-card border-2 rounded-xl p-4 bg-white shadow-md flex flex-col items-center justify-center"
+	class="stat-card border-2 rounded-xl p-4 bg-white shadow-md flex flex-col items-center justify-center min-h-[180px]"
 	style="border-color: var(--stat-color); {styleVars}"
 >
-	<div class="icon-wrapper mb-2" style="background: var(--stat-bg);">
-		<Fa {icon} class="w-8 h-8" style="color: var(--stat-color);" />
+	<div class="icon-wrapper mb-4" style="background: var(--stat-bg);">
+		<Fa {icon} class="w-12 h-12" style="color: var(--stat-color);" />
 	</div>
-	<div class="stat-title md:text-2xl text-xl text-center font-bold text-gray-800">{title}</div>
+	<div class="stat-title md:text-2xl text-xl text-center font-bold text-gray-800 mb-2">{title}</div>
 	<div
 		class="stat-value mt-2 mx-auto rounded-xl py-2 text-center font-mono font-extrabold"
 		style="color: var(--stat-color); background: var(--stat-bg);"
@@ -54,9 +54,9 @@
 		align-items: center;
 		justify-content: center;
 		border-radius: 9999px;
-		width: 3rem;
-		height: 3rem;
-		margin-bottom: 0.5rem;
+		width: 4rem;
+		height: 4rem;
+		margin-bottom: 1rem;
 	}
 	.stat-title {
 		min-height: 3.5rem;
@@ -65,6 +65,7 @@
 		justify-content: center;
 		word-break: break-word;
 		text-align: center;
+		margin-bottom: 0.5rem;
 	}
 	.stat-value {
 		min-width: 9rem;
@@ -73,7 +74,7 @@
 		box-sizing: border-box;
 		margin-left: auto;
 		margin-right: auto;
-		font-size: clamp(2rem, 4vw, 2.5rem);
+		font-size: clamp(2.5rem, 5vw, 3rem);
 		max-width: 100%;
 		white-space: nowrap;
 		text-overflow: ellipsis;
