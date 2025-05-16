@@ -244,7 +244,7 @@
 </div>
 
 <div class="max-w-[800px] mx-auto my-4">
-	<h3>{$t('remembered_melody_by_rhythm')}</h3>
+	<h3>{$t('remembered_melody_by_type')}</h3>
 	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
 		{#each Object.entries(rhythmMelodyStats) as [rhythm, stats]}
 			<div class="bg-white shadow rounded-lg p-3 flex flex-col items-center min-h-[90px]">
