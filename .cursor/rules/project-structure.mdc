@@ -42,3 +42,7 @@ alwaysApply: true
 - svelte-faを利用して、fontawesomeのアイコンが利用可能。
 - svelteは5系を利用しているので、なるべく5系の機能を活用した実装をすること。
 - app.cssにはアプリケーション全体に適用するstyleの記述のみで、特定の部位にだけ適用したいstyleはcomponent内に記述すること。
+
+## サイトの目的
+このプロジェクトはケルトの笛演奏家のhataoさんがYouTubeで公開している「Learn an Irish Tune Every Day」（https://www.youtube.com/playlist?list=PL5v6Z6woDdNRNBknNAmbTJqiwrmyfC9TH）のプレイリストの動画を探しやすくし、曲を覚えたか、何回練習したかなどの記録をユーザーが取れるようにしたものです。
+ユーザーがアイルランドの曲を練習するモチベーションを高めることを目的としています。
