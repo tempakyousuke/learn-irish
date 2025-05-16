@@ -33,9 +33,12 @@ alwaysApply: true
 
 ## スタイル
 
-- Tailwind CSSを利用し、レスポンシブなデザインが適用されています。
+- Tailwind CSSを利用し、レスポンシブなデザインが適用されています。なるべくTailwind CSSを利用したstylingを使用してください。
 
 ## その他
 
 - Firebaseを利用した認証・データ管理。
 - i18n（多言語対応）あり。
+- svelte-faを利用して、fontawesomeのアイコンが利用可能。
+- svelteは5系を利用しているので、なるべく5系の機能を活用した実装をすること。
+- app.cssにはアプリケーション全体に適用するstyleの記述のみで、特定の部位にだけ適用したいstyleはcomponent内に記述すること。
