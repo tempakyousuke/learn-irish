@@ -41,6 +41,7 @@
 		"@fortawesome/free-solid-svg-icons": "^6.7.2",
 		"chart.js": "^4.4.8",
 		"firebase": "^10.7.2",
+		"klona": "^2.0.6",
 		"papaparse": "^5.4.1",
 		"svelte-fa": "^4.0.3",
 		"svelte-i18n": "^4.0.1",

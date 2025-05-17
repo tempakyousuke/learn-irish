@@ -1,6 +1,7 @@
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { getDate } from '../../../core/utils/dateUtils';
 import { getUser } from '../../../core/auth/userService';
+import { klona } from 'klona';
 
 const cache: Record<string, Record<string, number>> = {}; // 月ごとのキャッシュ
 
@@ -132,6 +133,7 @@ export const getMonthlyStatistics = async (yearMonth: string, uid: string) => {
 	const statisticsData = (await getDoc(statisticsRef)).data() || {};
 	const dates = getDatesOfMonth(yearMonth);
 	const statistics: { [key: string]: number } = {};
+	const currentDate = getDate();
 	let needUpdate = false;
 	for (const date of dates) {
 		if (statisticsData[date] !== undefined) {
@@ -145,46 +147,16 @@ export const getMonthlyStatistics = async (yearMonth: string, uid: string) => {
 		}
 	}
 	if (needUpdate) {
-		await setDoc(statisticsRef, statisticsData, { merge: true });
-	}
-	return statistics;
-};
-
-function getLocalMonthlyStatsKey(uid: string, yearMonth: string) {
-	return `monthlyStats_${uid}_${yearMonth}`;
-}
-
-/**
- * 当月のみlocalStorageで1日キャッシュし、それ以外はFirestoreのサマリーを利用する
- */
-export const getMonthlyStatisticsWithLocalCache = async (yearMonth: string, uid: string) => {
-	const isCurrentMonth = yearMonth === getDate().slice(0, 7);
-	console.log('isCurrentMonth', isCurrentMonth);
-	if (isCurrentMonth) {
-		const key = getLocalMonthlyStatsKey(uid, yearMonth);
-		const cached = localStorage.getItem(key);
-		if (cached) {
-			try {
-				const { data, expires } = JSON.parse(cached);
-				if (Date.now() < expires) {
-					return data;
+		const saveData = klona(statisticsData);
+		if (dates.includes(currentDate)) {
+			// 当日以降のデータは保存対象外
+			for (const date of dates) {
+				if (date > currentDate) {
+					delete saveData[date];
 				}
-			} catch {
-				// パースエラー時は無視して再集計
 			}
 		}
-		// キャッシュがない or 期限切れ → 再集計
-		const data = await getMonthlyStatistics(yearMonth, uid);
-		localStorage.setItem(
-			key,
-			JSON.stringify({
-				data,
-				expires: Date.now() + 24 * 60 * 60 * 1000 // 1日後
-			})
-		);
-		return data;
-	} else {
-		// 当月以外はFirestoreキャッシュを使う
-		return getMonthlyStatistics(yearMonth, uid);
+		await setDoc(statisticsRef, saveData, { merge: true });
 	}
+	return statistics;
 };

@@ -4,7 +4,7 @@
 	import {
 		getDailyTotal,
 		getMonthlyDatas,
-		getMonthlyStatisticsWithLocalCache
+		getMonthlyStatistics
 	} from '$core/data/repositories/statisticsRepository';
 	import { onMount } from 'svelte';
 	import Chart from 'chart.js/auto';
@@ -180,7 +180,7 @@
 			return;
 		}
 		selectedMonth = month;
-		getMonthlyStatisticsWithLocalCache(month, uid).then((data) => {
+		getMonthlyStatistics(month, uid).then((data) => {
 			MonthlyStatistics = data;
 			// データ取得後にチャートを初期化
 			setTimeout(initMonthlyChart, 0);
@@ -195,12 +195,14 @@
 	</div>
 </div>
 
-<div class="max-w-[800px] mx-auto">
-	<h3>{$t('monthly_records')}</h3>
-	<div class="grid grid-cols-4 md:grid-cols-6 gap-2">
-		{#each Object.entries(monthlyDatas) as [key, value]}
+<div class="max-w-[800px] mx-auto my-8">
+	<h3 class="text-lg font-bold mb-2">{$t('monthly_records')}</h3>
+	<div
+		class="flex overflow-x-auto gap-2 md:grid md:grid-cols-6 md:gap-2 scrollbar-thin scrollbar-thumb-emerald-200 pb-2"
+	>
+		{#each Object.entries(monthlyDatas).reverse() as [key, value]}
 			<button
-				class="flex flex-col items-center justify-center rounded-lg border transition min-h-[56px] p-2
+				class="flex-shrink-0 flex flex-col items-center justify-center rounded-lg border transition min-w-[80px] min-h-[56px] p-2 md:min-w-0
 					{selectedMonth === key
 					? 'border-2 border-emerald-500 bg-emerald-50'
 					: 'hover:bg-emerald-50 hover:text-emerald-800'}"
@@ -222,34 +224,46 @@
 	</div>
 {/if}
 
-<div class="max-w-[800px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
-	<StatCard
-		title={$t('total_plays')}
-		value={userTuneStats.totalPlayCount}
-		icon={faChartBar}
-		color="orange"
-	/>
-	<StatCard
-		title={$t('memorized_name')}
-		value={userTuneStats.rememberNameCount}
-		icon={faBook}
-		color="teal"
-	/>
-	<StatCard
-		title={$t('memorized_melody')}
-		value={userTuneStats.rememberMelodyCount}
-		icon={faMusic}
-		color="emerald"
-	/>
+<div class="max-w-[800px] mx-auto my-8">
+	<div
+		class="flex overflow-x-auto gap-4 md:grid md:grid-cols-3 md:gap-4 scrollbar-thin scrollbar-thumb-emerald-200 pb-2"
+	>
+		<div class="min-w-[220px] md:min-w-0">
+			<StatCard
+				title={$t('total_plays')}
+				value={userTuneStats.totalPlayCount}
+				icon={faChartBar}
+				color="orange"
+			/>
+		</div>
+		<div class="min-w-[220px] md:min-w-0">
+			<StatCard
+				title={$t('memorized_name')}
+				value={userTuneStats.rememberNameCount}
+				icon={faBook}
+				color="teal"
+			/>
+		</div>
+		<div class="min-w-[220px] md:min-w-0">
+			<StatCard
+				title={$t('memorized_melody')}
+				value={userTuneStats.rememberMelodyCount}
+				icon={faMusic}
+				color="emerald"
+			/>
+		</div>
+	</div>
 </div>
 
-<div class="max-w-[800px] mx-auto my-4">
-	<h3>{$t('remembered_melody_by_type')}</h3>
-	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+<div class="max-w-[800px] mx-auto my-8">
+	<h3 class="text-lg font-bold mb-2">{$t('remembered_melody_by_type')}</h3>
+	<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
 		{#each Object.entries(rhythmMelodyStats) as [rhythm, stats]}
-			<div class="bg-white shadow rounded-lg p-3 flex flex-col items-center min-h-[90px]">
-				<div class="font-bold text-gray-800 mb-1">{rhythm}</div>
-				<div class="text-emerald-700 text-lg font-mono">{stats.remembered} / {stats.total}</div>
+			<div
+				class="bg-white shadow-md rounded-xl p-2 md:p-4 flex flex-col items-center min-h-[60px] md:min-h-[90px] border border-emerald-100"
+			>
+				<div class="font-bold text-gray-800 mb-0.5 md:mb-1">{rhythm}</div>
+				<div class="text-emerald-700 text-xl font-mono">{stats.remembered} / {stats.total}</div>
 			</div>
 		{/each}
 	</div>
