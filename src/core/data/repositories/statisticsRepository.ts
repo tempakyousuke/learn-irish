@@ -99,13 +99,16 @@ export const getMonthlyTotal = async (yearMonth: string, uid: string) => {
 	const dates = getDatesOfMonth(yearMonth);
 	const results = await Promise.all(dates.map((date) => getDailyTotal(date, uid)));
 	const total = results.reduce((sum, val) => sum + val, 0);
-	await setDoc(
-		statisticsRef,
-		{
-			monthlyTotal: total
-		},
-		{ merge: true }
-	);
+	// 当月は保存しない
+	if (yearMonth !== getDate().slice(0, 7)) {
+		await setDoc(
+			statisticsRef,
+			{
+				monthlyTotal: total
+			},
+			{ merge: true }
+		);
+	}
 	return total;
 };
 
@@ -151,7 +154,7 @@ export const getMonthlyStatistics = async (yearMonth: string, uid: string) => {
 		if (dates.includes(currentDate)) {
 			// 当日以降のデータは保存対象外
 			for (const date of dates) {
-				if (date > currentDate) {
+				if (date >= currentDate) {
 					delete saveData[date];
 				}
 			}
