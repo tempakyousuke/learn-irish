@@ -155,7 +155,7 @@
 					labels: labels,
 					datasets: [
 						{
-							label: `${selectedMonth} Counts`,
+							label: `${selectedMonth} Play Counts`,
 							data: data,
 							backgroundColor: 'rgba(75, 192, 192, 0.6)',
 							borderColor: 'rgba(75, 192, 192, 1)',
