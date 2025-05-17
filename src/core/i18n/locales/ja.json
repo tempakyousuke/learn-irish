@@ -54,5 +54,5 @@
 	"recent_plays": "最近の演奏回数",
 	"monthly_records": "月ごとの記録",
 	"select_month": "月を選択",
-	"remembered_melody_by_rhythm": "種類ごとのメロディーを覚えた曲数"
+	"remembered_melody_by_type": "種類ごとのメロディーを覚えた曲数"
 }
