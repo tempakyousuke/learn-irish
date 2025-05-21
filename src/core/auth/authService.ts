@@ -1,4 +1,4 @@
-import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
+import { onAuthStateChanged, signOut, type User, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '$core/data/firebase/firebaseClient';
 import { userStore } from '$core/store/userStore';
 import { setCreationTime } from '$core/auth/userService';
@@ -58,4 +58,18 @@ async function handleAuthStateChanged(firebaseUser: User | null) {
  */
 export function logout() {
   return signOut(auth);
+}
+
+/**
+ * Google Sign-In処理
+ */
+export async function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  try {
+    return await signInWithPopup(auth, provider);
+  } catch (error) {
+    console.error("Error during Google Sign-In:", error);
+    // Later steps will handle user-facing error messages.
+    throw error; // Re-throw the error if you want calling code to handle it
+  }
 }

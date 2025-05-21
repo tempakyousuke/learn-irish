@@ -6,6 +6,7 @@
 	import Button from '$lib/button/Button.svelte';
 	import { auth } from '$core/data/firebase/firebaseClient';
 	import { signInWithEmailAndPassword } from 'firebase/auth';
+	import { signInWithGoogle } from '$core/auth/authService'; // Added import
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import { siteTitle } from '$core/config/configService';
@@ -71,6 +72,16 @@
 			});
 	};
 
+	// Added Google Sign-In handler
+	const handleGoogleSignIn = async () => {
+		try {
+			await signInWithGoogle();
+			goto('/');
+		} catch (error: any) {
+			toast.error(error.message);
+		}
+	};
+
 	const title = `Sign In - ${siteTitle}`;
 	const description = `Sign Inページです。`;
 	const currentPageUrl = $page.url.href;
@@ -108,6 +119,10 @@
 				on:input={() => validate('password')}
 			/>
 			<Button block className="mt-6" on:click={submit} disabled={hasError}>{$t('sign_in')}</Button>
+			<!-- Added Google Sign In Button -->
+			<Button block className="mt-4" on:click={handleGoogleSignIn} type="button">
+				{$t('sign_in_with_google')}
+			</Button>
 			<div class="mt-4 text-center">
 				<a href="/reset-password" class="text-blue-600 hover:text-blue-800">
 					{$t('forgot_password')}

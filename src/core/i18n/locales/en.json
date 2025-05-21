@@ -1,7 +1,9 @@
 {
 	"sign_in": "Sign in",
+	"sign_in_with_google": "Sign in with Google",
 	"sign_out": "Sign out",
 	"create_account": "Create Account",
+	"sign_up_with_google": "Sign up with Google",
 	"register": "register",
 	"tune_memorized_name": "Name Memorized",
 	"tune_memorized_melody": "Melody Memorized",

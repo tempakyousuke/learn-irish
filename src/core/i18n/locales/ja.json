@@ -1,7 +1,9 @@
 {
 	"sign_in": "Sign in",
+	"sign_in_with_google": "Googleでサインイン",
 	"sign_out": "Sign out",
 	"create_account": "新規登録",
+	"sign_up_with_google": "Googleでサインアップ",
 	"register": "登録",
 	"tune_memorized_name": "名前を覚えた曲",
 	"tune_memorized_melody": "メロディーを覚えた曲",

@@ -6,6 +6,7 @@
 	import Button from '$lib/button/Button.svelte';
 	import { auth, db } from '$core/data/firebase/firebaseClient';
 	import { createUserWithEmailAndPassword } from 'firebase/auth';
+	import { signInWithGoogle } from '$core/auth/authService'; // Added import
 	import { doc, setDoc } from 'firebase/firestore';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
@@ -72,6 +73,16 @@
 			});
 	};
 
+	// Added Google Sign-Up handler
+	const handleGoogleSignUp = async () => {
+		try {
+			await signInWithGoogle();
+			goto('/');
+		} catch (error: any) {
+			toast.error(error.message);
+		}
+	};
+
 	const title = `Sign Up - ${siteTitle}`;
 	const description = `Sign Upページです。`;
 	const currentPageUrl = $page.url.href;
@@ -109,6 +120,10 @@
 				on:input={() => validate('password')}
 			/>
 			<Button block className="mt-5" on:click={submit}>{$t('register')}</Button>
+			<!-- Added Google Sign Up Button -->
+			<Button block className="mt-4" on:click={handleGoogleSignUp} type="button">
+				{$t('sign_up_with_google')}
+			</Button>
 		</form>
 	</div>
 </div>
