@@ -4,6 +4,7 @@
 	import type { UserTune } from '$core/data/models/UserTune';
 	export let tunes: Tune[] = [];
 	export let userTuneStatus: { [key: string]: UserTune } = {};
+	export let dailyData: { [key: string]: number } = {};
 	$: countExist = Object.keys(userTuneStatus).length > 0;
 </script>
 
@@ -35,6 +36,11 @@
 					{userTuneStatus[tune.id]?.playCount || ''}
 				</a>
 			</td>
+			<td class="py-3 px-3 text-center">
+				<a class="block" href="/tune/{tune.id}">
+					{dailyData[tune.id] || ''}
+				</a>
+			</td>
 		{/if}
 	</tr>
 {/snippet}
@@ -57,6 +63,11 @@
 					{userTuneStatus[tune.id]?.playCount || ''}
 				</a>
 			</td>
+			<td class="py-3 px-3 text-center">
+				<a class="block" href="/tune/{tune.id}">
+					{dailyData[tune.id] || ''}
+				</a>
+			</td>
 		{/if}
 	</tr>
 {/snippet}
@@ -70,6 +81,7 @@
 			<th class="py-3 px-3 w-52">Mode</th>
 			{#if countExist}
 				<th class="py-3 px-3 w-52">{$t('total_plays')}</th>
+				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
 			{/if}
 		</tr>
 		<tr class="border bg-teal-800 text-white table-row md:hidden">
@@ -77,6 +89,7 @@
 			<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
 			{#if countExist}
 				<th class="py-3 px-3 w-52">{$t('total_plays')}</th>
+				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
 			{/if}
 		</tr>
 	</thead>

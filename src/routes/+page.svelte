@@ -270,6 +270,6 @@
 	{/if}
 
 	<div class="mx-auto mt-10">
-		<TuneList tunes={sortedTunes} {userTuneStatus} />
+		<TuneList tunes={sortedTunes} {userTuneStatus} {dailyData} />
 	</div>
 </div>
