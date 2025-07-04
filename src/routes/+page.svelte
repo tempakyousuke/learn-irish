@@ -14,44 +14,47 @@
 	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
 	import { calcUserTuneStats } from '$lib/utils/userTuneStats';
+	import { untrack } from 'svelte';
 
-	export let data: {
-		tunes: TuneFull[];
-		formValues: {
-			rememberName: string;
-			rememberMelody: string;
-			selectedRhythm: string;
-			sortBy: string;
-			onlyFavorite: string;
+	const { data }: {
+		data: {
+			tunes: TuneFull[];
+			formValues: {
+				rememberName: string;
+				rememberMelody: string;
+				selectedRhythm: string;
+				sortBy: string;
+				onlyFavorite: string;
+			};
 		};
-	};
+	} = $props();
 	const tunes = data.tunes;
 	const db = getFirestore();
 
-	let rememberNameIds: string[] = [];
-	let rememberMelodyIds: string[] = [];
-	let rememberName: string = data.formValues.rememberName;
-	let rememberMelody: string = data.formValues.rememberMelody;
-	let selectedRhythm: string = data.formValues.selectedRhythm;
-	let onlyFavorite: string = data.formValues.onlyFavorite;
-	let userTuneStatus: { [key: string]: UserTuneFull } = {};
-	let totalCount: number = 0;
-	let favoriteTuneIds: string[] = [];
+	let rememberNameIds = $state<string[]>([]);
+	let rememberMelodyIds = $state<string[]>([]);
+	let rememberName = $state<string>(data.formValues.rememberName);
+	let rememberMelody = $state<string>(data.formValues.rememberMelody);
+	let selectedRhythm = $state<string>(data.formValues.selectedRhythm);
+	let onlyFavorite = $state<string>(data.formValues.onlyFavorite);
+	let userTuneStatus = $state<{ [key: string]: UserTuneFull }>({});
+	let totalCount = $state<number>(0);
+	let favoriteTuneIds = $state<string[]>([]);
 
 	const rhythms: string[] =
 		([...new Set(tunes.map((tune) => tune.rhythm))].sort() as string[]) || [];
 	const date = getDate();
-	let dailyData: { [key: string]: number } = {};
+	let dailyData = $state<{ [key: string]: number }>({});
 
 	// 追加: ソート方法を保存する変数
-	let sortBy: string = data.formValues.sortBy;
+	let sortBy = $state<string>(data.formValues.sortBy);
 
 	// ユーザーデータの読み込み状態
-	let isUserDataLoading = false;
-	let errorMessage: string | null = null;
+	let isUserDataLoading = $state<boolean>(false);
+	let errorMessage = $state<string | null>(null);
 
 	// userId変更時にデータを取得
-	$: {
+	$effect(() => {
 		if ($userId) {
 			isUserDataLoading = true;
 			errorMessage = null;
@@ -67,7 +70,7 @@
 			dailyData = {};
 			favoriteTuneIds = [];
 		}
-	}
+	});
 
 	async function getUserData(uid: string) {
 		if (!uid) {
@@ -111,7 +114,7 @@
 	}
 
 	// フィルタリング（名前を覚えた・メロディーを覚えた・種類）
-	$: filteredTunes = tunes.filter((tune) => {
+	const filteredTunes = $derived(tunes.filter((tune) => {
 		if ($userId) {
 			// これらはログイン時のみ有効にする
 			if (rememberName === 'yes' && !rememberNameIds.includes(tune.id)) return false;
@@ -122,7 +125,7 @@
 		}
 		if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
 		return true;
-	});
+	}));
 
 	function removeLeadingThe(title: string): string {
 		// 大文字小文字を問わず先頭が "The " の場合は取り除く
@@ -133,7 +136,7 @@
 		return title;
 	}
 
-	$: sortedTunes = (() => {
+	const sortedTunes = $derived((() => {
 		const arr = [...filteredTunes];
 
 		switch (sortBy) {
@@ -183,15 +186,15 @@
 		}
 
 		return arr;
-	})();
+	})());
 
-	$: tuneObjects = tunes.reduce(
+	const tuneObjects = $derived(tunes.reduce(
 		(acc, tune) => {
 			acc[tune.id] = tune;
 			return acc;
 		},
 		{} as { [key: string]: TuneFull }
-	);
+	));
 
 	function updateCookie(name: string, value: string) {
 		if (!value) return;
@@ -201,13 +204,23 @@
 		});
 	}
 
-	$: updateCookie('rememberName', rememberName);
-	$: updateCookie('rememberMelody', rememberMelody);
-	$: updateCookie('selectedRhythm', selectedRhythm);
-	$: updateCookie('sortBy', sortBy);
-	$: updateCookie('onlyFavorite', onlyFavorite);
+	$effect(() => {
+		untrack(() => updateCookie('rememberName', rememberName));
+	});
+	$effect(() => {
+		untrack(() => updateCookie('rememberMelody', rememberMelody));
+	});
+	$effect(() => {
+		untrack(() => updateCookie('selectedRhythm', selectedRhythm));
+	});
+	$effect(() => {
+		untrack(() => updateCookie('sortBy', sortBy));
+	});
+	$effect(() => {
+		untrack(() => updateCookie('onlyFavorite', onlyFavorite));
+	});
 
-	$: dailyTotal = Object.values(dailyData).reduce((acc, count) => acc + count, 0);
+	const dailyTotal = $derived(Object.values(dailyData).reduce((acc, count) => acc + count, 0));
 </script>
 
 <svelte:head>
