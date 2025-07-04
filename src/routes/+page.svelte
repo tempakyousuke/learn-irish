@@ -9,14 +9,16 @@
 	import { getFavorites } from '$core/data/repositories/favoritesRepository';
 	import TuneStats from './TuneStats.svelte';
 	import FilterControls from './FilterControls.svelte';
-	import DailyPlaysTable from './DailyPlaysTable.svelte';
+	// import DailyPlaysTable from './DailyPlaysTable.svelte';
 	import ErrorMessage from '$lib/ui/ErrorMessage.svelte';
 	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
 	import { calcUserTuneStats } from '$lib/utils/userTuneStats';
 	import { untrack } from 'svelte';
 
-	const { data }: {
+	const {
+		data
+	}: {
 		data: {
 			tunes: TuneFull[];
 			formValues: {
@@ -114,18 +116,20 @@
 	}
 
 	// フィルタリング（名前を覚えた・メロディーを覚えた・種類）
-	const filteredTunes = $derived(tunes.filter((tune) => {
-		if ($userId) {
-			// これらはログイン時のみ有効にする
-			if (rememberName === 'yes' && !rememberNameIds.includes(tune.id)) return false;
-			if (rememberName === 'no' && rememberNameIds.includes(tune.id)) return false;
-			if (rememberMelody === 'yes' && !rememberMelodyIds.includes(tune.id)) return false;
-			if (rememberMelody === 'no' && rememberMelodyIds.includes(tune.id)) return false;
-			if (onlyFavorite === 'on' && !favoriteTuneIds.includes(tune.id)) return false;
-		}
-		if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
-		return true;
-	}));
+	const filteredTunes = $derived(
+		tunes.filter((tune) => {
+			if ($userId) {
+				// これらはログイン時のみ有効にする
+				if (rememberName === 'yes' && !rememberNameIds.includes(tune.id)) return false;
+				if (rememberName === 'no' && rememberNameIds.includes(tune.id)) return false;
+				if (rememberMelody === 'yes' && !rememberMelodyIds.includes(tune.id)) return false;
+				if (rememberMelody === 'no' && rememberMelodyIds.includes(tune.id)) return false;
+				if (onlyFavorite === 'on' && !favoriteTuneIds.includes(tune.id)) return false;
+			}
+			if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
+			return true;
+		})
+	);
 
 	function removeLeadingThe(title: string): string {
 		// 大文字小文字を問わず先頭が "The " の場合は取り除く
@@ -136,65 +140,69 @@
 		return title;
 	}
 
-	const sortedTunes = $derived((() => {
-		const arr = [...filteredTunes];
+	const sortedTunes = $derived(
+		(() => {
+			const arr = [...filteredTunes];
 
-		switch (sortBy) {
-			case 'sort_by_number_asc':
-				// tuneNo(文字列)を昇順
-				arr.sort((a, b) => a.tuneNo - b.tuneNo);
-				break;
-			case 'sort_by_number_desc':
-				// tuneNo(文字列)を降順
-				arr.sort((a, b) => b.tuneNo - a.tuneNo);
-				break;
-			case 'sort_by_name_asc':
-				// 曲名 (The を除去) 昇順
-				arr.sort((a, b) => removeLeadingThe(a.name!).localeCompare(removeLeadingThe(b.name!)));
-				break;
-			case 'sort_by_name_desc':
-				// 曲名 (The を除去) 降順
-				arr.sort((a, b) => removeLeadingThe(b.name!).localeCompare(removeLeadingThe(a.name!)));
-				break;
-			case 'sort_by_key_asc':
-				// Key 昇順
-				arr.sort((a, b) => (a.key! + a.mode!).localeCompare(b.key! + b.mode!));
-				break;
-			case 'sort_by_key_desc':
-				// Key 降順
-				arr.sort((a, b) => (b.key! + b.mode!).localeCompare(a.key! + a.mode!));
-				break;
-			case 'sort_by_playcount_asc':
-				// 演奏回数 昇順
-				arr.sort((a, b) => {
-					const playCountA = userTuneStatus[a.id]?.playCount || 0;
-					const playCountB = userTuneStatus[b.id]?.playCount || 0;
-					return playCountA - playCountB;
-				});
-				break;
-			case 'sort_by_playcount_desc':
-				// 演奏回数 降順
-				arr.sort((a, b) => {
-					const playCountA = userTuneStatus[a.id]?.playCount || 0;
-					const playCountB = userTuneStatus[b.id]?.playCount || 0;
-					return playCountB - playCountA;
-				});
-				break;
-			default:
-				// それ以外の場合は並び替えしない
-				break;
-		}
+			switch (sortBy) {
+				case 'sort_by_number_asc':
+					// tuneNo(文字列)を昇順
+					arr.sort((a, b) => a.tuneNo - b.tuneNo);
+					break;
+				case 'sort_by_number_desc':
+					// tuneNo(文字列)を降順
+					arr.sort((a, b) => b.tuneNo - a.tuneNo);
+					break;
+				case 'sort_by_name_asc':
+					// 曲名 (The を除去) 昇順
+					arr.sort((a, b) => removeLeadingThe(a.name!).localeCompare(removeLeadingThe(b.name!)));
+					break;
+				case 'sort_by_name_desc':
+					// 曲名 (The を除去) 降順
+					arr.sort((a, b) => removeLeadingThe(b.name!).localeCompare(removeLeadingThe(a.name!)));
+					break;
+				case 'sort_by_key_asc':
+					// Key 昇順
+					arr.sort((a, b) => (a.key! + a.mode!).localeCompare(b.key! + b.mode!));
+					break;
+				case 'sort_by_key_desc':
+					// Key 降順
+					arr.sort((a, b) => (b.key! + b.mode!).localeCompare(a.key! + a.mode!));
+					break;
+				case 'sort_by_playcount_asc':
+					// 演奏回数 昇順
+					arr.sort((a, b) => {
+						const playCountA = userTuneStatus[a.id]?.playCount || 0;
+						const playCountB = userTuneStatus[b.id]?.playCount || 0;
+						return playCountA - playCountB;
+					});
+					break;
+				case 'sort_by_playcount_desc':
+					// 演奏回数 降順
+					arr.sort((a, b) => {
+						const playCountA = userTuneStatus[a.id]?.playCount || 0;
+						const playCountB = userTuneStatus[b.id]?.playCount || 0;
+						return playCountB - playCountA;
+					});
+					break;
+				default:
+					// それ以外の場合は並び替えしない
+					break;
+			}
 
-		return arr;
-	})());
+			return arr;
+		})()
+	);
 
-	const tuneObjects = $derived(tunes.reduce(
-		(acc, tune) => {
-			acc[tune.id] = tune;
-			return acc;
-		},
-		{} as { [key: string]: TuneFull }
-	));
+	const tuneObjects = $derived(
+		tunes.reduce(
+			(acc, tune) => {
+				acc[tune.id] = tune;
+				return acc;
+			},
+			{} as { [key: string]: TuneFull }
+		)
+	);
 
 	function updateCookie(name: string, value: string) {
 		if (!value) return;
@@ -256,7 +264,7 @@
 		{:else}
 			<TuneStats {tunes} {rememberNameIds} {rememberMelodyIds} {totalCount} {dailyTotal} />
 
-			<DailyPlaysTable {dailyData} {tuneObjects} />
+			<!-- <DailyPlaysTable {dailyData} {tuneObjects} /> -->
 			<FilterControls
 				isLoggedIn={!!$userId}
 				bind:rememberName
