@@ -28,7 +28,6 @@ p {
 }
 
 a {
-	@apply text-emerald-600 hover:text-emerald-800 transition-colors no-underline;
 	text-decoration: none;
 }
 
