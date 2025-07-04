@@ -139,6 +139,11 @@ export const getMonthlyStatistics = async (yearMonth: string, uid: string) => {
 	const currentDate = getDate();
 	let needUpdate = false;
 	for (const date of dates) {
+		// 翌日以降のデータは0を設定し、処理はしない
+		if (date > currentDate) {
+			statistics[date] = 0;
+			continue;
+		}
 		if (statisticsData[date] !== undefined) {
 			statistics[date] = statisticsData[date];
 		} else {

@@ -88,55 +88,14 @@
 		}
 		monthlyDatas = await getMonthlyDatas(uid);
 
-		// データ取得後にグラフを更新
-		// if (weeklyChart) {
-		// 	updateWeeklyChart();
-		// }
-
 		// ユーザー統計も取得
 		await fetchUserTuneStats(uid);
 		selectMonth(getDate().slice(0, 7));
 	});
 
 	onMount(() => {
-		// ウィークリーチャートを初期化
-		// initWeeklyChart();
 		fetchTunes();
 	});
-
-	// ウィークリーチャートの初期化
-	// function initWeeklyChart() {
-	// 	if (weeklyChartCanvas) {
-	// 		weeklyChart = new Chart(weeklyChartCanvas, {
-	// 			type: 'line',
-	// 			data: {
-	// 				labels: dates.map((date) => date.slice(5)),
-	// 				datasets: [
-	// 					{
-	// 						label: 'Weekly Counts',
-	// 						data: Object.values(weeklyCounts),
-	// 						backgroundColor: 'rgba(75, 192, 192, 0.6)',
-	// 						borderColor: 'rgba(75, 192, 192, 1)',
-	// 						borderWidth: 2
-	// 					}
-	// 				]
-	// 			},
-	// 			options: {
-	// 				responsive: true,
-	// 				maintainAspectRatio: false
-	// 			}
-	// 		});
-	// 	}
-	// }
-
-	// ウィークリーチャートの更新
-	// function updateWeeklyChart() {
-	// 	if (weeklyChart) {
-	// 		weeklyChart.data.labels = dates.map((date) => date.slice(5));
-	// 		weeklyChart.data.datasets[0].data = Object.values(weeklyCounts);
-	// 		weeklyChart.update();
-	// 	}
-	// }
 
 	// マンスリーチャートの初期化
 	function initMonthlyChart() {
@@ -188,13 +147,6 @@
 		});
 	};
 </script>
-
-<!-- <div class="bg-white shadow-md rounded-lg p-4 mb-8">
-	<h3 class="text-xl font-bold mb-4">{$t('recent_plays')}</h3>
-	<div style="height: 300px;">
-		<canvas bind:this={weeklyChartCanvas}></canvas>
-	</div>
-</div> -->
 
 {#if selectedMonth}
 	<div class="max-w-[800px] mx-auto bg-white shadow-md rounded-lg p-4 mb-8">
