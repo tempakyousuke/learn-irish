@@ -161,6 +161,22 @@
 				// Key 降順
 				arr.sort((a, b) => (b.key! + b.mode!).localeCompare(a.key! + a.mode!));
 				break;
+			case 'sort_by_playcount_asc':
+				// 演奏回数 昇順
+				arr.sort((a, b) => {
+					const playCountA = userTuneStatus[a.id]?.playCount || 0;
+					const playCountB = userTuneStatus[b.id]?.playCount || 0;
+					return playCountA - playCountB;
+				});
+				break;
+			case 'sort_by_playcount_desc':
+				// 演奏回数 降順
+				arr.sort((a, b) => {
+					const playCountA = userTuneStatus[a.id]?.playCount || 0;
+					const playCountB = userTuneStatus[b.id]?.playCount || 0;
+					return playCountB - playCountA;
+				});
+				break;
 			default:
 				// それ以外の場合は並び替えしない
 				break;
@@ -244,6 +260,3 @@
 		<TuneList tunes={sortedTunes} {userTuneStatus} />
 	</div>
 </div>
-
-<style type="postcss">
-</style>

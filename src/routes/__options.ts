@@ -56,5 +56,7 @@ export const sortByOption = derived(t, ($t) => [
 	{ label: $t('sort_name_asc'), value: 'sort_by_name_asc', id: 'sortByName_asc' },
 	{ label: $t('sort_name_desc'), value: 'sort_by_name_desc', id: 'sortByName_desc' },
 	{ label: $t('sort_key_asc'), value: 'sort_by_key_asc', id: 'sortByKey_asc' },
-	{ label: $t('sort_key_desc'), value: 'sort_by_key_desc', id: 'sortByKey_desc' }
+	{ label: $t('sort_key_desc'), value: 'sort_by_key_desc', id: 'sortByKey_desc' },
+	{ label: $t('sort_playcount_asc'), value: 'sort_by_playcount_asc', id: 'sortByPlaycount_asc' },
+	{ label: $t('sort_playcount_desc'), value: 'sort_by_playcount_desc', id: 'sortByPlaycount_desc' }
 ]);

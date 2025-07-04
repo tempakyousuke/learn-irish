@@ -36,6 +36,8 @@
 	"sort_name_desc": "Tune Name (Z → A)",
 	"sort_key_asc": "Key (Ascending)",
 	"sort_key_desc": "Key (Descending)",
+	"sort_playcount_asc": "Play Count (Ascending)",
+	"sort_playcount_desc": "Play Count (Descending)",
 	"email": "Email",
 	"password": "Password",
 	"validation_email_required": "Email is required",

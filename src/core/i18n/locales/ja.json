@@ -36,6 +36,8 @@
 	"sort_name_desc": "曲名(降順)",
 	"sort_key_asc": "Key(昇順)",
 	"sort_key_desc": "Key(降順)",
+	"sort_playcount_asc": "演奏回数(昇順)",
+	"sort_playcount_desc": "演奏回数(降順)",
 	"email": "メールアドレス",
 	"password": "パスワード",
 	"validation_email_required": "メールアドレスは必須です",
