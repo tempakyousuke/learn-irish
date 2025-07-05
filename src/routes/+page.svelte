@@ -339,6 +339,18 @@
 	{/if}
 
 	<div class="mx-auto mt-10">
+		{#if totalPages > 1}
+			<Pagination
+				{currentPage}
+				{totalPages}
+				{itemsPerPage}
+				totalItems={sortedTunes.length}
+				onPageChange={handlePageChange}
+				onItemsPerPageChange={handleItemsPerPageChange}
+				compact={true}
+			/>
+		{/if}
+		
 		<TuneList tunes={paginatedTunes()} {userTuneStatus} {dailyData} />
 
 		{#if totalPages > 1}
@@ -349,6 +361,7 @@
 				totalItems={sortedTunes.length}
 				onPageChange={handlePageChange}
 				onItemsPerPageChange={handleItemsPerPageChange}
+				compact={false}
 			/>
 		{/if}
 	</div>
