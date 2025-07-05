@@ -39,7 +39,7 @@
 				},
 				{
 					description: setData.description,
-					order: setData.order || 0
+					setNo: setData.setNo
 				}
 			);
 

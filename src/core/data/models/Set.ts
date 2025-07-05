@@ -18,8 +18,8 @@ export interface SetBase {
  * セットのメタ情報に関するインターフェース
  */
 export interface SetMetadata {
-	/** 表示順序 */
-	order?: number;
+	/** セット番号（Google SheetsのSet Noに対応） */
+	setNo?: string;
 	/** セットの説明 */
 	description?: string;
 	/** 作成日 */
@@ -47,6 +47,7 @@ export interface SetFull extends SetBase, SetMetadata, SetComposition {}
  * セットの基本的な表示に必要な情報
  */
 export interface SetDisplay extends SetBase {
+	setNo?: string;
 	tuneCount: number;
 	description?: string;
 }
@@ -104,7 +105,7 @@ export function parseSetData(data: Record<string, unknown>, id: string): SetFull
 			tuneCount: tuneIds.length
 		},
 		{
-			order: typeof data.order === 'number' ? data.order : undefined,
+			setNo: typeof data.setNo === 'string' ? data.setNo : undefined,
 			description: typeof data.description === 'string' ? data.description : undefined,
 			createdAt: typeof data.createdAt === 'string' ? data.createdAt : undefined,
 			updatedAt: typeof data.updatedAt === 'string' ? data.updatedAt : undefined

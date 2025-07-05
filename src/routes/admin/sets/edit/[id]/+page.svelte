@@ -36,7 +36,7 @@
 				name: setData.name,
 				videoLink: setData.videoLink,
 				description: setData.description,
-				order: setData.order || 0,
+				setNo: setData.setNo,
 				tuneIds,
 				tuneCount: tuneIds.length
 			});

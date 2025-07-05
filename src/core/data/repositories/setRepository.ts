@@ -57,7 +57,7 @@ export class SetRepository {
 
 		try {
 			// Firestoreからセットデータを取得
-			const qu = query(collection(db, 'sets'), orderBy('order', 'asc'));
+			const qu = query(collection(db, 'sets'), orderBy('setNo', 'asc'));
 			const snapshot = await getDocs(qu);
 
 			// 取得したデータを処理

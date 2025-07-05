@@ -18,7 +18,7 @@
 		name: '',
 		videoLink: '',
 		description: '',
-		order: 0
+		setNo: ''
 	};
 
 	let selectedTuneIds: string[] = [];
@@ -33,7 +33,7 @@
 			name: set.name || '',
 			videoLink: set.videoLink || '',
 			description: set.description || '',
-			order: set.order || 0
+			setNo: set.setNo || ''
 		};
 		selectedTuneIds = [...(set.tuneIds || [])];
 	}
@@ -148,15 +148,15 @@
 			</div>
 
 			<div>
-				<label for="order" class="block text-sm font-medium text-gray-700 mb-1">
-					表示順序
+				<label for="setNo" class="block text-sm font-medium text-gray-700 mb-1">
+					セット番号
 				</label>
 				<input
-					id="order"
-					type="number"
-					bind:value={formData.order}
+					id="setNo"
+					type="text"
+					bind:value={formData.setNo}
 					class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-					min="0"
+					placeholder="例: SET001, SET-A1"
 				/>
 			</div>
 		</div>

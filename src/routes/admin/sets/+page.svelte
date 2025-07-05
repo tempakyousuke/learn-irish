@@ -136,8 +136,8 @@
 								{/if}
 								<div class="flex items-center space-x-4 text-sm text-gray-500">
 									<span>{set.tuneCount}曲</span>
-									{#if set.order !== undefined}
-										<span>順序: {set.order}</span>
+									{#if set.setNo}
+										<span>セット番号: {set.setNo}</span>
 									{/if}
 									{#if set.createdAt}
 										<span>作成: {new Date(set.createdAt).toLocaleDateString('ja-JP')}</span>
