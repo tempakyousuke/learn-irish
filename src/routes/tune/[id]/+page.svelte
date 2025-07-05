@@ -14,14 +14,22 @@
 		removeFavorite
 	} from '$core/data/repositories/favoritesRepository';
 	import { siteTitle } from '$core/config/configService';
+	import SetVideoPlayer from '$lib/video/SetVideoPlayer.svelte';
+	import SetTuneList from '$lib/video/SetTuneList.svelte';
+	import type { SetFull } from '$data/models/Set';
+	import type { TuneFull } from '$data/models/Tune';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
 
 	export let data: {
 		tune: Tune;
+		sets: SetFull[];
+		setTunes: TuneFull[][];
 	};
 	const tune = data.tune;
+	const sets = data.sets;
+	const setTunes = data.setTunes;
 	const youtubeId = getYoutubeId(tune.link);
 	let rememberName = false;
 	let rememberMelody = false;
@@ -274,6 +282,31 @@
 				</div>
 			</div>
 		{/if}
+	{/if}
+
+	<!-- セット動画セクション -->
+	{#if sets.length > 0}
+		<div class="space-y-6">
+			<h2 class="text-xl font-bold text-teal-800 text-center">この曲が含まれるセット</h2>
+			
+			{#each sets as set, index}
+				<div class="bg-teal-50 rounded-2xl p-6 space-y-4">
+					<!-- セット動画プレイヤー -->
+					<SetVideoPlayer {set} size="medium" />
+					
+					<!-- セット内の曲リスト -->
+					{#if setTunes[index] && setTunes[index].length > 0}
+						<SetTuneList 
+							tunes={setTunes[index]} 
+							currentTuneId={tune.id}
+							showRhythm={true}
+							showKey={true}
+							compact={false}
+						/>
+					{/if}
+				</div>
+			{/each}
+		</div>
 	{/if}
 </div>
 
