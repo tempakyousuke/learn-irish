@@ -1,6 +1,6 @@
-import { getDocs, collection, query, orderBy, FirestoreError, getDoc, doc } from 'firebase/firestore';
-import type { SetFull } from '$data/models/Set';
-import { parseSetData } from '$data/models/Set';
+import { getDocs, collection, query, orderBy, FirestoreError, getDoc, doc, setDoc, deleteDoc, addDoc, updateDoc } from 'firebase/firestore';
+import type { SetFull, SetBase, SetMetadata, SetComposition } from '$data/models/Set';
+import { parseSetData, createSet } from '$data/models/Set';
 import { createCache } from '$utils/cacheStorage';
 import { db } from '$data/firebase/firebaseClient';
 
@@ -156,6 +156,103 @@ export class SetRepository {
 			console.error(`曲ID(${tuneId})のセット取得エラー:`, error);
 			throw new Error(
 				`セットデータの取得に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * 新しいセットを追加する
+	 * @param setData セットの基本データ
+	 * @param composition セットの構成データ
+	 * @param metadata セットのメタデータ
+	 * @returns 作成されたセットのID
+	 * @throws {Error} セット作成に失敗した場合
+	 */
+	public static async addSet(
+		setData: SetBase,
+		composition: SetComposition,
+		metadata: Partial<SetMetadata> = {}
+	): Promise<string> {
+		try {
+			const now = new Date().toISOString();
+			const setToCreate = createSet(setData, composition, {
+				...metadata,
+				createdAt: now,
+				updatedAt: now
+			});
+
+			// IDが指定されている場合は setDoc を使用
+			if (setData.id) {
+				const docRef = doc(db, 'sets', setData.id);
+				await setDoc(docRef, setToCreate);
+				
+				// キャッシュをクリア
+				this.refreshSets();
+				return setData.id;
+			} else {
+				// IDが指定されていない場合は addDoc を使用
+				const docRef = await addDoc(collection(db, 'sets'), {
+					...setToCreate,
+					id: '' // addDocで自動生成されるIDで後で更新
+				});
+				
+				// 生成されたIDでドキュメントを更新
+				await updateDoc(docRef, { id: docRef.id });
+				
+				// キャッシュをクリア
+				this.refreshSets();
+				return docRef.id;
+			}
+		} catch (error) {
+			console.error('セット作成エラー:', error);
+			throw new Error(
+				`セットの作成に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * セットを更新する
+	 * @param setId セットのID
+	 * @param updates 更新データ
+	 * @throws {Error} セット更新に失敗した場合
+	 */
+	public static async updateSet(setId: string, updates: Partial<SetFull>): Promise<void> {
+		try {
+			const docRef = doc(db, 'sets', setId);
+			const now = new Date().toISOString();
+			
+			await updateDoc(docRef, {
+				...updates,
+				updatedAt: now
+			});
+
+			// キャッシュをクリア
+			this.refreshSets();
+		} catch (error) {
+			console.error('セット更新エラー:', error);
+			throw new Error(
+				`セットの更新に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * セットを削除する
+	 * @param setId セットのID
+	 * @throws {Error} セット削除に失敗した場合
+	 */
+	public static async deleteSet(setId: string): Promise<void> {
+		try {
+			const docRef = doc(db, 'sets', setId);
+			await deleteDoc(docRef);
+
+			// キャッシュをクリア
+			this.refreshSets();
+		} catch (error) {
+			console.error('セット削除エラー:', error);
+			throw new Error(
+				`セットの削除に失敗しました: ${error instanceof Error ? error.message : String(error)}`
 			);
 		}
 	}

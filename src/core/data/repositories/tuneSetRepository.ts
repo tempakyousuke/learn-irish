@@ -1,6 +1,6 @@
-import { getDocs, collection, query, where, orderBy, FirestoreError } from 'firebase/firestore';
-import type { TuneSetFull } from '$data/models/TuneSet';
-import { parseTuneSetData } from '$data/models/TuneSet';
+import { getDocs, collection, query, where, orderBy, FirestoreError, setDoc, doc, deleteDoc, writeBatch } from 'firebase/firestore';
+import type { TuneSetFull, TuneSetBase, TuneSetMetadata } from '$data/models/TuneSet';
+import { parseTuneSetData, createTuneSet, generateTuneSetId } from '$data/models/TuneSet';
 import { createCache } from '$utils/cacheStorage';
 import { db } from '$data/firebase/firebaseClient';
 
@@ -182,6 +182,130 @@ export class TuneSetRepository {
 			console.error(`セットID(${setId})の曲関係性取得エラー:`, error);
 			throw new Error(
 				`曲-セット関係性データの取得に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * 新しい曲-セット関係性を追加する
+	 * @param tuneSetData 曲-セット関係性の基本データ
+	 * @param metadata 曲-セット関係性のメタデータ
+	 * @returns 作成された関係性のID
+	 * @throws {Error} 関係性作成に失敗した場合
+	 */
+	public static async addTuneSet(
+		tuneSetData: TuneSetBase,
+		metadata: Partial<TuneSetMetadata> = {}
+	): Promise<string> {
+		try {
+			const now = new Date().toISOString();
+			const tuneSetToCreate = createTuneSet(tuneSetData, {
+				...metadata,
+				createdAt: now,
+				updatedAt: now
+			});
+
+			const docRef = doc(db, 'tuneSets', tuneSetData.id);
+			await setDoc(docRef, tuneSetToCreate);
+
+			// キャッシュをクリア
+			this.refreshTuneSets();
+			return tuneSetData.id;
+		} catch (error) {
+			console.error('曲-セット関係性作成エラー:', error);
+			throw new Error(
+				`曲-セット関係性の作成に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * セットに曲を一括追加する
+	 * @param setId セットのID
+	 * @param tuneIds 追加する曲のID配列
+	 * @throws {Error} 一括追加に失敗した場合
+	 */
+	public static async addTunesToSet(setId: string, tuneIds: string[]): Promise<void> {
+		try {
+			const batch = writeBatch(db);
+			const now = new Date().toISOString();
+
+			tuneIds.forEach((tuneId, index) => {
+				const tuneSetId = generateTuneSetId(tuneId, setId);
+				const tuneSetData = createTuneSet(
+					{
+						id: tuneSetId,
+						tuneId,
+						setId,
+						position: index + 1
+					},
+					{
+						createdAt: now,
+						updatedAt: now
+					}
+				);
+
+				const docRef = doc(db, 'tuneSets', tuneSetId);
+				batch.set(docRef, tuneSetData);
+			});
+
+			await batch.commit();
+
+			// キャッシュをクリア
+			this.refreshTuneSets();
+		} catch (error) {
+			console.error('曲の一括追加エラー:', error);
+			throw new Error(
+				`曲の一括追加に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * セットから曲を削除する
+	 * @param tuneId 曲のID
+	 * @param setId セットのID
+	 * @throws {Error} 曲削除に失敗した場合
+	 */
+	public static async removeTuneFromSet(tuneId: string, setId: string): Promise<void> {
+		try {
+			const tuneSetId = generateTuneSetId(tuneId, setId);
+			const docRef = doc(db, 'tuneSets', tuneSetId);
+			await deleteDoc(docRef);
+
+			// キャッシュをクリア
+			this.refreshTuneSets();
+		} catch (error) {
+			console.error('曲削除エラー:', error);
+			throw new Error(
+				`曲の削除に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * セットに関連する全ての曲関係性を削除する
+	 * @param setId セットのID
+	 * @throws {Error} 削除に失敗した場合
+	 */
+	public static async removeAllTunesFromSet(setId: string): Promise<void> {
+		try {
+			const tuneSets = await this.getTuneSetsBySetId(setId);
+			const batch = writeBatch(db);
+
+			tuneSets.forEach((tuneSet) => {
+				const docRef = doc(db, 'tuneSets', tuneSet.id);
+				batch.delete(docRef);
+			});
+
+			await batch.commit();
+
+			// キャッシュをクリア
+			this.refreshTuneSets();
+		} catch (error) {
+			console.error('セットの全曲削除エラー:', error);
+			throw new Error(
+				`セットの全曲削除に失敗しました: ${error instanceof Error ? error.message : String(error)}`
 			);
 		}
 	}
