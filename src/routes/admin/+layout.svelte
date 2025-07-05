@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { userStore, type LoginUser } from '$core/store/userStore';
+	import AdminBreadcrumb from '$lib/components/AdminBreadcrumb.svelte';
 
 	const ADMIN_UID = 'dci2JB1vI3VYruel4U6L6q7N0As1';
 
@@ -28,5 +29,8 @@
 		</div>
 	</div>
 {:else}
-	<slot />
+	<div class="container mx-auto p-4">
+		<AdminBreadcrumb />
+		<slot />
+	</div>
 {/if}

@@ -11,7 +11,7 @@
 		if (saving) return;
 
 		saving = true;
-		
+
 		try {
 			const { setData, tuneIds } = event.detail;
 
@@ -55,24 +55,11 @@
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
-		<div class="mb-6">
-			<h1 class="text-3xl font-bold text-teal-800 mb-2">新しいセット作成</h1>
-			<nav class="text-sm text-gray-600">
-				<a href="/admin/sets" class="hover:text-teal-600">セット管理</a>
-				<span class="mx-2">></span>
-				<span>新規作成</span>
-			</nav>
+	{#if saving}
+		<div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6">
+			セットを作成中です...
 		</div>
+	{/if}
 
-		{#if saving}
-			<div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6">
-				セットを作成中です...
-			</div>
-		{/if}
-
-		<SetForm
-			mode="create"
-			on:submit={handleSubmit}
-			on:cancel={handleCancel}
-		/>
+	<SetForm mode="create" on:submit={handleSubmit} on:cancel={handleCancel} />
 </div>
