@@ -23,10 +23,10 @@
 	const db = getFirestore();
 
 	const { data }: { data: { tune: Tune; sets: SetFull[]; setTunes: TuneFull[][] } } = $props();
-	const tune = data.tune;
-	const sets = data.sets;
-	const setTunes = data.setTunes;
-	const youtubeId = getYoutubeId(tune.link);
+	const tune = $derived(data.tune);
+	const sets = $derived(data.sets);
+	const setTunes = $derived(data.setTunes);
+	const youtubeId = $derived(getYoutubeId(tune.link));
 	let rememberName = $state<boolean>(false);
 	let rememberMelody = $state<boolean>(false);
 	let playCount = $state<number>(0);
@@ -38,35 +38,48 @@
 	let playHistory = $state<{ [key: string]: number }>({});
 	const date = getDate();
 
-	userStore.subscribe(async (value) => {
-		uid = value.uid;
-		if (!uid) {
-			return;
-		}
-		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		const data = await getDoc(docRef);
-		const userTune = data.data();
-		if (userTune?.rememberName) {
-			rememberName = userTune.rememberName as boolean;
-		}
-		if (userTune?.rememberMelody) {
-			rememberMelody = userTune.rememberMelody as boolean;
-		}
-		if (userTune?.playCount) {
-			playCount = userTune.playCount as number;
-		}
-		if (userTune?.note) {
-			note = userTune.note as string;
-		}
-		if (userTune?.playHistory) {
-			playHistory = userTune.playHistory as { [key: string]: number };
-		}
-		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
-		const dailyData = (await getDoc(dailyDocRef)).data() || {};
-		if (dailyData[tune.id]) {
-			dailyPlayCount = dailyData[tune.id];
-		}
-		isBookmarked = await checkFavorite(uid, tune.id);
+	$effect(() => {
+		(async () => {
+			const user = $userStore;
+			uid = user.uid;
+			if (!uid) {
+				return;
+			}
+
+			// Reset state when tune changes
+			rememberName = false;
+			rememberMelody = false;
+			playCount = 0;
+			note = '';
+			playHistory = {};
+			dailyPlayCount = 0;
+			isBookmarked = false;
+
+			const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
+			const data = await getDoc(docRef);
+			const userTune = data.data();
+			if (userTune?.rememberName) {
+				rememberName = userTune.rememberName as boolean;
+			}
+			if (userTune?.rememberMelody) {
+				rememberMelody = userTune.rememberMelody as boolean;
+			}
+			if (userTune?.playCount) {
+				playCount = userTune.playCount as number;
+			}
+			if (userTune?.note) {
+				note = userTune.note as string;
+			}
+			if (userTune?.playHistory) {
+				playHistory = userTune.playHistory as { [key: string]: number };
+			}
+			const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
+			const dailyData = (await getDoc(dailyDocRef)).data() || {};
+			if (dailyData[tune.id]) {
+				dailyPlayCount = dailyData[tune.id];
+			}
+			isBookmarked = await checkFavorite(uid, tune.id);
+		})();
 	});
 
 	const updateRememberName = async () => {
@@ -131,7 +144,7 @@
 		);
 		toast.success('メモを保存しました');
 	};
-	const title = `${tune.name} - ${siteTitle}`;
+	const title = $derived(`${tune.name} - ${siteTitle}`);
 </script>
 
 <svelte:head>
