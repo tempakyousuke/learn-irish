@@ -86,8 +86,8 @@
 				{:else}
 					<Button
 						buttonClass="px-3 py-1 text-sm min-w-[40px]"
-						bgColorClass={currentPage === page ? 'bg-teal-600' : 'bg-gray-200'}
-						textColorClass={currentPage === page ? 'text-white' : 'text-gray-700'}
+						bgColorClass={currentPage === (page as number) ? 'bg-teal-600' : 'bg-gray-200'}
+						textColorClass={currentPage === (page as number) ? 'text-white' : 'text-gray-700'}
 						on:click={() => handlePageChange(page as number)}
 					>
 						{page}

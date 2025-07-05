@@ -212,7 +212,15 @@
 	});
 
 	// フィルターが変更されたら1ページ目にリセット
+	let isInitialized = $state(false);
+
 	$effect(() => {
+		// 初回実行時はリセットしない
+		if (!isInitialized) {
+			isInitialized = true;
+			return;
+		}
+
 		// フィルター変更を検知するために依存関係を追加
 		rememberName;
 		rememberMelody;
@@ -221,9 +229,7 @@
 		onlyFavorite;
 
 		// フィルター変更時に1ページ目にリセット
-		untrack(() => {
-			currentPage = 1;
-		});
+		currentPage = 1;
 	});
 
 	// 表示用のデータをページネーションで切り取り

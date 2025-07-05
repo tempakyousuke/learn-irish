@@ -10,10 +10,7 @@
 	export let buttonClass = '';
 	export let className = '';
 
-	let additionalClass = `${buttonClass} ${bgColorClass} ${textColorClass}`;
-	if (!disabled) {
-		additionalClass += ' hover:bg-opacity-80';
-	}
+	$: additionalClass = `${buttonClass} ${bgColorClass} ${textColorClass}${!disabled ? ' hover:bg-opacity-80' : ''}`;
 
 	$: props = {
 		block,
