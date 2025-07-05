@@ -21,5 +21,13 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth.uid == 'dci2JB1vI3VYruel4U6L6q7N0As1';
     }
+    match /sets/{id} {
+      allow read: if true;
+      allow write: if request.auth.uid == 'dci2JB1vI3VYruel4U6L6q7N0As1';
+    }
+    match /tuneSets/{id} {
+      allow read: if true;
+      allow write: if request.auth.uid == 'dci2JB1vI3VYruel4U6L6q7N0As1';
+    }
   }
 }
