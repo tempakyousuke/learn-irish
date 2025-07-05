@@ -18,16 +18,18 @@
 			<h4 class="text-lg font-semibold text-teal-800 mb-3">
 				{$t('tunes_in_set')} ({$t('set_tune_count', { values: { count: sortedTunes.length } })})
 			</h4>
-			
+
 			<div class="space-y-2">
 				{#each sortedTunes as tune, index}
-					<div 
+					<div
 						class="flex items-center space-x-3 p-2 rounded-lg transition-colors
 						{currentTuneId === tune.id ? 'bg-teal-50 border-l-4 border-teal-500' : 'hover:bg-gray-50'}"
 					>
 						<!-- 演奏順序 -->
 						<div class="flex-shrink-0">
-							<span class="bg-teal-100 text-teal-800 text-sm px-3 py-1 rounded-full font-medium min-w-[32px] text-center">
+							<span
+								class="bg-teal-100 text-teal-800 text-sm px-3 py-1 rounded-full font-medium min-w-[32px] text-center"
+							>
 								{index + 1}
 							</span>
 						</div>
@@ -35,7 +37,7 @@
 						<!-- 曲情報 -->
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center space-x-2">
-								<a 
+								<a
 									href="/tune/{tune.id}"
 									class="text-teal-600 hover:text-teal-800 hover:underline font-medium truncate
 									{currentTuneId === tune.id ? 'text-teal-800 font-semibold' : ''}"
@@ -48,7 +50,7 @@
 									</span>
 								{/if}
 							</div>
-							
+
 							{#if !compact}
 								<div class="flex items-center space-x-2 mt-1">
 									<span class="text-sm text-gray-500">
@@ -75,13 +77,18 @@
 
 						<!-- ナビゲーション矢印 -->
 						<div class="flex-shrink-0">
-							<a 
+							<a
 								href="/tune/{tune.id}"
 								class="text-gray-400 hover:text-teal-600 transition-colors"
 								title="曲ページへ移動"
 							>
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 5l7 7-7 7"
+									/>
 								</svg>
 							</a>
 						</div>
@@ -94,9 +101,7 @@
 			<h4 class="text-lg font-semibold text-teal-800 mb-3">
 				{$t('tunes_in_set')}
 			</h4>
-			<p class="text-gray-500 text-center py-4">
-				曲データを読み込み中...
-			</p>
+			<p class="text-gray-500 text-center py-4">曲データを読み込み中...</p>
 		</div>
 	{/if}
 </div>

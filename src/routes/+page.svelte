@@ -11,6 +11,7 @@
 	import FilterControls from './FilterControls.svelte';
 	// import DailyPlaysTable from './DailyPlaysTable.svelte';
 	import ErrorMessage from '$lib/ui/ErrorMessage.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
 	import { calcUserTuneStats } from '$lib/utils/userTuneStats';
@@ -27,6 +28,8 @@
 				selectedRhythm: string;
 				sortBy: string;
 				onlyFavorite: string;
+				currentPage: string;
+				itemsPerPage: string;
 			};
 		};
 	} = $props();
@@ -50,6 +53,10 @@
 
 	// 追加: ソート方法を保存する変数
 	let sortBy = $state<string>(data.formValues.sortBy);
+
+	// ページネーション関連の状態
+	let currentPage = $state<number>(parseInt(data.formValues.currentPage) || 1);
+	let itemsPerPage = $state<number>(parseInt(data.formValues.itemsPerPage) || 20);
 
 	// ユーザーデータの読み込み状態
 	let isUserDataLoading = $state<boolean>(false);
@@ -194,6 +201,38 @@
 		})()
 	);
 
+	// ページネーション計算
+	const totalPages = $derived(Math.ceil(sortedTunes.length / itemsPerPage));
+
+	// 現在のページが範囲外の場合は1ページ目にリセット
+	$effect(() => {
+		if (currentPage > totalPages && totalPages > 0) {
+			currentPage = 1;
+		}
+	});
+
+	// フィルターが変更されたら1ページ目にリセット
+	$effect(() => {
+		// フィルター変更を検知するために依存関係を追加
+		rememberName;
+		rememberMelody;
+		selectedRhythm;
+		sortBy;
+		onlyFavorite;
+
+		// フィルター変更時に1ページ目にリセット
+		untrack(() => {
+			currentPage = 1;
+		});
+	});
+
+	// 表示用のデータをページネーションで切り取り
+	const paginatedTunes = $derived(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return sortedTunes.slice(startIndex, endIndex);
+	});
+
 	const tuneObjects = $derived(
 		tunes.reduce(
 			(acc, tune) => {
@@ -227,6 +266,22 @@
 	$effect(() => {
 		updateCookie('onlyFavorite', onlyFavorite);
 	});
+	$effect(() => {
+		updateCookie('currentPage', currentPage.toString());
+	});
+	$effect(() => {
+		updateCookie('itemsPerPage', itemsPerPage.toString());
+	});
+
+	// ページネーション関連のイベントハンドラー
+	function handlePageChange(newPage: number) {
+		currentPage = newPage;
+	}
+
+	function handleItemsPerPageChange(newItemsPerPage: number) {
+		itemsPerPage = newItemsPerPage;
+		currentPage = 1; // ページサイズが変更されたら1ページ目にリセット
+	}
 
 	const dailyTotal = $derived(Object.values(dailyData).reduce((acc, count) => acc + count, 0));
 </script>
@@ -278,6 +333,17 @@
 	{/if}
 
 	<div class="mx-auto mt-10">
-		<TuneList tunes={sortedTunes} {userTuneStatus} {dailyData} />
+		<TuneList tunes={paginatedTunes()} {userTuneStatus} {dailyData} />
+
+		{#if totalPages > 1}
+			<Pagination
+				{currentPage}
+				{totalPages}
+				{itemsPerPage}
+				totalItems={sortedTunes.length}
+				onPageChange={handlePageChange}
+				onItemsPerPageChange={handleItemsPerPageChange}
+			/>
+		{/if}
 	</div>
 </div>

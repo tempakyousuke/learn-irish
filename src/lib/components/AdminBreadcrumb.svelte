@@ -13,9 +13,7 @@
 		const path = $page.url.pathname;
 		const segments = path.split('/').filter(Boolean);
 
-		const items: BreadcrumbItem[] = [
-			{ href: '/', label: 'ホーム' }
-		];
+		const items: BreadcrumbItem[] = [{ href: '/', label: 'ホーム' }];
 
 		// segments = ['admin', 'sets', 'add'] の場合
 		for (let i = 0; i < segments.length; i++) {

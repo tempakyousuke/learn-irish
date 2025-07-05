@@ -16,7 +16,7 @@
 		if (saving) return;
 
 		saving = true;
-		
+
 		try {
 			const { setData, tuneIds } = event.detail;
 
@@ -58,25 +58,20 @@
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">
-		<div class="mb-6">
-			<h1 class="text-3xl font-bold text-teal-800 mb-2">セット編集: {data.set.name}</h1>
-			<nav class="text-sm text-gray-600">
-				<a href="/admin/sets" class="hover:text-teal-600">セット管理</a>
-				<span class="mx-2">></span>
-				<span>編集</span>
-			</nav>
+	<div class="mb-6">
+		<h1 class="text-3xl font-bold text-teal-800 mb-2">セット編集: {data.set.name}</h1>
+		<nav class="text-sm text-gray-600">
+			<a href="/admin/sets" class="hover:text-teal-600">セット管理</a>
+			<span class="mx-2">></span>
+			<span>編集</span>
+		</nav>
+	</div>
+
+	{#if saving}
+		<div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6">
+			セットを更新中です...
 		</div>
+	{/if}
 
-		{#if saving}
-			<div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6">
-				セットを更新中です...
-			</div>
-		{/if}
-
-		<SetForm
-			set={data.set}
-			mode="edit"
-			on:submit={handleSubmit}
-			on:cancel={handleCancel}
-		/>
+	<SetForm set={data.set} mode="edit" on:submit={handleSubmit} on:cancel={handleCancel} />
 </div>

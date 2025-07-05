@@ -92,8 +92,10 @@ export function isValidSet(set: Partial<SetFull>): set is SetFull {
  * @returns 変換されたSet型データ
  */
 export function parseSetData(data: Record<string, unknown>, id: string): SetFull {
-	const tuneIds = Array.isArray(data.tuneIds) ? data.tuneIds.filter((id): id is string => typeof id === 'string') : [];
-	
+	const tuneIds = Array.isArray(data.tuneIds)
+		? data.tuneIds.filter((id): id is string => typeof id === 'string')
+		: [];
+
 	return createSet(
 		{
 			id,

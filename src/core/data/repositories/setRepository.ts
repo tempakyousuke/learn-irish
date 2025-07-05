@@ -1,4 +1,16 @@
-import { getDocs, collection, query, orderBy, FirestoreError, getDoc, doc, setDoc, deleteDoc, addDoc, updateDoc } from 'firebase/firestore';
+import {
+	getDocs,
+	collection,
+	query,
+	orderBy,
+	FirestoreError,
+	getDoc,
+	doc,
+	setDoc,
+	deleteDoc,
+	addDoc,
+	updateDoc
+} from 'firebase/firestore';
 import type { SetFull, SetBase, SetMetadata, SetComposition } from '$data/models/Set';
 import { parseSetData, createSet } from '$data/models/Set';
 import { createCache } from '$utils/cacheStorage';
@@ -11,10 +23,7 @@ import { db } from '$data/firebase/firebaseClient';
 export class SetRepository {
 	// キャッシュの設定（24時間）
 	private static readonly CACHE_EXPIRY = 24 * 60 * 60 * 1000;
-	private static readonly setsCache = createCache<SetFull[]>(
-		'sets',
-		SetRepository.CACHE_EXPIRY
-	);
+	private static readonly setsCache = createCache<SetFull[]>('sets', SetRepository.CACHE_EXPIRY);
 
 	// メモリキャッシュ
 	private static sets: SetFull[] = [];
@@ -185,7 +194,7 @@ export class SetRepository {
 			if (setData.id) {
 				const docRef = doc(db, 'sets', setData.id);
 				await setDoc(docRef, setToCreate);
-				
+
 				// キャッシュをクリア
 				this.refreshSets();
 				return setData.id;
@@ -195,10 +204,10 @@ export class SetRepository {
 					...setToCreate,
 					id: '' // addDocで自動生成されるIDで後で更新
 				});
-				
+
 				// 生成されたIDでドキュメントを更新
 				await updateDoc(docRef, { id: docRef.id });
-				
+
 				// キャッシュをクリア
 				this.refreshSets();
 				return docRef.id;
@@ -221,7 +230,7 @@ export class SetRepository {
 		try {
 			const docRef = doc(db, 'sets', setId);
 			const now = new Date().toISOString();
-			
+
 			await updateDoc(docRef, {
 				...updates,
 				updatedAt: now

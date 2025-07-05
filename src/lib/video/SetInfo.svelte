@@ -36,10 +36,12 @@
 			<div class="space-y-1">
 				{#each tunes as tune, index}
 					<div class="flex items-center space-x-2 text-sm">
-						<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs min-w-[24px] text-center">
+						<span
+							class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs min-w-[24px] text-center"
+						>
 							{index + 1}
 						</span>
-						<a 
+						<a
 							href="/tune/{tune.id}"
 							class="text-teal-600 hover:text-teal-800 hover:underline flex-1"
 						>

@@ -10,14 +10,14 @@ export async function load({ params }: { params: { id: string } }) {
 	const d = await getDoc(doc(db, 'tunes', params.id));
 	const data = d.data() || {};
 	const tune = parseTuneData(data, params.id);
-	
+
 	// この曲が含まれるセットを取得
 	let sets: SetFull[] = [];
 	let setTunes: TuneFull[][] = [];
-	
+
 	try {
 		sets = await SetRepository.getSetsByTuneId(params.id);
-		
+
 		// 各セットの曲リストを取得
 		for (const set of sets) {
 			const tunesInSet = await Promise.all(
@@ -34,7 +34,7 @@ export async function load({ params }: { params: { id: string } }) {
 		sets = [];
 		setTunes = [];
 	}
-	
+
 	return {
 		tune,
 		sets,

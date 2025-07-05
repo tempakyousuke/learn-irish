@@ -4,11 +4,11 @@ import { error } from '@sveltejs/kit';
 export async function load({ params }: { params: { id: string } }) {
 	try {
 		const set = await SetRepository.getSetById(params.id);
-		
+
 		if (!set) {
 			throw error(404, 'セットが見つかりません');
 		}
-		
+
 		return {
 			set
 		};

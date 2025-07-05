@@ -6,8 +6,18 @@
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import Fa from 'svelte-fa';
-	import { faTrash, faArrowUp, faArrowDown, faPaste, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-	import { parseSpreadsheetData, matchTunesWithDatabase, getSpreadsheetExample } from '$core/utils/spreadsheetParser';
+	import {
+		faTrash,
+		faArrowUp,
+		faArrowDown,
+		faPaste,
+		faInfoCircle
+	} from '@fortawesome/free-solid-svg-icons';
+	import {
+		parseSpreadsheetData,
+		matchTunesWithDatabase,
+		getSpreadsheetExample
+	} from '$core/utils/spreadsheetParser';
 
 	export let set: Partial<SetFull> | null = null;
 	export let mode: 'create' | 'edit' = 'create';
@@ -44,10 +54,11 @@
 
 	// 検索フィルタリング
 	$: if (searchQuery) {
-		filteredTunes = allTunes.filter(tune =>
-			tune.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			tune.tuneNo.toString().includes(searchQuery) ||
-			(tune.rhythm && tune.rhythm.toLowerCase().includes(searchQuery.toLowerCase()))
+		filteredTunes = allTunes.filter(
+			(tune) =>
+				tune.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				tune.tuneNo.toString().includes(searchQuery) ||
+				(tune.rhythm && tune.rhythm.toLowerCase().includes(searchQuery.toLowerCase()))
 		);
 	} else {
 		filteredTunes = allTunes;
@@ -71,7 +82,7 @@
 	};
 
 	const removeTune = (tuneId: string) => {
-		selectedTuneIds = selectedTuneIds.filter(id => id !== tuneId);
+		selectedTuneIds = selectedTuneIds.filter((id) => id !== tuneId);
 	};
 
 	const moveTuneUp = (index: number) => {
@@ -91,12 +102,12 @@
 	};
 
 	const getTuneName = (tuneId: string): string => {
-		const tune = allTunes.find(t => t.id === tuneId);
+		const tune = allTunes.find((t) => t.id === tuneId);
 		return tune ? tune.name : `未知の曲(${tuneId})`;
 	};
 
 	const getTune = (tuneId: string): TuneFull | undefined => {
-		return allTunes.find(t => t.id === tuneId);
+		return allTunes.find((t) => t.id === tuneId);
 	};
 
 	const handleSubmit = () => {
@@ -157,7 +168,9 @@
 		// 結果を表示
 		const unmatchedCount = parsedData.tunes.length - matchedTuneIds.length;
 		if (unmatchedCount > 0) {
-			toast.warning(`${matchedTuneIds.length}曲がマッチしました。${unmatchedCount}曲は見つかりませんでした。`);
+			toast.warning(
+				`${matchedTuneIds.length}曲がマッチしました。${unmatchedCount}曲は見つかりませんでした。`
+			);
 		} else {
 			toast.success(`${matchedTuneIds.length}曲のデータを取り込みました！`);
 		}
@@ -182,7 +195,7 @@
 			<h3 class="text-lg font-semibold text-blue-800">スプレッドシートからデータ取り込み</h3>
 			<div class="flex space-x-2">
 				<button
-					on:click={() => showHelp = !showHelp}
+					on:click={() => (showHelp = !showHelp)}
 					class="text-blue-600 hover:text-blue-800 p-1"
 					title="ヘルプ"
 				>
@@ -222,7 +235,7 @@
 				></textarea>
 				<div class="flex justify-end space-x-2">
 					<button
-						on:click={() => pasteText = ''}
+						on:click={() => (pasteText = '')}
 						class="px-3 py-1 text-gray-600 hover:text-gray-800 text-sm"
 					>
 						クリア
@@ -242,7 +255,7 @@
 	<!-- セット基本情報 -->
 	<div class="bg-white rounded-lg shadow-md p-6">
 		<h3 class="text-lg font-semibold text-teal-800 mb-4">セット基本情報</h3>
-		
+
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div>
 				<label for="name" class="block text-sm font-medium text-gray-700 mb-1">
@@ -259,9 +272,7 @@
 			</div>
 
 			<div>
-				<label for="setNo" class="block text-sm font-medium text-gray-700 mb-1">
-					セット番号
-				</label>
+				<label for="setNo" class="block text-sm font-medium text-gray-700 mb-1"> セット番号 </label>
 				<input
 					id="setNo"
 					type="text"
@@ -287,9 +298,7 @@
 		</div>
 
 		<div class="mt-4">
-			<label for="description" class="block text-sm font-medium text-gray-700 mb-1">
-				説明
-			</label>
+			<label for="description" class="block text-sm font-medium text-gray-700 mb-1"> 説明 </label>
 			<textarea
 				id="description"
 				bind:value={formData.description}
@@ -306,7 +315,7 @@
 			<h3 class="text-lg font-semibold text-teal-800 mb-4">
 				選択された曲 ({selectedTuneIds.length}曲)
 			</h3>
-			
+
 			<div class="space-y-2">
 				{#each selectedTuneIds as tuneId, index}
 					{@const tune = getTune(tuneId)}
@@ -314,7 +323,7 @@
 						<span class="bg-teal-600 text-white text-sm px-2 py-1 rounded min-w-[32px] text-center">
 							{index + 1}
 						</span>
-						
+
 						<div class="flex-1">
 							<div class="font-medium text-gray-900">
 								{getTuneName(tuneId)}
@@ -366,7 +375,7 @@
 	<!-- 曲選択 -->
 	<div class="bg-white rounded-lg shadow-md p-6">
 		<h3 class="text-lg font-semibold text-teal-800 mb-4">曲を選択</h3>
-		
+
 		<div class="mb-4">
 			<input
 				type="text"
@@ -382,7 +391,11 @@
 			<div class="max-h-96 overflow-y-auto space-y-2">
 				{#each filteredTunes as tune}
 					{@const isSelected = selectedTuneIds.includes(tune.id)}
-					<div class="flex items-center justify-between p-3 border rounded-lg {isSelected ? 'bg-teal-50 border-teal-200' : 'hover:bg-gray-50'}">
+					<div
+						class="flex items-center justify-between p-3 border rounded-lg {isSelected
+							? 'bg-teal-50 border-teal-200'
+							: 'hover:bg-gray-50'}"
+					>
 						<div class="flex-1">
 							<div class="font-medium text-gray-900">
 								{tune.name}
@@ -397,11 +410,11 @@
 								{/if}
 							</div>
 						</div>
-						
+
 						<button
-							on:click={() => isSelected ? removeTune(tune.id) : addTune(tune.id)}
-							class="px-3 py-1 rounded text-sm font-medium {isSelected 
-								? 'bg-red-100 text-red-700 hover:bg-red-200' 
+							on:click={() => (isSelected ? removeTune(tune.id) : addTune(tune.id))}
+							class="px-3 py-1 rounded text-sm font-medium {isSelected
+								? 'bg-red-100 text-red-700 hover:bg-red-200'
 								: 'bg-teal-100 text-teal-700 hover:bg-teal-200'}"
 						>
 							{isSelected ? '削除' : '追加'}

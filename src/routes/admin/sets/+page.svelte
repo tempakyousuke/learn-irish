@@ -20,7 +20,7 @@
 				SetRepository.getSets(),
 				TuneRepository.getTunes()
 			]);
-			
+
 			sets = setsData;
 			allTunes = tunesData;
 		} catch (error) {
@@ -39,13 +39,13 @@
 		try {
 			// セットに関連する曲の関係性を全て削除
 			await TuneSetRepository.removeAllTunesFromSet(setId);
-			
+
 			// セット自体を削除
 			await SetRepository.deleteSet(setId);
-			
+
 			// ローカルの配列からも削除
-			sets = sets.filter(set => set.id !== setId);
-			
+			sets = sets.filter((set) => set.id !== setId);
+
 			toast.success('セットを削除しました');
 		} catch (error) {
 			console.error('セット削除エラー:', error);
@@ -54,8 +54,8 @@
 	};
 
 	const getTunesWithLinks = (tuneIds: string[]) => {
-		return tuneIds.map(tuneId => {
-			const tune = allTunes.find(t => t.id === tuneId);
+		return tuneIds.map((tuneId) => {
+			const tune = allTunes.find((t) => t.id === tuneId);
 			return tune ? { id: tuneId, name: tune.name } : { id: tuneId, name: `未知の曲(${tuneId})` };
 		});
 	};
@@ -113,7 +113,7 @@
 							{/if}
 						</div>
 					</div>
-					
+
 					<div class="flex space-x-2">
 						{#if set.videoLink}
 							<a
@@ -154,8 +154,8 @@
 								{#if index > 0}<span class="text-gray-400">, </span>{/if}<a
 									href="/tune/{tune.id}"
 									class="text-teal-600 hover:text-teal-800 hover:underline"
-									target="_blank"
-								>{tune.name}</a>
+									target="_blank">{tune.name}</a
+								>
 							{/each}
 						</div>
 					</div>

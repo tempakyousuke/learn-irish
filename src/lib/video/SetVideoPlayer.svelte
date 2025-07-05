@@ -23,7 +23,7 @@
 				{set.name}
 			</h3>
 		{/if}
-		
+
 		<div class="relative">
 			<iframe
 				class="{sizeClasses[size]} rounded-lg border shadow-md"
@@ -34,7 +34,7 @@
 				allowfullscreen
 			/>
 		</div>
-		
+
 		{#if set.description}
 			<p class="text-sm text-gray-600 text-center max-w-md">
 				{set.description}
@@ -49,7 +49,7 @@
 				{set.name}
 			</h3>
 		{/if}
-		
+
 		<div class="bg-gray-100 rounded-lg p-4 text-center">
 			<p class="text-gray-600 mb-2">動画を再生できません</p>
 			<a
@@ -70,7 +70,7 @@
 				{set.name}
 			</h3>
 		{/if}
-		
+
 		<div class="bg-gray-100 rounded-lg p-4 text-center">
 			<p class="text-gray-600">動画がありません</p>
 		</div>

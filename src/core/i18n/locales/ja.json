@@ -60,5 +60,10 @@
 	"sets_containing_this_tune": "この曲が含まれるセット",
 	"tunes_in_set": "セット内の曲",
 	"current_tune": "現在の曲",
-	"set_tune_count": "{count}曲"
+	"set_tune_count": "{count}曲",
+	"items_per_page": "表示件数",
+	"previous": "前へ",
+	"next": "次へ",
+	"showing_items": "{from} - {to} / {total} 件",
+	"page": "ページ"
 }

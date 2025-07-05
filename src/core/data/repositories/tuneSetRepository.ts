@@ -1,4 +1,15 @@
-import { getDocs, collection, query, where, orderBy, FirestoreError, setDoc, doc, deleteDoc, writeBatch } from 'firebase/firestore';
+import {
+	getDocs,
+	collection,
+	query,
+	where,
+	orderBy,
+	FirestoreError,
+	setDoc,
+	doc,
+	deleteDoc,
+	writeBatch
+} from 'firebase/firestore';
 import type { TuneSetFull, TuneSetBase, TuneSetMetadata } from '$data/models/TuneSet';
 import { parseTuneSetData, createTuneSet, generateTuneSetId } from '$data/models/TuneSet';
 import { createCache } from '$utils/cacheStorage';
@@ -57,7 +68,11 @@ export class TuneSetRepository {
 
 		try {
 			// Firestoreから曲-セット関係性データを取得
-			const qu = query(collection(db, 'tuneSets'), orderBy('setId', 'asc'), orderBy('position', 'asc'));
+			const qu = query(
+				collection(db, 'tuneSets'),
+				orderBy('setId', 'asc'),
+				orderBy('position', 'asc')
+			);
 			const snapshot = await getDocs(qu);
 
 			// 取得したデータを処理
