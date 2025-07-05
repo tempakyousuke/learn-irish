@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { userStore } from '$core/store/userStore';
 	import { SetRepository } from '$data/repositories/setRepository';
 	import { TuneSetRepository } from '$data/repositories/tuneSetRepository';
 	import SetForm from '$lib/forms/SetForm.svelte';
@@ -11,17 +10,7 @@
 		set: SetFull;
 	};
 
-	let user: any = null;
-	let isAdmin = false;
-	let saving = false;
-
-	// 管理者チェック（あなたのUID）
-	const ADMIN_UID = 'dci2JB1vI3VYruel4U6L6q7N0As1';
-
-	userStore.subscribe((value) => {
-		user = value;
-		isAdmin = value.uid === ADMIN_UID;
-	});
+	let saving = $state(false);
 
 	const handleSubmit = async (event: CustomEvent) => {
 		if (saving) return;
@@ -68,20 +57,7 @@
 	<title>セット編集: {data.set.name} - Learn Irish</title>
 </svelte:head>
 
-{#if !user}
-	<div class="max-w-2xl mx-auto p-6">
-		<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
-			ログインしてください
-		</div>
-	</div>
-{:else if !isAdmin}
-	<div class="max-w-2xl mx-auto p-6">
-		<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-			管理者権限が必要です
-		</div>
-	</div>
-{:else}
-	<div class="max-w-6xl mx-auto p-6">
+<div class="max-w-6xl mx-auto p-6">
 		<div class="mb-6">
 			<h1 class="text-3xl font-bold text-teal-800 mb-2">セット編集: {data.set.name}</h1>
 			<nav class="text-sm text-gray-600">
@@ -103,5 +79,4 @@
 			on:submit={handleSubmit}
 			on:cancel={handleCancel}
 		/>
-	</div>
-{/if}
+</div>

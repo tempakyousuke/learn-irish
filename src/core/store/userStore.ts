@@ -4,7 +4,7 @@ import type { Writable } from 'svelte/store';
 /**
  * ログインユーザー情報の型定義
  */
-type LoginUser = {
+export type LoginUser = {
 	uid: string;
 	isLoggedIn: boolean;
 };

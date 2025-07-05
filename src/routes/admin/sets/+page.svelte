@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { userStore } from '$core/store/userStore';
 	import { SetRepository } from '$data/repositories/setRepository';
 	import { TuneSetRepository } from '$data/repositories/tuneSetRepository';
 	import { TuneRepository } from '$data/repositories/tuneRepository';
@@ -10,25 +9,11 @@
 	import Fa from 'svelte-fa';
 	import { faPlus, faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 
-	let sets: SetFull[] = [];
-	let allTunes: TuneFull[] = [];
-	let loading = true;
-	let user: any = null;
-	let isAdmin = false;
-
-	// 管理者チェック（あなたのUID）
-	const ADMIN_UID = 'dci2JB1vI3VYruel4U6L6q7N0As1';
-
-	userStore.subscribe((value) => {
-		user = value;
-		isAdmin = value.uid === ADMIN_UID;
-	});
+	let sets = $state<SetFull[]>([]);
+	let allTunes = $state<TuneFull[]>([]);
+	let loading = $state(true);
 
 	onMount(async () => {
-		if (!isAdmin) {
-			return;
-		}
-
 		try {
 			// セットと曲データを並行して取得
 			const [setsData, tunesData] = await Promise.all([
@@ -80,20 +65,7 @@
 	<title>セット管理 - Learn Irish</title>
 </svelte:head>
 
-{#if !user}
-	<div class="max-w-2xl mx-auto p-6">
-		<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
-			ログインしてください
-		</div>
-	</div>
-{:else if !isAdmin}
-	<div class="max-w-2xl mx-auto p-6">
-		<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-			管理者権限が必要です
-		</div>
-	</div>
-{:else}
-	<div class="max-w-6xl mx-auto p-6">
+<div class="max-w-6xl mx-auto p-6">
 		<div class="flex justify-between items-center mb-6">
 			<h1 class="text-3xl font-bold text-teal-800">セット管理</h1>
 			<a
@@ -193,5 +165,4 @@
 				{/each}
 			</div>
 		{/if}
-	</div>
-{/if}
+</div>
