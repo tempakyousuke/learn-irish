@@ -22,24 +22,20 @@
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
 
-	export let data: {
-		tune: Tune;
-		sets: SetFull[];
-		setTunes: TuneFull[][];
-	};
+	const { data }: { data: { tune: Tune; sets: SetFull[]; setTunes: TuneFull[][] } } = $props();
 	const tune = data.tune;
 	const sets = data.sets;
 	const setTunes = data.setTunes;
 	const youtubeId = getYoutubeId(tune.link);
-	let rememberName = false;
-	let rememberMelody = false;
-	let playCount = 0;
-	let uid: string;
+	let rememberName = $state<boolean>(false);
+	let rememberMelody = $state<boolean>(false);
+	let playCount = $state<number>(0);
+	let uid = $state<string>('');
 	let dailyPlayCount = 0;
 	let dailyData: { [key: string]: number } = {};
-	let note = '';
-	let isBookmarked = false;
-	let playHistory: { [key: string]: number } = {};
+	let note = $state<string>('');
+	let isBookmarked = $state<boolean>(false);
+	let playHistory = $state<{ [key: string]: number }>({});
 	const date = getDate();
 
 	userStore.subscribe(async (value) => {
@@ -189,7 +185,7 @@
 						class="px-4 py-2 rounded-lg font-bold text-base transition-colors duration-150 {rememberName
 							? 'bg-emerald-500 text-white'
 							: 'bg-gray-200 text-gray-700'}"
-						on:click={() => {
+						onclick={() => {
 							rememberName = !rememberName;
 							updateRememberName();
 						}}
@@ -204,7 +200,7 @@
 						class="px-4 py-2 rounded-lg font-bold text-base transition-colors duration-150 {rememberMelody
 							? 'bg-emerald-500 text-white'
 							: 'bg-gray-200 text-gray-700'}"
-						on:click={() => {
+						onclick={() => {
 							rememberMelody = !rememberMelody;
 							updateRememberMelody();
 						}}
@@ -219,7 +215,7 @@
 						<span class="text-2xl font-mono font-extrabold text-emerald-700">{playCount}</span>
 						<button
 							class="py-2 px-3 bg-blue-500 text-white rounded-lg font-bold text-xl hover:bg-blue-600 transition-colors"
-							on:click={updatePlayCount}
+							onclick={updatePlayCount}
 						>
 							<Fa icon={faPlus} />
 						</button>
@@ -232,7 +228,7 @@
 						class="px-4 py-2 rounded-lg font-bold text-xl transition-colors duration-150 {isBookmarked
 							? 'bg-yellow-400 text-white'
 							: 'bg-gray-200 text-gray-700'}"
-						on:click={async () => {
+						onclick={async () => {
 							if (isBookmarked) {
 								await removeFavorite(uid, tune.id);
 								isBookmarked = false;
@@ -261,7 +257,7 @@
 			<div class="flex justify-end">
 				<button
 					class="py-1 px-4 bg-blue-500 text-white rounded-lg font-bold text-base hover:bg-blue-600 transition-colors"
-					on:click={updateNote}
+					onclick={updateNote}
 				>
 					{$t('save_notes')}
 				</button>
@@ -288,16 +284,16 @@
 	{#if sets.length > 0}
 		<div class="space-y-6">
 			<h2 class="text-xl font-bold text-teal-800 text-center">{$t('sets_containing_this_tune')}</h2>
-			
+
 			{#each sets as set, index}
 				<div class="bg-teal-50 rounded-2xl p-6 space-y-4">
 					<!-- セット動画プレイヤー -->
 					<SetVideoPlayer {set} size="medium" />
-					
+
 					<!-- セット内の曲リスト -->
 					{#if setTunes[index] && setTunes[index].length > 0}
-						<SetTuneList 
-							tunes={setTunes[index]} 
+						<SetTuneList
+							tunes={setTunes[index]}
 							currentTuneId={tune.id}
 							showRhythm={true}
 							showKey={true}
