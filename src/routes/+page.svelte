@@ -213,19 +213,19 @@
 	}
 
 	$effect(() => {
-		untrack(() => updateCookie('rememberName', rememberName));
+		updateCookie('rememberName', rememberName);
 	});
 	$effect(() => {
-		untrack(() => updateCookie('rememberMelody', rememberMelody));
+		updateCookie('rememberMelody', rememberMelody);
 	});
 	$effect(() => {
-		untrack(() => updateCookie('selectedRhythm', selectedRhythm));
+		updateCookie('selectedRhythm', selectedRhythm);
 	});
 	$effect(() => {
-		untrack(() => updateCookie('sortBy', sortBy));
+		updateCookie('sortBy', sortBy);
 	});
 	$effect(() => {
-		untrack(() => updateCookie('onlyFavorite', onlyFavorite));
+		updateCookie('onlyFavorite', onlyFavorite);
 	});
 
 	const dailyTotal = $derived(Object.values(dailyData).reduce((acc, count) => acc + count, 0));
