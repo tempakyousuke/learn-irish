@@ -68,13 +68,11 @@
 		}
 	};
 
-	const getTuneNames = (tuneIds: string[]): string => {
-		return tuneIds
-			.map(tuneId => {
-				const tune = allTunes.find(t => t.id === tuneId);
-				return tune ? tune.name : `未知の曲(${tuneId})`;
-			})
-			.join(', ');
+	const getTunesWithLinks = (tuneIds: string[]) => {
+		return tuneIds.map(tuneId => {
+			const tune = allTunes.find(t => t.id === tuneId);
+			return tune ? { id: tuneId, name: tune.name } : { id: tuneId, name: `未知の曲(${tuneId})` };
+		});
 	};
 </script>
 
@@ -180,9 +178,15 @@
 						{#if set.tuneIds.length > 0}
 							<div class="border-t pt-4">
 								<h4 class="text-sm font-medium text-gray-700 mb-2">含まれる曲:</h4>
-								<p class="text-sm text-gray-600 leading-relaxed">
-									{getTuneNames(set.tuneIds)}
-								</p>
+								<div class="text-sm text-gray-600 leading-relaxed">
+									{#each getTunesWithLinks(set.tuneIds) as tune, index}
+										{#if index > 0}<span class="text-gray-400">, </span>{/if}<a
+											href="/tune/{tune.id}"
+											class="text-teal-600 hover:text-teal-800 hover:underline"
+											target="_blank"
+										>{tune.name}</a>
+									{/each}
+								</div>
 							</div>
 						{/if}
 					</div>
