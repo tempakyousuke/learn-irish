@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import type { TuneFull } from '$data/models/Tune';
 	import type { SetFull } from '$data/models/Set';
 
@@ -15,7 +16,7 @@
 	{#if sortedTunes.length > 0}
 		<div class="bg-white rounded-lg shadow-md p-4">
 			<h4 class="text-lg font-semibold text-teal-800 mb-3">
-				セット内の曲 ({sortedTunes.length}曲)
+				{$t('tunes_in_set')} ({$t('set_tune_count', { values: { count: sortedTunes.length } })})
 			</h4>
 			
 			<div class="space-y-2">
@@ -43,7 +44,7 @@
 								</a>
 								{#if currentTuneId === tune.id}
 									<span class="bg-teal-500 text-white text-xs px-2 py-1 rounded-full">
-										現在の曲
+										{$t('current_tune')}
 									</span>
 								{/if}
 							</div>
@@ -91,7 +92,7 @@
 	{:else}
 		<div class="bg-white rounded-lg shadow-md p-4">
 			<h4 class="text-lg font-semibold text-teal-800 mb-3">
-				セット内の曲
+				{$t('tunes_in_set')}
 			</h4>
 			<p class="text-gray-500 text-center py-4">
 				曲データを読み込み中...

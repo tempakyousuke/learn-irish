@@ -287,7 +287,7 @@
 	<!-- セット動画セクション -->
 	{#if sets.length > 0}
 		<div class="space-y-6">
-			<h2 class="text-xl font-bold text-teal-800 text-center">この曲が含まれるセット</h2>
+			<h2 class="text-xl font-bold text-teal-800 text-center">{$t('sets_containing_this_tune')}</h2>
 			
 			{#each sets as set, index}
 				<div class="bg-teal-50 rounded-2xl p-6 space-y-4">
