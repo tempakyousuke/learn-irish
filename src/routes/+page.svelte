@@ -15,7 +15,6 @@
 	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
 	import { calcUserTuneStats } from '$lib/utils/userTuneStats';
-	import { untrack } from 'svelte';
 
 	const {
 		data
@@ -338,7 +337,7 @@
 		{/if}
 	{/if}
 
-	<div class="mx-auto mt-10">
+	<div class="mx-auto mt-10 px-3">
 		{#if totalPages > 1}
 			<Pagination
 				{currentPage}
@@ -350,8 +349,10 @@
 				compact={true}
 			/>
 		{/if}
-		
-		<TuneList tunes={paginatedTunes()} {userTuneStatus} {dailyData} />
+
+		<div class="mt-10">
+			<TuneList tunes={paginatedTunes()} {userTuneStatus} {dailyData} />
+		</div>
 
 		{#if totalPages > 1}
 			<Pagination

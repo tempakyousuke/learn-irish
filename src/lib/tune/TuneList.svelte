@@ -80,7 +80,7 @@
 	</tr>
 {/snippet}
 
-<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto xl:w-auto w-11/12">
+<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto xl:w-auto w-full">
 	<thead>
 		<tr class="border bg-teal-800 text-white md:table-row hidden">
 			<th class="py-3 px-3 w-96">{$t('tune_name')}</th>
