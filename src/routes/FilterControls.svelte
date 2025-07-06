@@ -127,12 +127,6 @@
 		gap: 0.5rem;
 		min-width: 200px;
 	}
-	.radio-row {
-		display: flex;
-		flex-direction: row;
-		gap: 1.2rem;
-		flex-wrap: wrap;
-	}
 	.filter-form {
 		display: flex;
 		flex-direction: column;

@@ -14,55 +14,72 @@
 		removeFavorite
 	} from '$core/data/repositories/favoritesRepository';
 	import { siteTitle } from '$core/config/configService';
+	import SetVideoPlayer from '$lib/video/SetVideoPlayer.svelte';
+	import SetTuneList from '$lib/video/SetTuneList.svelte';
+	import type { SetFull } from '$data/models/Set';
+	import type { TuneFull } from '$data/models/Tune';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
 
-	export let data: {
-		tune: Tune;
-	};
-	const tune = data.tune;
-	const youtubeId = getYoutubeId(tune.link);
-	let rememberName = false;
-	let rememberMelody = false;
-	let playCount = 0;
-	let uid: string;
+	const { data }: { data: { tune: Tune; sets: SetFull[]; setTunes: TuneFull[][] } } = $props();
+	const tune = $derived(data.tune);
+	const sets = $derived(data.sets);
+	const setTunes = $derived(data.setTunes);
+	const youtubeId = $derived(getYoutubeId(tune.link));
+	let rememberName = $state<boolean>(false);
+	let rememberMelody = $state<boolean>(false);
+	let playCount = $state<number>(0);
+	let uid = $state<string>('');
 	let dailyPlayCount = 0;
 	let dailyData: { [key: string]: number } = {};
-	let note = '';
-	let isBookmarked = false;
-	let playHistory: { [key: string]: number } = {};
+	let note = $state<string>('');
+	let isBookmarked = $state<boolean>(false);
+	let playHistory = $state<{ [key: string]: number }>({});
 	const date = getDate();
 
-	userStore.subscribe(async (value) => {
-		uid = value.uid;
-		if (!uid) {
-			return;
-		}
-		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		const data = await getDoc(docRef);
-		const userTune = data.data();
-		if (userTune?.rememberName) {
-			rememberName = userTune.rememberName as boolean;
-		}
-		if (userTune?.rememberMelody) {
-			rememberMelody = userTune.rememberMelody as boolean;
-		}
-		if (userTune?.playCount) {
-			playCount = userTune.playCount as number;
-		}
-		if (userTune?.note) {
-			note = userTune.note as string;
-		}
-		if (userTune?.playHistory) {
-			playHistory = userTune.playHistory as { [key: string]: number };
-		}
-		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
-		const dailyData = (await getDoc(dailyDocRef)).data() || {};
-		if (dailyData[tune.id]) {
-			dailyPlayCount = dailyData[tune.id];
-		}
-		isBookmarked = await checkFavorite(uid, tune.id);
+	$effect(() => {
+		(async () => {
+			const user = $userStore;
+			uid = user.uid;
+			if (!uid) {
+				return;
+			}
+
+			// Reset state when tune changes
+			rememberName = false;
+			rememberMelody = false;
+			playCount = 0;
+			note = '';
+			playHistory = {};
+			dailyPlayCount = 0;
+			isBookmarked = false;
+
+			const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
+			const data = await getDoc(docRef);
+			const userTune = data.data();
+			if (userTune?.rememberName) {
+				rememberName = userTune.rememberName as boolean;
+			}
+			if (userTune?.rememberMelody) {
+				rememberMelody = userTune.rememberMelody as boolean;
+			}
+			if (userTune?.playCount) {
+				playCount = userTune.playCount as number;
+			}
+			if (userTune?.note) {
+				note = userTune.note as string;
+			}
+			if (userTune?.playHistory) {
+				playHistory = userTune.playHistory as { [key: string]: number };
+			}
+			const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
+			const dailyData = (await getDoc(dailyDocRef)).data() || {};
+			if (dailyData[tune.id]) {
+				dailyPlayCount = dailyData[tune.id];
+			}
+			isBookmarked = await checkFavorite(uid, tune.id);
+		})();
 	});
 
 	const updateRememberName = async () => {
@@ -127,7 +144,7 @@
 		);
 		toast.success('メモを保存しました');
 	};
-	const title = `${tune.name} - ${siteTitle}`;
+	const title = $derived(`${tune.name} - ${siteTitle}`);
 </script>
 
 <svelte:head>
@@ -181,7 +198,7 @@
 						class="px-4 py-2 rounded-lg font-bold text-base transition-colors duration-150 {rememberName
 							? 'bg-emerald-500 text-white'
 							: 'bg-gray-200 text-gray-700'}"
-						on:click={() => {
+						onclick={() => {
 							rememberName = !rememberName;
 							updateRememberName();
 						}}
@@ -196,7 +213,7 @@
 						class="px-4 py-2 rounded-lg font-bold text-base transition-colors duration-150 {rememberMelody
 							? 'bg-emerald-500 text-white'
 							: 'bg-gray-200 text-gray-700'}"
-						on:click={() => {
+						onclick={() => {
 							rememberMelody = !rememberMelody;
 							updateRememberMelody();
 						}}
@@ -211,7 +228,7 @@
 						<span class="text-2xl font-mono font-extrabold text-emerald-700">{playCount}</span>
 						<button
 							class="py-2 px-3 bg-blue-500 text-white rounded-lg font-bold text-xl hover:bg-blue-600 transition-colors"
-							on:click={updatePlayCount}
+							onclick={updatePlayCount}
 						>
 							<Fa icon={faPlus} />
 						</button>
@@ -224,7 +241,7 @@
 						class="px-4 py-2 rounded-lg font-bold text-xl transition-colors duration-150 {isBookmarked
 							? 'bg-yellow-400 text-white'
 							: 'bg-gray-200 text-gray-700'}"
-						on:click={async () => {
+						onclick={async () => {
 							if (isBookmarked) {
 								await removeFavorite(uid, tune.id);
 								isBookmarked = false;
@@ -253,7 +270,7 @@
 			<div class="flex justify-end">
 				<button
 					class="py-1 px-4 bg-blue-500 text-white rounded-lg font-bold text-base hover:bg-blue-600 transition-colors"
-					on:click={updateNote}
+					onclick={updateNote}
 				>
 					{$t('save_notes')}
 				</button>
@@ -274,6 +291,31 @@
 				</div>
 			</div>
 		{/if}
+	{/if}
+
+	<!-- セット動画セクション -->
+	{#if sets.length > 0}
+		<div class="space-y-6">
+			<h2 class="text-xl font-bold text-teal-800 text-center">{$t('sets_containing_this_tune')}</h2>
+
+			{#each sets as set, index}
+				<div class="bg-teal-50 rounded-2xl p-6 space-y-4">
+					<!-- セット動画プレイヤー -->
+					<SetVideoPlayer {set} size="medium" />
+
+					<!-- セット内の曲リスト -->
+					{#if setTunes[index] && setTunes[index].length > 0}
+						<SetTuneList
+							tunes={setTunes[index]}
+							currentTuneId={tune.id}
+							showRhythm={true}
+							showKey={true}
+							compact={false}
+						/>
+					{/if}
+				</div>
+			{/each}
+		</div>
 	{/if}
 </div>
 

@@ -81,6 +81,14 @@ npm test             # Run Vitest tests
    - All pages are prerendered
    - No server-side rendering
 
+6. **Svelte 5 Runes**: Prioritize using Svelte 5 Runes for reactive state management
+   - Use `$state()` for reactive variables instead of `let` when reactivity is needed
+   - Use `$derived()` for computed values instead of reactive statements
+   - Use `$effect()` for side effects instead of reactive statements
+   - Use `$props()` for component props with better type safety
+   - Migrate existing stores to Runes-based patterns where applicable
+   - Prefer Runes over traditional Svelte stores for new components
+
 ### Firebase Integration
 
 - **Authentication**: Email/password authentication via Firebase Auth

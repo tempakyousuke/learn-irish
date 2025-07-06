@@ -56,5 +56,14 @@
 	"recent_plays": "Recent Plays",
 	"monthly_records": "Monthly Records",
 	"select_month": "Select month",
-	"remembered_melody_by_type": "Memorized Melodies by Type"
+	"remembered_melody_by_type": "Memorized Melodies by Type",
+	"sets_containing_this_tune": "Sets Containing This Tune",
+	"tunes_in_set": "Tunes in Set",
+	"current_tune": "Current Tune",
+	"set_tune_count": "{count} tunes",
+	"items_per_page": "Items per page",
+	"previous": "Previous",
+	"next": "Next",
+	"showing_items": "{from} - {to} of {total} items",
+	"page": "Page"
 }

@@ -16,7 +16,7 @@ export const setCreationTime = async (uid: string, creationTime?: string): Promi
 	try {
 		const userDocRef = doc(db, `users/${uid}`);
 		const userDoc = await getDoc(userDocRef);
-		
+
 		if (!userDoc.exists() || userDoc.data()?.creationTime === undefined) {
 			if (!creationTime) {
 				const date = new Date();
@@ -26,7 +26,7 @@ export const setCreationTime = async (uid: string, creationTime?: string): Promi
 		}
 	} catch (error) {
 		let errorMessage = 'ユーザー情報の保存に失敗しました';
-		
+
 		if (error instanceof FirestoreError) {
 			switch (error.code) {
 				case 'permission-denied':
@@ -39,7 +39,7 @@ export const setCreationTime = async (uid: string, creationTime?: string): Promi
 					errorMessage = `ユーザー情報保存エラー: ${error.message}`;
 			}
 		}
-		
+
 		console.error('ユーザー情報保存エラー:', error);
 		throw new Error(errorMessage, { cause: error });
 	}
@@ -60,7 +60,7 @@ export const getUser = async (uid: string) => {
 	try {
 		const userDocRef = doc(db, `users/${uid}`);
 		const userDoc = await getDoc(userDocRef);
-		
+
 		if (userDoc.exists()) {
 			return userDoc.data();
 		} else {
@@ -68,7 +68,7 @@ export const getUser = async (uid: string) => {
 		}
 	} catch (error) {
 		let errorMessage = 'ユーザー情報の取得に失敗しました';
-		
+
 		if (error instanceof FirestoreError) {
 			switch (error.code) {
 				case 'permission-denied':
@@ -81,7 +81,7 @@ export const getUser = async (uid: string) => {
 					errorMessage = `ユーザー情報取得エラー: ${error.message}`;
 			}
 		}
-		
+
 		console.error('ユーザー情報取得エラー:', error);
 		throw new Error(errorMessage, { cause: error });
 	}

@@ -1,9 +1,11 @@
 import { getDocs, collection, query, orderBy, FirestoreError } from 'firebase/firestore';
 import type { TuneFull } from '$data/models/Tune';
 import { parseTuneData } from '$data/models/Tune';
+import type { SetFull } from '$data/models/Set';
 import { createCache } from '$utils/cacheStorage';
 import { db } from '$data/firebase/firebaseClient';
 import type { UserTuneFull } from '../models/UserTune';
+import { SetRepository } from './setRepository';
 
 /**
  * 曲データのリポジトリクラス
@@ -135,6 +137,16 @@ export class TuneRepository {
 				`曲データの取得に失敗しました: ${error instanceof Error ? error.message : String(error)}`
 			);
 		}
+	}
+
+	/**
+	 * 特定の曲が含まれるセットを取得する
+	 * @param tuneId 曲のID
+	 * @returns その曲が含まれるセットの配列
+	 * @throws {Error} データ取得に失敗した場合
+	 */
+	public static async getSetsByTuneId(tuneId: string): Promise<SetFull[]> {
+		return SetRepository.getSetsByTuneId(tuneId);
 	}
 
 	/**

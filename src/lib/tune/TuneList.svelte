@@ -9,7 +9,11 @@
 </script>
 
 {#snippet desktopTuneRow(tune: Tune)}
-	<tr class="border-b border-teal-400 md:table-row hidden {dailyData[tune.id] ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' : 'hover:bg-teal-200'}">
+	<tr
+		class="border-b border-teal-400 md:table-row hidden {dailyData[tune.id]
+			? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+			: 'hover:bg-teal-200'}"
+	>
 		<td class="py-3 px-3">
 			<a class="block" href="/tune/{tune.id}">
 				{tune.name}
@@ -46,7 +50,11 @@
 {/snippet}
 
 {#snippet mobileTuneRow(tune: Tune)}
-	<tr class="border-b border-teal-400 table-row md:hidden {dailyData[tune.id] ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' : 'hover:bg-teal-200'}">
+	<tr
+		class="border-b border-teal-400 table-row md:hidden {dailyData[tune.id]
+			? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+			: 'hover:bg-teal-200'}"
+	>
 		<td class="py-3 px-3">
 			<a class="block" href="/tune/{tune.id}">
 				{tune.name}
@@ -72,7 +80,7 @@
 	</tr>
 {/snippet}
 
-<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto xl:w-auto w-11/12">
+<table class="shadow-lg rounded-xl bg-teal-100 overflow-hidden text-xl mx-auto xl:w-auto w-full">
 	<thead>
 		<tr class="border bg-teal-800 text-white md:table-row hidden">
 			<th class="py-3 px-3 w-96">{$t('tune_name')}</th>

@@ -19,7 +19,9 @@ export async function load({ url }: { url: URL }) {
 		rememberMelody: cookies.rememberMelody || 'notSelected',
 		selectedRhythm: cookies.selectedRhythm || 'notSelected',
 		sortBy: cookies.sortBy || 'sort_by_number_asc',
-		onlyFavorite: cookies.onlyFavorite || 'off'
+		onlyFavorite: cookies.onlyFavorite || 'off',
+		currentPage: cookies.currentPage || '1',
+		itemsPerPage: cookies.itemsPerPage || '20'
 	};
 
 	return {
