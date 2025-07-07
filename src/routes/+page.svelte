@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TuneFull } from '$core/data/models/Tune';
+	import type { TuneListView } from '$core/data/models/Tune';
 	import type { UserTuneFull } from '$core/data/models/UserTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
 	import { userId } from '$core/auth/authService';
@@ -20,7 +20,7 @@
 		data
 	}: {
 		data: {
-			tunes: TuneFull[];
+			tunes: TuneListView[];
 			formValues: {
 				rememberName: string;
 				rememberMelody: string;
@@ -244,7 +244,7 @@
 				acc[tune.id] = tune;
 				return acc;
 			},
-			{} as { [key: string]: TuneFull }
+			{} as { [key: string]: TuneListView }
 		)
 	);
 

@@ -1,6 +1,6 @@
 import { getDocs, collection, query, orderBy, FirestoreError } from 'firebase/firestore';
-import type { TuneFull } from '$data/models/Tune';
-import { parseTuneData } from '$data/models/Tune';
+import type { TuneFull, TuneListView } from '$data/models/Tune';
+import { parseTuneData, parseTuneListViewData } from '$data/models/Tune';
 import type { SetFull } from '$data/models/Set';
 import { createCache } from '$utils/cacheStorage';
 import { db } from '$data/firebase/firebaseClient';
@@ -16,6 +16,11 @@ export class TuneRepository {
 	private static readonly CACHE_EXPIRY = 24 * 60 * 60 * 1000;
 	private static readonly tunesCache = createCache<TuneFull[]>(
 		'tunes',
+		TuneRepository.CACHE_EXPIRY
+	);
+	// 軽量キャッシュ（トップページ用）
+	private static readonly tunesListViewCache = createCache<TuneListView[]>(
+		'tunes-list-view',
 		TuneRepository.CACHE_EXPIRY
 	);
 
@@ -150,12 +155,76 @@ export class TuneRepository {
 	}
 
 	/**
+	 * トップページ用の軽量な曲データを取得する
+	 * @param forceRefresh 強制的に再取得するかどうか
+	 * @returns 軽量な曲データの配列
+	 * @throws {Error} データ取得に失敗した場合
+	 */
+	public static async getTunesForListView(forceRefresh = false): Promise<TuneListView[]> {
+		// 強制更新でない場合は軽量キャッシュをチェック
+		if (!forceRefresh) {
+			const cachedTunes = this.tunesListViewCache.get();
+			if (cachedTunes) {
+				return cachedTunes;
+			}
+		}
+
+		try {
+			// Firestoreから曲データを取得
+			const qu = query(collection(db, 'tunes'), orderBy('tuneNo', 'asc'));
+			const snapshot = await getDocs(qu);
+
+			// 取得したデータを軽量版に変換
+			const fetchedTunes: TuneListView[] = [];
+			snapshot.forEach((doc) => {
+				const data = doc.data();
+				// 軽量版変換関数を使用
+				const tune = parseTuneListViewData(data, doc.id);
+				fetchedTunes.push(tune);
+			});
+
+			// 軽量キャッシュを更新
+			this.tunesListViewCache.set(fetchedTunes);
+
+			// エラー状態をクリア
+			this.lastError = null;
+			return fetchedTunes;
+		} catch (error) {
+			// エラーをより具体的に変換
+			let errorMessage = '曲データの取得に失敗しました';
+
+			if (error instanceof FirestoreError) {
+				switch (error.code) {
+					case 'permission-denied':
+						errorMessage = 'データへのアクセス権限がありません';
+						break;
+					case 'unavailable':
+						errorMessage = 'サーバーに接続できません。ネットワーク接続を確認してください';
+						break;
+					case 'not-found':
+						errorMessage = '曲データが見つかりませんでした';
+						break;
+					default:
+						errorMessage = `データ取得エラー: ${error.message}`;
+				}
+			}
+
+			// エラーを保存して再スロー
+			const enhancedError = new Error(errorMessage, { cause: error });
+			this.lastError = enhancedError;
+			console.error('曲データ取得エラー:', error);
+			throw enhancedError;
+		}
+	}
+
+	/**
 	 * キャッシュをクリアして強制的に再取得する
 	 * @returns 最新の曲データ
 	 */
 	public static async refreshTunes(): Promise<TuneFull[]> {
 		// キャッシュをクリア
 		this.tunesCache.clear();
+		this.tunesListViewCache.clear();
 		this.tunes.length = 0;
 		this.lastError = null;
 
@@ -166,6 +235,7 @@ export class TuneRepository {
 
 // 互換性のために従来の関数もエクスポート
 export const getTunes = TuneRepository.getTunes.bind(TuneRepository);
+export const getTunesForListView = TuneRepository.getTunesForListView.bind(TuneRepository);
 export const refreshTunes = TuneRepository.refreshTunes.bind(TuneRepository);
 
 /**

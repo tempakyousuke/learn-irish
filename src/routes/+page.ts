@@ -1,5 +1,5 @@
 import { parse } from 'cookie';
-import { getTunes } from '$core/data/repositories/tuneRepository';
+import { getTunesForListView } from '$core/data/repositories/tuneRepository';
 
 export const ssr = false;
 
@@ -7,8 +7,8 @@ export async function load({ url }: { url: URL }) {
 	// Check for cache refresh parameter
 	const forceRefresh = url.searchParams.has('refresh');
 
-	// Fetch tunes data using the existing getTunes function
-	const tunes = await getTunes(forceRefresh);
+	// Fetch tunes data using the lightweight getTunesForListView function for better cache performance
+	const tunes = await getTunesForListView(forceRefresh);
 
 	// Get cookies - client-side only
 	const cookies = typeof document !== 'undefined' ? parse(document.cookie) : {};

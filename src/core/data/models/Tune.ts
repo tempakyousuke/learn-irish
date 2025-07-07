@@ -81,6 +81,19 @@ export interface TuneDisplay extends TuneBase {
 }
 
 /**
+ * トップページのリスト表示に必要な最小限の情報
+ * キャッシュサイズ最適化のため、不要なフィールドを除外
+ */
+export interface TuneListView extends TuneBase {
+	/** リズムの種類（フィルタリング・ソート・表示で使用） */
+	rhythm?: string;
+	/** 調（表示・ソートで使用） */
+	key?: string;
+	/** 調性（表示・ソートで使用） */
+	mode?: string;
+}
+
+/**
  * 既存のTune型との後方互換性を維持するための型
  * @deprecated TuneFullを使用してください
  */
@@ -143,4 +156,22 @@ export function parseTuneData(data: Record<string, unknown>, id: string): TuneFu
 			alsoKnown: typeof data.alsoKnown === 'string' ? data.alsoKnown : undefined
 		}
 	);
+}
+
+/**
+ * Firestoreから取得したデータをTuneListView型に変換する
+ * トップページのキャッシュ最適化のため、必要最小限のフィールドのみを含む
+ * @param data Firestoreから取得した生データ
+ * @param id ドキュメントID
+ * @returns 変換されたTuneListView型データ
+ */
+export function parseTuneListViewData(data: Record<string, unknown>, id: string): TuneListView {
+	return {
+		id,
+		tuneNo: typeof data.tuneNo === 'number' ? data.tuneNo : 0,
+		name: typeof data.name === 'string' ? data.name : 'Unknown Tune',
+		rhythm: typeof data.rhythm === 'string' ? data.rhythm : undefined,
+		key: typeof data.key === 'string' ? data.key : undefined,
+		mode: typeof data.mode === 'string' ? data.mode : undefined
+	};
 }

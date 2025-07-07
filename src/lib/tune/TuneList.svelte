@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { Tune } from '$core/data/models/Tune';
-	import type { UserTune } from '$core/data/models/UserTune';
-	export let tunes: Tune[] = [];
-	export let userTuneStatus: { [key: string]: UserTune } = {};
+	import type { TuneListView } from '$core/data/models/Tune';
+	import type { UserTuneFull } from '$core/data/models/UserTune';
+	export let tunes: TuneListView[] = [];
+	export let userTuneStatus: { [key: string]: UserTuneFull } = {};
 	export let dailyData: { [key: string]: number } = {};
 	$: countExist = Object.keys(userTuneStatus).length > 0;
 </script>
 
-{#snippet desktopTuneRow(tune: Tune)}
+{#snippet desktopTuneRow(tune: TuneListView)}
 	<tr
 		class="border-b border-teal-400 md:table-row hidden {dailyData[tune.id]
 			? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
@@ -49,7 +49,7 @@
 	</tr>
 {/snippet}
 
-{#snippet mobileTuneRow(tune: Tune)}
+{#snippet mobileTuneRow(tune: TuneListView)}
 	<tr
 		class="border-b border-teal-400 table-row md:hidden {dailyData[tune.id]
 			? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'

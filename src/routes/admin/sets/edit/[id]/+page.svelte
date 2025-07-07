@@ -6,9 +6,7 @@
 	import type { SetFull } from '$data/models/Set';
 	import { toast } from 'svelte-sonner';
 
-	export let data: {
-		set: SetFull;
-	};
+	const { data }: { data: { set: SetFull } } = $props();
 
 	let saving = $state(false);
 
