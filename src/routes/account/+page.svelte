@@ -81,7 +81,7 @@
 
 	async function handleLinkGoogle() {
 		if (hasGoogleAuth) {
-			toast.error('Googleアカウントは既にリンクされています');
+			toast.error($t('google_account_already_linked'));
 			return;
 		}
 
@@ -89,15 +89,15 @@
 		try {
 			await linkGoogleAccount();
 			loadLinkedProviders();
-			toast.success('Googleアカウントをリンクしました');
+			toast.success($t('google_account_linked'));
 		} catch (error: any) {
 			console.error('Google link error:', error);
 			if (error.code === 'auth/provider-already-linked') {
-				toast.error('このGoogleアカウントは既にリンクされています');
+				toast.error($t('provider_already_linked'));
 			} else if (error.code === 'auth/credential-already-in-use') {
-				toast.error('このGoogleアカウントは他のユーザーによって使用されています');
+				toast.error($t('credential_already_in_use'));
 			} else {
-				toast.error('Googleアカウントのリンクに失敗しました');
+				toast.error($t('google_link_failed'));
 			}
 		} finally {
 			loading = false;
@@ -106,7 +106,7 @@
 
 	async function handleLinkEmailPassword() {
 		if (hasEmailAuth) {
-			toast.error('メール/パスワード認証は既にリンクされています');
+			toast.error($t('email_password_already_linked'));
 			return;
 		}
 
@@ -131,15 +131,15 @@
 			showEmailPasswordForm = false;
 			emailPasswordForm = { email: '', password: '' };
 			errors = { email: '', password: '' };
-			toast.success('メール/パスワード認証をリンクしました');
+			toast.success($t('email_password_linked'));
 		} catch (error: any) {
 			console.error('Email/Password link error:', error);
 			if (error.code === 'auth/email-already-in-use') {
-				toast.error('このメールアドレスは既に使用されています');
+				toast.error($t('email_already_in_use'));
 			} else if (error.code === 'auth/weak-password') {
-				toast.error('パスワードが弱すぎます');
+				toast.error($t('weak_password'));
 			} else {
-				toast.error('メール/パスワード認証のリンクに失敗しました');
+				toast.error($t('email_password_link_failed'));
 			}
 		} finally {
 			loading = false;
@@ -148,7 +148,7 @@
 
 	async function handleUnlinkProvider(providerId: string) {
 		if (linkedProviders.length <= 1) {
-			toast.error('最低1つの認証方法を残す必要があります');
+			toast.error($t('minimum_one_auth_method'));
 			return;
 		}
 
@@ -156,17 +156,17 @@
 		try {
 			await unlinkProvider(providerId);
 			loadLinkedProviders();
-			toast.success('認証方法のリンクを解除しました');
+			toast.success($t('authentication_method_unlinked'));
 		} catch (error: any) {
 			console.error('Unlink error:', error);
-			toast.error('認証方法のリンク解除に失敗しました');
+			toast.error($t('unlink_failed'));
 		} finally {
 			loading = false;
 		}
 	}
 
-	const title = `アカウント設定 - ${siteTitle}`;
-	const description = `アカウント設定ページです。`;
+	const title = `${$t('account_settings')} - ${siteTitle}`;
+	const description = `${$t('account_settings')}ページです。`;
 	const currentPageUrl = $page.url.href;
 </script>
 
@@ -184,10 +184,10 @@
 {#if $authLoaded && $isAuthenticated}
 <div class="container mx-auto px-4 py-8">
 	<div class="max-w-2xl mx-auto">
-		<h1 class="text-3xl font-bold mb-8">アカウント設定</h1>
+		<h1 class="text-3xl font-bold mb-8">{$t('account_settings')}</h1>
 		
 		<div class="bg-white rounded-lg shadow-md p-6">
-			<h2 class="text-xl font-semibold mb-4">リンクされた認証方法</h2>
+			<h2 class="text-xl font-semibold mb-4">{$t('linked_authentication_methods')}</h2>
 			
 			{#if linkedProviders.length > 0}
 				<div class="space-y-4 mb-6">
@@ -199,7 +199,7 @@
 										<span class="text-white text-sm font-bold">G</span>
 									</div>
 									<div>
-										<p class="font-medium">Google</p>
+										<p class="font-medium">{$t('google')}</p>
 										<p class="text-sm text-gray-600">{provider.email}</p>
 									</div>
 								{:else if provider.providerId === 'password'}
@@ -207,7 +207,7 @@
 										<span class="text-white text-sm font-bold">@</span>
 									</div>
 									<div>
-										<p class="font-medium">メール/パスワード</p>
+										<p class="font-medium">{$t('email_password')}</p>
 										<p class="text-sm text-gray-600">{provider.email}</p>
 									</div>
 								{/if}
@@ -221,7 +221,7 @@
 									textColorClass="text-gray-700"
 									className="text-sm px-3 py-1"
 								>
-									解除
+									{$t('unlink')}
 								</Button>
 							{/if}
 						</div>
@@ -230,7 +230,7 @@
 			{/if}
 
 			{#if !hasGoogleAuth || !hasEmailAuth}
-				<h3 class="text-lg font-semibold mb-4">認証方法を追加</h3>
+				<h3 class="text-lg font-semibold mb-4">{$t('add_authentication_method')}</h3>
 			{/if}
 			
 			<div class="space-y-4">
@@ -242,8 +242,8 @@
 									<span class="text-white text-sm font-bold">G</span>
 								</div>
 								<div>
-									<p class="font-medium">Google</p>
-									<p class="text-sm text-gray-600">Googleアカウントでログイン</p>
+									<p class="font-medium">{$t('google')}</p>
+									<p class="text-sm text-gray-600">{$t('google_signin_description')}</p>
 								</div>
 							</div>
 							<Button 
@@ -251,7 +251,7 @@
 								disabled={loading}
 								className="bg-red-500 hover:bg-red-600"
 							>
-								リンク
+								{$t('link')}
 							</Button>
 						</div>
 					</div>
@@ -265,8 +265,8 @@
 									<span class="text-white text-sm font-bold">@</span>
 								</div>
 								<div>
-									<p class="font-medium">メール/パスワード</p>
-									<p class="text-sm text-gray-600">メールアドレスとパスワードでログイン</p>
+									<p class="font-medium">{$t('email_password')}</p>
+									<p class="text-sm text-gray-600">{$t('email_password_signin_description')}</p>
 								</div>
 							</div>
 							<Button 
@@ -275,7 +275,7 @@
 								bgColorClass="bg-gray-100"
 								textColorClass="text-gray-700"
 							>
-								{showEmailPasswordForm ? 'キャンセル' : 'リンク'}
+								{showEmailPasswordForm ? $t('cancel') : $t('link')}
 							</Button>
 						</div>
 						
@@ -300,7 +300,7 @@
 									disabled={loading || hasError}
 									block
 								>
-									{loading ? 'リンク中...' : 'メール/パスワード認証をリンク'}
+									{loading ? $t('linking') : $t('link_email_password_auth')}
 								</Button>
 							</div>
 						{/if}
@@ -313,15 +313,15 @@
 {:else if $authLoaded}
 <div class="flex items-center justify-center min-h-screen">
 	<div class="text-center">
-		<h1 class="text-2xl font-bold mb-4">アクセスが制限されています</h1>
-		<p class="text-gray-600 mb-4">このページにアクセスするにはログインが必要です。</p>
-		<a href="/signin" class="text-blue-600 hover:text-blue-800">ログインページへ</a>
+		<h1 class="text-2xl font-bold mb-4">{$t('access_restricted')}</h1>
+		<p class="text-gray-600 mb-4">{$t('login_required')}</p>
+		<a href="/signin" class="text-blue-600 hover:text-blue-800">{$t('go_to_signin')}</a>
 	</div>
 </div>
 {:else}
 <div class="flex items-center justify-center min-h-screen">
 	<div class="text-center">
-		<p class="text-gray-600">読み込み中...</p>
+		<p class="text-gray-600">{$t('loading')}</p>
 	</div>
 </div>
 {/if}
