@@ -116,7 +116,7 @@ export function getSignInMethodsForEmail(email: string) {
  * 現在のユーザーのリンクされたプロバイダー情報を取得する
  */
 export function getLinkedProviders() {
-	if (!auth.currentUser) {
+	if (!auth.currentUser || !auth.currentUser.providerData) {
 		return [];
 	}
 	return auth.currentUser.providerData.map(provider => ({

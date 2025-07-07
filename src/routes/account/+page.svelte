@@ -56,8 +56,16 @@
 		goto('/signin');
 	}
 
+	// 認証状態が変わった時にプロバイダー情報を再読み込み
+	$: if ($authLoaded && $isAuthenticated) {
+		loadLinkedProviders();
+	}
+
 	function loadLinkedProviders() {
-		linkedProviders = getLinkedProviders();
+		// 認証状態が確認済みでログイン済みの場合のみ実行
+		if ($authLoaded && $isAuthenticated) {
+			linkedProviders = getLinkedProviders();
+		}
 	}
 
 	const validate = (path: string) => {
