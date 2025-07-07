@@ -2,16 +2,23 @@
 	import { t } from 'svelte-i18n';
 	import Button from '$lib/button/Button.svelte';
 
-	const { currentPage, totalPages, itemsPerPage, totalItems, onPageChange, onItemsPerPageChange, compact = false } =
-		$props<{
-			currentPage: number;
-			totalPages: number;
-			itemsPerPage: number;
-			totalItems: number;
-			onPageChange: (page: number) => void;
-			onItemsPerPageChange: (itemsPerPage: number) => void;
-			compact?: boolean; // コンパクト表示フラグ（上部用）
-		}>();
+	const {
+		currentPage,
+		totalPages,
+		itemsPerPage,
+		totalItems,
+		onPageChange,
+		onItemsPerPageChange,
+		compact = false
+	} = $props<{
+		currentPage: number;
+		totalPages: number;
+		itemsPerPage: number;
+		totalItems: number;
+		onPageChange: (page: number) => void;
+		onItemsPerPageChange: (itemsPerPage: number) => void;
+		compact?: boolean; // コンパクト表示フラグ（上部用）
+	}>();
 
 	const pageOptions = [10, 20, 50, 100];
 
@@ -32,7 +39,7 @@
 		const pages: (number | string)[] = [];
 		const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 		const maxPages = isMobile ? 1 : 2; // モバイルでは現在ページの前後1つずつ、デスクトップでは2つずつ
-		
+
 		const start = Math.max(1, currentPage - maxPages);
 		const end = Math.min(totalPages, currentPage + maxPages);
 
@@ -58,7 +65,9 @@
 	});
 </script>
 
-<div class="flex flex-col gap-4 mt-6 mx-4 p-4 bg-white rounded-lg shadow-md w-auto max-w-full overflow-hidden">
+<div
+	class="flex flex-col gap-4 mt-6 mx-auto p-4 bg-white rounded-lg shadow-md max-w-[1280px] w-full overflow-hidden"
+>
 	{#if !compact}
 		<!-- モバイル: 表示件数選択とページ情報を上に配置 -->
 		<div class="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
