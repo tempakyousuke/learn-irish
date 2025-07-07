@@ -3,12 +3,15 @@
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { siteTitle } from '$core/config/configService';
 	import { 
 		getLinkedProviders, 
 		linkGoogleAccount, 
 		linkEmailPassword, 
-		unlinkProvider 
+		unlinkProvider,
+		isAuthenticated,
+		authLoaded
 	} from '$core/auth/authService';
 	import Button from '$lib/button/Button.svelte';
 	import Input from '$lib/forms/Input.svelte';
@@ -47,6 +50,11 @@
 	onMount(() => {
 		loadLinkedProviders();
 	});
+
+	// 認証状態の監視とリダイレクト
+	$: if ($authLoaded && !$isAuthenticated) {
+		goto('/signin');
+	}
 
 	function loadLinkedProviders() {
 		linkedProviders = getLinkedProviders();
@@ -165,6 +173,7 @@
 	<meta name="twitter:description" content={description} />
 </svelte:head>
 
+{#if $authLoaded && $isAuthenticated}
 <div class="container mx-auto px-4 py-8">
 	<div class="max-w-2xl mx-auto">
 		<h1 class="text-3xl font-bold mb-8">アカウント設定</h1>
@@ -291,3 +300,18 @@
 		</div>
 	</div>
 </div>
+{:else if $authLoaded}
+<div class="flex items-center justify-center min-h-screen">
+	<div class="text-center">
+		<h1 class="text-2xl font-bold mb-4">アクセスが制限されています</h1>
+		<p class="text-gray-600 mb-4">このページにアクセスするにはログインが必要です。</p>
+		<a href="/signin" class="text-blue-600 hover:text-blue-800">ログインページへ</a>
+	</div>
+</div>
+{:else}
+<div class="flex items-center justify-center min-h-screen">
+	<div class="text-center">
+		<p class="text-gray-600">読み込み中...</p>
+	</div>
+</div>
+{/if}
