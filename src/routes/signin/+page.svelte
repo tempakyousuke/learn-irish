@@ -10,6 +10,7 @@
 	import { toast } from 'svelte-sonner';
 	import { siteTitle } from '$core/config/configService';
 	import { page } from '$app/stores';
+	import { loginWithGoogle } from '$core/auth/authService';
 
 	let values = {
 		email: '',
@@ -71,6 +72,16 @@
 			});
 	};
 
+	const signInWithGoogleHandler = () => {
+		loginWithGoogle()
+			.then(() => {
+				goto('/');
+			})
+			.catch((error) => {
+				toast.error(error.message);
+			});
+	};
+
 	const title = `Sign In - ${siteTitle}`;
 	const description = `Sign Inページです。`;
 	const currentPageUrl = $page.url.href;
@@ -108,6 +119,15 @@
 				on:input={() => validate('password')}
 			/>
 			<Button block className="mt-6" on:click={submit} disabled={hasError}>{$t('sign_in')}</Button>
+			<div class="mt-4 text-center">
+				<Button
+					block
+					className="mt-2 bg-red-500 hover:bg-red-600"
+					on:click={signInWithGoogleHandler}
+				>
+					Googleでサインイン
+				</Button>
+			</div>
 			<div class="mt-4 text-center">
 				<a href="/reset-password" class="text-blue-600 hover:text-blue-800">
 					{$t('forgot_password')}

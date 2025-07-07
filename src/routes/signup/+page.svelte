@@ -11,6 +11,7 @@
 	import { toast } from 'svelte-sonner';
 	import { siteTitle } from '$core/config/configService';
 	import { page } from '$app/stores';
+	import { loginWithGoogle } from '$core/auth/authService';
 
 	let values = {
 		email: '',
@@ -72,6 +73,16 @@
 			});
 	};
 
+	const signUpWithGoogleHandler = () => {
+		loginWithGoogle()
+			.then(() => {
+				goto('/');
+			})
+			.catch((error) => {
+				toast.error(error.message);
+			});
+	};
+
 	const title = `Sign Up - ${siteTitle}`;
 	const description = `Sign Upページです。`;
 	const currentPageUrl = $page.url.href;
@@ -109,6 +120,15 @@
 				on:input={() => validate('password')}
 			/>
 			<Button block className="mt-5" on:click={submit}>{$t('register')}</Button>
+			<div class="mt-4 text-center">
+				<Button
+					block
+					className="mt-2 bg-red-500 hover:bg-red-600"
+					on:click={signUpWithGoogleHandler}
+				>
+					Googleでサインアップ
+				</Button>
+			</div>
 		</form>
 	</div>
 </div>

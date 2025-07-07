@@ -1,4 +1,10 @@
-import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
+import {
+	onAuthStateChanged,
+	signOut,
+	signInWithPopup,
+	GoogleAuthProvider,
+	type User
+} from 'firebase/auth';
 import { auth } from '$core/data/firebase/firebaseClient';
 import { userStore } from '$core/store/userStore';
 import { setCreationTime } from '$core/auth/userService';
@@ -45,6 +51,14 @@ async function handleAuthStateChanged(firebaseUser: User | null) {
 
 	// 認証状態の読み込みが完了したことを通知
 	authLoaded.set(true);
+}
+
+/**
+ * Googleログイン処理
+ */
+export function loginWithGoogle() {
+	const provider = new GoogleAuthProvider();
+	return signInWithPopup(auth, provider);
 }
 
 /**
