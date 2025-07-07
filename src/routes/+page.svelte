@@ -323,19 +323,19 @@
 			</div>
 		{:else}
 			<TuneStats {tunes} {rememberNameIds} {rememberMelodyIds} {totalCount} {dailyTotal} />
-
 			<!-- <DailyPlaysTable {dailyData} {tuneObjects} /> -->
-			<FilterControls
-				isLoggedIn={!!$userId}
-				bind:rememberName
-				bind:rememberMelody
-				bind:onlyFavorite
-				bind:selectedRhythm
-				bind:sortBy
-				{rhythms}
-			/>
 		{/if}
 	{/if}
+
+	<FilterControls
+		isLoggedIn={!!$userId}
+		bind:rememberName
+		bind:rememberMelody
+		bind:onlyFavorite
+		bind:selectedRhythm
+		bind:sortBy
+		{rhythms}
+	/>
 
 	<div class="mx-auto mt-10 px-3">
 		{#if totalPages > 1}
