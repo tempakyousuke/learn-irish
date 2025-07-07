@@ -5,10 +5,10 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { siteTitle } from '$core/config/configService';
-	import { 
-		getLinkedProviders, 
-		linkGoogleAccount, 
-		linkEmailPassword, 
+	import {
+		getLinkedProviders,
+		linkGoogleAccount,
+		linkEmailPassword,
 		unlinkProvider,
 		isAuthenticated,
 		authLoaded
@@ -21,19 +21,19 @@
 	let linkedProviders: any[] = [];
 	let loading = false;
 	let showEmailPasswordForm = false;
-	
+
 	let emailPasswordForm = {
 		email: '',
 		password: ''
 	};
-	
+
 	let errors: { [key: string]: string } = {
 		email: '',
 		password: ''
 	};
 
-	$: hasGoogleAuth = linkedProviders.some(p => p.providerId === 'google.com');
-	$: hasEmailAuth = linkedProviders.some(p => p.providerId === 'password');
+	$: hasGoogleAuth = linkedProviders.some((p) => p.providerId === 'google.com');
+	$: hasEmailAuth = linkedProviders.some((p) => p.providerId === 'password');
 	$: hasError = errors.email !== '' || errors.password !== '';
 
 	const schema = yup.object().shape({
@@ -110,7 +110,8 @@
 			return;
 		}
 
-		const validationResult = await schema.validate(emailPasswordForm, { abortEarly: false })
+		const validationResult = await schema
+			.validate(emailPasswordForm, { abortEarly: false })
 			.catch((err) => {
 				err.inner.forEach((error: ValidationError) => {
 					if (error.path) {
@@ -182,146 +183,142 @@
 </svelte:head>
 
 {#if $authLoaded && $isAuthenticated}
-<div class="container mx-auto px-4 py-8">
-	<div class="max-w-2xl mx-auto">
-		<h1 class="text-3xl font-bold mb-8">{$t('account_settings')}</h1>
-		
-		<div class="bg-white rounded-lg shadow-md p-6">
-			<h2 class="text-xl font-semibold mb-4">{$t('linked_authentication_methods')}</h2>
-			
-			{#if linkedProviders.length > 0}
-				<div class="space-y-4 mb-6">
-					{#each linkedProviders as provider}
-						<div class="flex items-center justify-between p-4 border rounded-lg">
-							<div class="flex items-center space-x-3">
-								{#if provider.providerId === 'google.com'}
+	<div class="container mx-auto px-4 py-8">
+		<div class="max-w-2xl mx-auto">
+			<h1 class="text-3xl font-bold mb-8">{$t('account_settings')}</h1>
+
+			<div class="bg-white rounded-lg shadow-md p-6">
+				<h2 class="text-xl font-semibold mb-4">{$t('linked_authentication_methods')}</h2>
+
+				{#if linkedProviders.length > 0}
+					<div class="space-y-4 mb-6">
+						{#each linkedProviders as provider}
+							<div class="flex items-center justify-between p-4 border rounded-lg">
+								<div class="flex items-center space-x-3">
+									{#if provider.providerId === 'google.com'}
+										<div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+											<span class="text-white text-sm font-bold">G</span>
+										</div>
+										<div>
+											<p class="font-medium">{$t('google')}</p>
+											<p class="text-sm text-gray-600">{provider.email}</p>
+										</div>
+									{:else if provider.providerId === 'password'}
+										<div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+											<span class="text-white text-sm font-bold">@</span>
+										</div>
+										<div>
+											<p class="font-medium">{$t('email_password')}</p>
+											<p class="text-sm text-gray-600">{provider.email}</p>
+										</div>
+									{/if}
+								</div>
+
+								{#if linkedProviders.length > 1}
+									<Button
+										on:click={() => handleUnlinkProvider(provider.providerId)}
+										disabled={loading}
+										bgColorClass="bg-gray-100"
+										textColorClass="text-gray-700"
+										className="text-sm px-3 py-1"
+									>
+										{$t('unlink')}
+									</Button>
+								{/if}
+							</div>
+						{/each}
+					</div>
+				{/if}
+
+				{#if !hasGoogleAuth || !hasEmailAuth}
+					<h3 class="text-lg font-semibold mb-4">{$t('add_authentication_method')}</h3>
+				{/if}
+
+				<div class="space-y-4">
+					{#if !hasGoogleAuth}
+						<div class="p-4 border rounded-lg">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center space-x-3">
 									<div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
 										<span class="text-white text-sm font-bold">G</span>
 									</div>
 									<div>
 										<p class="font-medium">{$t('google')}</p>
-										<p class="text-sm text-gray-600">{provider.email}</p>
+										<p class="text-sm text-gray-600">{$t('google_signin_description')}</p>
 									</div>
-								{:else if provider.providerId === 'password'}
+								</div>
+								<Button
+									on:click={handleLinkGoogle}
+									disabled={loading}
+									className="bg-red-500 hover:bg-red-600"
+								>
+									{$t('link')}
+								</Button>
+							</div>
+						</div>
+					{/if}
+
+					{#if !hasEmailAuth}
+						<div class="p-4 border rounded-lg">
+							<div class="flex items-center justify-between mb-4">
+								<div class="flex items-center space-x-3">
 									<div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
 										<span class="text-white text-sm font-bold">@</span>
 									</div>
 									<div>
 										<p class="font-medium">{$t('email_password')}</p>
-										<p class="text-sm text-gray-600">{provider.email}</p>
+										<p class="text-sm text-gray-600">{$t('email_password_signin_description')}</p>
 									</div>
-								{/if}
-							</div>
-							
-							{#if linkedProviders.length > 1}
-								<Button 
-									on:click={() => handleUnlinkProvider(provider.providerId)}
+								</div>
+								<Button
+									on:click={() => (showEmailPasswordForm = !showEmailPasswordForm)}
 									disabled={loading}
 									bgColorClass="bg-gray-100"
 									textColorClass="text-gray-700"
-									className="text-sm px-3 py-1"
 								>
-									{$t('unlink')}
+									{showEmailPasswordForm ? $t('cancel') : $t('link')}
 								</Button>
+							</div>
+
+							{#if showEmailPasswordForm}
+								<div class="space-y-4">
+									<Input
+										bind:value={emailPasswordForm.email}
+										type="email"
+										label={$t('email')}
+										error={errors.email}
+										on:input={() => validate('email')}
+									/>
+									<Input
+										bind:value={emailPasswordForm.password}
+										type="password"
+										label={$t('password')}
+										error={errors.password}
+										on:input={() => validate('password')}
+									/>
+									<Button on:click={handleLinkEmailPassword} disabled={loading || hasError} block>
+										{loading ? $t('linking') : $t('link_email_password_auth')}
+									</Button>
+								</div>
 							{/if}
 						</div>
-					{/each}
+					{/if}
 				</div>
-			{/if}
-
-			{#if !hasGoogleAuth || !hasEmailAuth}
-				<h3 class="text-lg font-semibold mb-4">{$t('add_authentication_method')}</h3>
-			{/if}
-			
-			<div class="space-y-4">
-				{#if !hasGoogleAuth}
-					<div class="p-4 border rounded-lg">
-						<div class="flex items-center justify-between">
-							<div class="flex items-center space-x-3">
-								<div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-									<span class="text-white text-sm font-bold">G</span>
-								</div>
-								<div>
-									<p class="font-medium">{$t('google')}</p>
-									<p class="text-sm text-gray-600">{$t('google_signin_description')}</p>
-								</div>
-							</div>
-							<Button 
-								on:click={handleLinkGoogle} 
-								disabled={loading}
-								className="bg-red-500 hover:bg-red-600"
-							>
-								{$t('link')}
-							</Button>
-						</div>
-					</div>
-				{/if}
-
-				{#if !hasEmailAuth}
-					<div class="p-4 border rounded-lg">
-						<div class="flex items-center justify-between mb-4">
-							<div class="flex items-center space-x-3">
-								<div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-									<span class="text-white text-sm font-bold">@</span>
-								</div>
-								<div>
-									<p class="font-medium">{$t('email_password')}</p>
-									<p class="text-sm text-gray-600">{$t('email_password_signin_description')}</p>
-								</div>
-							</div>
-							<Button 
-								on:click={() => showEmailPasswordForm = !showEmailPasswordForm}
-								disabled={loading}
-								bgColorClass="bg-gray-100"
-								textColorClass="text-gray-700"
-							>
-								{showEmailPasswordForm ? $t('cancel') : $t('link')}
-							</Button>
-						</div>
-						
-						{#if showEmailPasswordForm}
-							<div class="space-y-4">
-								<Input
-									bind:value={emailPasswordForm.email}
-									type="email"
-									label={$t('email')}
-									error={errors.email}
-									on:input={() => validate('email')}
-								/>
-								<Input
-									bind:value={emailPasswordForm.password}
-									type="password"
-									label={$t('password')}
-									error={errors.password}
-									on:input={() => validate('password')}
-								/>
-								<Button 
-									on:click={handleLinkEmailPassword}
-									disabled={loading || hasError}
-									block
-								>
-									{loading ? $t('linking') : $t('link_email_password_auth')}
-								</Button>
-							</div>
-						{/if}
-					</div>
-				{/if}
 			</div>
 		</div>
 	</div>
-</div>
 {:else if $authLoaded}
-<div class="flex items-center justify-center min-h-screen">
-	<div class="text-center">
-		<h1 class="text-2xl font-bold mb-4">{$t('access_restricted')}</h1>
-		<p class="text-gray-600 mb-4">{$t('login_required')}</p>
-		<a href="/signin" class="text-blue-600 hover:text-blue-800">{$t('go_to_signin')}</a>
+	<div class="flex items-center justify-center min-h-screen">
+		<div class="text-center">
+			<h1 class="text-2xl font-bold mb-4">{$t('access_restricted')}</h1>
+			<p class="text-gray-600 mb-4">{$t('login_required')}</p>
+			<a href="/signin" class="text-blue-600 hover:text-blue-800">{$t('go_to_signin')}</a>
+		</div>
 	</div>
-</div>
 {:else}
-<div class="flex items-center justify-center min-h-screen">
-	<div class="text-center">
-		<p class="text-gray-600">{$t('loading')}</p>
+	<div class="flex items-center justify-center min-h-screen">
+		<div class="text-center">
+			<p class="text-gray-600">{$t('loading')}</p>
+		</div>
 	</div>
-</div>
 {/if}

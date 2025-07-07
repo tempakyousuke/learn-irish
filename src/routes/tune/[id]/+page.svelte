@@ -123,7 +123,8 @@
 			docRef,
 			{
 				playCount,
-				playHistory
+				playHistory,
+				lastPlayedDate: date
 			},
 			{ merge: true }
 		);

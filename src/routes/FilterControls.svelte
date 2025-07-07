@@ -89,7 +89,7 @@
 				<Fa icon={faSort} class="w-5 h-5 text-emerald-500 mr-2" />{$t('sort')}
 			</div>
 			<select id="sortByNameSelect" class="input" bind:value={sortBy}>
-				{#each (isLoggedIn ? $sortByOption : $sortByOptionLoggedOut) as opt}
+				{#each isLoggedIn ? $sortByOption : $sortByOptionLoggedOut as opt}
 					<option value={opt.value} id={opt.id}>{opt.label}</option>
 				{/each}
 			</select>

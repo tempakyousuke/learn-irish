@@ -45,6 +45,11 @@
 					{dailyData[tune.id] || ''}
 				</a>
 			</td>
+			<td class="py-3 px-3 text-center">
+				<a class="block" href="/tune/{tune.id}">
+					{userTuneStatus[tune.id]?.lastPlayedDate || ''}
+				</a>
+			</td>
 		{/if}
 	</tr>
 {/snippet}
@@ -90,6 +95,7 @@
 			{#if countExist}
 				<th class="py-3 px-3 w-52">{$t('total_plays')}</th>
 				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
+				<th class="py-3 px-3 w-52">{$t('last_played')}</th>
 			{/if}
 		</tr>
 		<tr class="border bg-teal-800 text-white table-row md:hidden">

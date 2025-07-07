@@ -3,7 +3,7 @@
 	import type { UserTuneFull } from '$core/data/models/UserTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
 	import { userId } from '$core/auth/authService';
-	import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
+	import { getFirestore, doc, getDoc } from 'firebase/firestore';
 	import { serialize } from 'cookie';
 	import { getDate } from '$core/utils/dateUtils';
 	import { getFavorites } from '$core/data/repositories/favoritesRepository';
@@ -15,6 +15,7 @@
 	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
 	import { calcUserTuneStats } from '$lib/utils/userTuneStats';
+	import { ensureLastPlayedDate } from '$core/data/models/UserTune';
 
 	const {
 		data
@@ -89,13 +90,20 @@
 			// 共通化: ユーザーの習得状況一覧を取得
 			const userTunes = await getUserTunes(uid);
 
+			// lastPlayedDateを補完
+			const userTunesWithLastPlayed = userTunes.map(ensureLastPlayedDate);
+
 			// 共通化: 集計ユーティリティで一括集計
-			const stats = calcUserTuneStats(userTunes);
-			rememberNameIds = userTunes.filter((tune) => tune.rememberName).map((tune) => tune.id);
-			rememberMelodyIds = userTunes.filter((tune) => tune.rememberMelody).map((tune) => tune.id);
+			const stats = calcUserTuneStats(userTunesWithLastPlayed);
+			rememberNameIds = userTunesWithLastPlayed
+				.filter((tune) => tune.rememberName)
+				.map((tune) => tune.id);
+			rememberMelodyIds = userTunesWithLastPlayed
+				.filter((tune) => tune.rememberMelody)
+				.map((tune) => tune.id);
 			totalCount = stats.totalPlayCount;
 			userTuneStatus = {};
-			userTunes.forEach((tune) => {
+			userTunesWithLastPlayed.forEach((tune) => {
 				userTuneStatus[tune.id] = tune;
 			});
 
@@ -189,6 +197,28 @@
 						const playCountA = userTuneStatus[a.id]?.playCount || 0;
 						const playCountB = userTuneStatus[b.id]?.playCount || 0;
 						return playCountB - playCountA;
+					});
+					break;
+				case 'sort_by_lastplayed_asc':
+					// 最終演奏日 昇順（古い順）
+					arr.sort((a, b) => {
+						const lastPlayedA = userTuneStatus[a.id]?.lastPlayedDate || '';
+						const lastPlayedB = userTuneStatus[b.id]?.lastPlayedDate || '';
+						if (!lastPlayedA && !lastPlayedB) return 0;
+						if (!lastPlayedA) return 1; // 未演奏を最後に
+						if (!lastPlayedB) return -1; // 未演奏を最後に
+						return lastPlayedA.localeCompare(lastPlayedB);
+					});
+					break;
+				case 'sort_by_lastplayed_desc':
+					// 最終演奏日 降順（新しい順）
+					arr.sort((a, b) => {
+						const lastPlayedA = userTuneStatus[a.id]?.lastPlayedDate || '';
+						const lastPlayedB = userTuneStatus[b.id]?.lastPlayedDate || '';
+						if (!lastPlayedA && !lastPlayedB) return 0;
+						if (!lastPlayedA) return 1; // 未演奏を最後に
+						if (!lastPlayedB) return -1; // 未演奏を最後に
+						return lastPlayedB.localeCompare(lastPlayedA);
 					});
 					break;
 				default:

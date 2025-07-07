@@ -119,7 +119,7 @@ export function getLinkedProviders() {
 	if (!auth.currentUser || !auth.currentUser.providerData) {
 		return [];
 	}
-	return auth.currentUser.providerData.map(provider => ({
+	return auth.currentUser.providerData.map((provider) => ({
 		providerId: provider.providerId,
 		uid: provider.uid,
 		displayName: provider.displayName,

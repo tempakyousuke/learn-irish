@@ -58,7 +58,13 @@ export const sortByOption = derived(t, ($t) => [
 	{ label: $t('sort_key_asc'), value: 'sort_by_key_asc', id: 'sortByKey_asc' },
 	{ label: $t('sort_key_desc'), value: 'sort_by_key_desc', id: 'sortByKey_desc' },
 	{ label: $t('sort_playcount_asc'), value: 'sort_by_playcount_asc', id: 'sortByPlaycount_asc' },
-	{ label: $t('sort_playcount_desc'), value: 'sort_by_playcount_desc', id: 'sortByPlaycount_desc' }
+	{ label: $t('sort_playcount_desc'), value: 'sort_by_playcount_desc', id: 'sortByPlaycount_desc' },
+	{ label: $t('sort_lastplayed_asc'), value: 'sort_by_lastplayed_asc', id: 'sortByLastplayed_asc' },
+	{
+		label: $t('sort_lastplayed_desc'),
+		value: 'sort_by_lastplayed_desc',
+		id: 'sortByLastplayed_desc'
+	}
 ]);
 
 export const sortByOptionLoggedOut = derived(t, ($t) => [

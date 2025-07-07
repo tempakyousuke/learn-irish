@@ -24,6 +24,8 @@ export interface UserTuneBase extends TuneReference {
 	rememberMelody: boolean;
 	/** 演奏回数 */
 	playCount: number;
+	/** 最後に演奏した日付（YYYY-MM-DD形式） */
+	lastPlayedDate?: string;
 }
 
 /**
@@ -83,6 +85,37 @@ export function incrementPlayCount(
 	return {
 		...userTune,
 		playCount: userTune.playCount + count,
-		playHistory
+		playHistory,
+		lastPlayedDate: today
+	};
+}
+
+/**
+ * playHistoryから最後に演奏した日付を取得する関数
+ * @param playHistory 演奏履歴
+ * @returns 最後に演奏した日付（YYYY-MM-DD形式）、演奏履歴がない場合はundefined
+ */
+export function getLastPlayedDate(playHistory: { [key: string]: number } | undefined | null): string | undefined {
+	if (!playHistory) return undefined;
+	const dates = Object.keys(playHistory).filter((date) => playHistory[date] > 0);
+	if (dates.length === 0) return undefined;
+	return dates.sort().pop();
+}
+
+/**
+ * UserTuneのlastPlayedDateを補完する関数
+ * 既存のデータでlastPlayedDateが設定されていない場合、playHistoryから設定する
+ * @param userTune ユーザー曲情報
+ * @returns lastPlayedDateが更新されたユーザー曲情報
+ */
+export function ensureLastPlayedDate(userTune: UserTuneFull): UserTuneFull {
+	if (userTune.lastPlayedDate) {
+		return userTune;
+	}
+
+	const lastPlayedDate = getLastPlayedDate(userTune.playHistory || {});
+	return {
+		...userTune,
+		lastPlayedDate
 	};
 }
