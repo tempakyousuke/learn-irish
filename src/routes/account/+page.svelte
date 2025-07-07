@@ -229,7 +229,9 @@
 				</div>
 			{/if}
 
-			<h3 class="text-lg font-semibold mb-4">認証方法を追加</h3>
+			{#if !hasGoogleAuth || !hasEmailAuth}
+				<h3 class="text-lg font-semibold mb-4">認証方法を追加</h3>
+			{/if}
 			
 			<div class="space-y-4">
 				{#if !hasGoogleAuth}
