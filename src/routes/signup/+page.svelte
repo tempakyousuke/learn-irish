@@ -83,8 +83,8 @@
 			});
 	};
 
-	const title = `Sign Up - ${siteTitle}`;
-	const description = `Sign Upページです。`;
+	const title = `${$t('sign_up_page_title')} - ${siteTitle}`;
+	const description = $t('sign_up_page_description');
 	const currentPageUrl = $page.url.href;
 </script>
 
@@ -126,7 +126,7 @@
 					className="mt-2 bg-red-500 hover:bg-red-600"
 					on:click={signUpWithGoogleHandler}
 				>
-					Googleでサインアップ
+					{$t('sign_up_with_google')}
 				</Button>
 			</div>
 		</form>

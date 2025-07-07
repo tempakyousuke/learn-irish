@@ -95,5 +95,11 @@
 	"minimum_one_auth_method": "You must keep at least one authentication method",
 	"google": "Google",
 	"email_password": "Email/Password",
-	"settings": "Settings"
+	"settings": "Settings",
+	"sign_in_with_google": "Sign in with Google",
+	"sign_up_with_google": "Sign up with Google",
+	"sign_in_page_description": "Sign in to your account to access your personalized tune learning experience.",
+	"sign_up_page_description": "Create a new account to start tracking your Irish tune learning progress.",
+	"sign_in_page_title": "Sign In",
+	"sign_up_page_title": "Sign Up"
 }

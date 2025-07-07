@@ -95,5 +95,11 @@
 	"minimum_one_auth_method": "最低1つの認証方法を残す必要があります",
 	"google": "Google",
 	"email_password": "メール/パスワード",
-	"settings": "設定"
+	"settings": "設定",
+	"sign_in_with_google": "Googleでサインイン",
+	"sign_up_with_google": "Googleでサインアップ",
+	"sign_in_page_description": "アカウントにサインインして、パーソナライズされた楽曲学習体験にアクセスしましょう。",
+	"sign_up_page_description": "新しいアカウントを作成して、アイルランドの楽曲学習の進捗を追跡し始めましょう。",
+	"sign_in_page_title": "サインイン",
+	"sign_up_page_title": "サインアップ"
 }

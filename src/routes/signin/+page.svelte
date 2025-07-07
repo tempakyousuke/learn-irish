@@ -82,8 +82,8 @@
 			});
 	};
 
-	const title = `Sign In - ${siteTitle}`;
-	const description = `Sign Inページです。`;
+	const title = `${$t('sign_in_page_title')} - ${siteTitle}`;
+	const description = $t('sign_in_page_description');
 	const currentPageUrl = $page.url.href;
 </script>
 
@@ -125,7 +125,7 @@
 					className="mt-2 bg-red-500 hover:bg-red-600"
 					on:click={signInWithGoogleHandler}
 				>
-					Googleでサインイン
+					{$t('sign_in_with_google')}
 				</Button>
 			</div>
 			<div class="mt-4 text-center">
