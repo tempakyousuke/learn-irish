@@ -45,6 +45,9 @@
 					<a href="/mydata" class="block px-4 py-2 rounded hover:bg-gray-100">mydata</a>
 				</li>
 				<li>
+					<a href="/account" class="block px-4 py-2 rounded hover:bg-gray-100">設定</a>
+				</li>
+				<li>
 					<button class="inline px-4 py-2 rounded hover:bg-gray-100" on:click={logout}
 						>{$t('sign_out')}</button
 					>
