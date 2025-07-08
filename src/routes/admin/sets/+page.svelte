@@ -21,7 +21,7 @@
 				TuneRepository.getTunes()
 			]);
 
-			sets = setsData;
+			sets = setsData.sort((a, b) => Number(b.setNo) - Number(a.setNo));
 			allTunes = tunesData;
 		} catch (error) {
 			console.error('データ取得エラー:', error);
