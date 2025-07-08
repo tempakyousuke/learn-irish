@@ -7,13 +7,15 @@
 
 	let saving = $state(false);
 
-	const handleSubmit = async (event: CustomEvent) => {
+	type SetFormPayload = { setData: any; tuneIds: string[] };
+
+	const handleSubmit = async (payload: SetFormPayload) => {
 		if (saving) return;
 
 		saving = true;
 
 		try {
-			const { setData, tuneIds } = event.detail;
+			const { setData, tuneIds } = payload;
 
 			// セットを作成
 			const setId = await SetRepository.addSet(
@@ -61,5 +63,5 @@
 		</div>
 	{/if}
 
-	<SetForm mode="create" on:submit={handleSubmit} on:cancel={handleCancel} />
+	<SetForm mode="create" onSubmit={handleSubmit} onCancel={handleCancel} />
 </div>

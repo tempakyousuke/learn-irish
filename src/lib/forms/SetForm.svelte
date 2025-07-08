@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { TuneRepository } from '$data/repositories/tuneRepository';
 	import type { SetFull } from '$data/models/Set';
 	import type { TuneFull } from '$data/models/Tune';
@@ -20,9 +19,21 @@
 		getSpreadsheetExample
 	} from '$core/utils/spreadsheetParser';
 
-	const { set = null, mode = 'create' }: { set?: Partial<SetFull> | null; mode?: 'create' | 'edit' } = $props();
+	const {
+		set = null,
+		mode = 'create',
+		onSubmit,
+		onCancel
+	}: {
+		set?: Partial<SetFull> | null;
+		mode?: 'create' | 'edit';
+		onSubmit?: (payload: { setData: any; tuneIds: string[] }) => void;
+		onCancel?: () => void;
+	} = $props();
 
-	const dispatch = createEventDispatcher();
+	// コールバックが渡されなかった場合に備えて no-op を用意
+	const onSubmitCallback = onSubmit ?? (() => {});
+	const onCancelCallback = onCancel ?? (() => {});
 
 	// フォームデータ
 	let formData = $state({
@@ -126,8 +137,8 @@
 			return;
 		}
 
-		// データを送信
-		dispatch('submit', {
+		// コールバックで親へ通知
+		onSubmitCallback({
 			setData: {
 				id: set?.id || '',
 				...formData
@@ -137,7 +148,7 @@
 	};
 
 	const handleCancel = () => {
-		dispatch('cancel');
+		onCancelCallback();
 	};
 
 	// HTMLからYouTube動画リンクを抽出する関数
@@ -157,20 +168,20 @@
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(html, 'text/html');
 		const table = doc.querySelector('table');
-		
+
 		if (table) {
 			const rows = table.querySelectorAll('tr');
 			const textLines: string[] = [];
-			
-			rows.forEach(row => {
+
+			rows.forEach((row) => {
 				const cells = row.querySelectorAll('td');
-				const cellTexts = Array.from(cells).map(cell => cell.textContent?.trim() || '');
+				const cellTexts = Array.from(cells).map((cell) => cell.textContent?.trim() || '');
 				textLines.push(cellTexts.join('\t'));
 			});
-			
+
 			return textLines.join('\n');
 		}
-		
+
 		return html;
 	};
 
@@ -207,7 +218,6 @@
 		} else {
 			toast.success(`${matchedTuneIds.length}曲のデータを取り込みました！`);
 		}
-
 	};
 
 	// 自動データ取り込み - クリップボードから直接データを読み取って処理
@@ -216,19 +226,19 @@
 			const clipboardItems = await navigator.clipboard.read();
 			for (const clipboardItem of clipboardItems) {
 				let dataToProcess = '';
-				
+
 				// HTML形式のデータを優先的に取得
 				if (clipboardItem.types.includes('text/html')) {
 					const htmlBlob = await clipboardItem.getType('text/html');
 					const htmlText = await htmlBlob.text();
-					
+
 					// HTMLから動画リンクを抽出
 					const videoLinks = extractVideoLinksFromHTML(htmlText);
 					if (videoLinks.length > 0) {
 						// 複数の動画リンクがある場合は最初のものを使用
 						formData.videoLink = videoLinks[0];
 					}
-					
+
 					// HTMLをテキストに変換
 					dataToProcess = convertHTMLToText(htmlText);
 				}
@@ -237,21 +247,19 @@
 					const textBlob = await clipboardItem.getType('text/plain');
 					dataToProcess = await textBlob.text();
 				}
-				
+
 				if (dataToProcess) {
 					processClipboardData(dataToProcess);
 					return;
 				}
 			}
-			
+
 			toast.error('クリップボードにデータが見つかりませんでした');
 		} catch (error) {
 			console.error('クリップボードの読み取りに失敗しました:', error);
 			toast.error('クリップボードの読み取りに失敗しました。手動で貼り付けてください。');
 		}
 	};
-
-
 </script>
 
 <div class="max-w-4xl mx-auto space-y-6">
@@ -291,7 +299,6 @@
 				</div>
 			</div>
 		{/if}
-
 	</div>
 
 	<!-- セット基本情報 -->
