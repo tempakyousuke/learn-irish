@@ -37,8 +37,6 @@
 	let filteredTunes: TuneFull[] = [];
 	let searchQuery = '';
 	let loading = true;
-	let pasteText = '';
-	let showPasteArea = false;
 	let showHelp = false;
 
 	// 既存セットの場合は初期値を設定
@@ -209,9 +207,6 @@
 			toast.success(`${matchedTuneIds.length}曲のデータを取り込みました！`);
 		}
 
-		// 貼り付けエリアを閉じる
-		showPasteArea = false;
-		pasteText = '';
 	};
 
 	// 自動データ取り込み - クリップボードから直接データを読み取って処理
@@ -255,49 +250,7 @@
 		}
 	};
 
-	const handlePasteData = () => {
-		processClipboardData(pasteText);
-	};
 
-	const togglePasteArea = async () => {
-		showPasteArea = !showPasteArea;
-		if (!showPasteArea) {
-			pasteText = '';
-			return;
-		}
-
-		// 貼り付けエリアを開く際に自動的にクリップボードを読み取る
-		try {
-			const clipboardItems = await navigator.clipboard.read();
-			for (const clipboardItem of clipboardItems) {
-				// HTML形式のデータを優先的に取得
-				if (clipboardItem.types.includes('text/html')) {
-					const htmlBlob = await clipboardItem.getType('text/html');
-					const htmlText = await htmlBlob.text();
-					
-					// HTMLから動画リンクを抽出
-					const videoLinks = extractVideoLinksFromHTML(htmlText);
-					if (videoLinks.length > 0) {
-						// 複数の動画リンクがある場合は最初のものを使用
-						formData.videoLink = videoLinks[0];
-					}
-					
-					// HTMLをテキストに変換してテキストエリアに表示
-					pasteText = convertHTMLToText(htmlText);
-					break;
-				}
-				// HTML形式がない場合はテキスト形式を使用
-				else if (clipboardItem.types.includes('text/plain')) {
-					const textBlob = await clipboardItem.getType('text/plain');
-					pasteText = await textBlob.text();
-					break;
-				}
-			}
-		} catch (error) {
-			console.warn('クリップボードの読み取りに失敗しました:', error);
-			// エラーの場合は通常通り手動入力を促す
-		}
-	};
 </script>
 
 <div class="max-w-4xl mx-auto space-y-6">
@@ -321,69 +274,23 @@
 					<Fa icon={faPaste} size="sm" />
 					<span>自動取り込み</span>
 				</button>
-				<button
-					on:click={togglePasteArea}
-					class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm flex items-center space-x-1"
-				>
-					<Fa icon={faPaste} size="sm" />
-					<span>{showPasteArea ? '閉じる' : '手動貼り付け'}</span>
-				</button>
 			</div>
 		</div>
 
 		{#if showHelp}
 			<div class="bg-white border border-blue-200 rounded p-4 mb-4 text-sm">
 				<h4 class="font-medium text-blue-800 mb-2">使い方:</h4>
-				<div class="space-y-3">
-					<div>
-						<h5 class="font-medium text-green-700 mb-1">自動取り込み（推奨）:</h5>
-						<ol class="list-decimal list-inside space-y-1 text-gray-700">
-							<li>Google Sheetsで同じセット番号の行を選択</li>
-							<li>Ctrl+C (Cmd+C) でコピー</li>
-							<li>「自動取り込み」ボタンをクリック</li>
-						</ol>
-					</div>
-					<div>
-						<h5 class="font-medium text-blue-700 mb-1">手動貼り付け:</h5>
-						<ol class="list-decimal list-inside space-y-1 text-gray-700">
-							<li>Google Sheetsで同じセット番号の行を選択</li>
-							<li>Ctrl+C (Cmd+C) でコピー</li>
-							<li>「手動貼り付け」ボタンをクリック</li>
-							<li>テキストエリアにCtrl+V (Cmd+V) で貼り付け</li>
-							<li>「データを取り込む」ボタンをクリック</li>
-						</ol>
-					</div>
-				</div>
+				<ol class="list-decimal list-inside space-y-1 text-gray-700">
+					<li>Google Sheetsで同じセット番号の行を選択</li>
+					<li>Ctrl+C (Cmd+C) でコピー</li>
+					<li>「自動取り込み」ボタンをクリック</li>
+				</ol>
 				<div class="mt-3 text-xs text-gray-600 bg-gray-50 p-2 rounded">
 					<pre>{getSpreadsheetExample()}</pre>
 				</div>
 			</div>
 		{/if}
 
-		{#if showPasteArea}
-			<div class="space-y-3">
-				<textarea
-					bind:value={pasteText}
-					placeholder="Google Sheetsからコピーしたデータをここに貼り付けてください..."
-					class="w-full h-32 border border-blue-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-				></textarea>
-				<div class="flex justify-end space-x-2">
-					<button
-						on:click={() => (pasteText = '')}
-						class="px-3 py-1 text-gray-600 hover:text-gray-800 text-sm"
-					>
-						クリア
-					</button>
-					<button
-						on:click={handlePasteData}
-						class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded text-sm"
-						disabled={!pasteText.trim()}
-					>
-						データを取り込む
-					</button>
-				</div>
-			</div>
-		{/if}
 	</div>
 
 	<!-- セット基本情報 -->
