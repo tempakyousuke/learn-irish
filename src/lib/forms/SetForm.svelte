@@ -141,13 +141,47 @@
 		dispatch('cancel');
 	};
 
-	const handlePasteData = () => {
-		if (!pasteText.trim()) {
-			toast.error('貼り付けるデータを入力してください');
+	// HTMLからYouTube動画リンクを抽出する関数
+	const extractVideoLinksFromHTML = (html: string): string[] => {
+		const videoLinks: string[] = [];
+		const linkPattern = /https:\/\/youtu\.be\/[a-zA-Z0-9_-]+/g;
+		const matches = html.match(linkPattern);
+		if (matches) {
+			videoLinks.push(...matches);
+		}
+		return videoLinks;
+	};
+
+	// HTMLをテキスト形式に変換する関数
+	const convertHTMLToText = (html: string): string => {
+		// HTMLテーブルをタブ区切りテキストに変換
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(html, 'text/html');
+		const table = doc.querySelector('table');
+		
+		if (table) {
+			const rows = table.querySelectorAll('tr');
+			const textLines: string[] = [];
+			
+			rows.forEach(row => {
+				const cells = row.querySelectorAll('td');
+				const cellTexts = Array.from(cells).map(cell => cell.textContent?.trim() || '');
+				textLines.push(cellTexts.join('\t'));
+			});
+			
+			return textLines.join('\n');
+		}
+		
+		return html;
+	};
+
+	const processClipboardData = (data: string) => {
+		if (!data.trim()) {
+			toast.error('データが空です');
 			return;
 		}
 
-		const parsedData = parseSpreadsheetData(pasteText);
+		const parsedData = parseSpreadsheetData(data);
 		if (!parsedData) {
 			toast.error('データの解析に失敗しました。正しい形式で貼り付けてください');
 			return;
@@ -180,10 +214,88 @@
 		pasteText = '';
 	};
 
-	const togglePasteArea = () => {
+	// 自動データ取り込み - クリップボードから直接データを読み取って処理
+	const handleAutoImport = async () => {
+		try {
+			const clipboardItems = await navigator.clipboard.read();
+			for (const clipboardItem of clipboardItems) {
+				let dataToProcess = '';
+				
+				// HTML形式のデータを優先的に取得
+				if (clipboardItem.types.includes('text/html')) {
+					const htmlBlob = await clipboardItem.getType('text/html');
+					const htmlText = await htmlBlob.text();
+					
+					// HTMLから動画リンクを抽出
+					const videoLinks = extractVideoLinksFromHTML(htmlText);
+					if (videoLinks.length > 0) {
+						// 複数の動画リンクがある場合は最初のものを使用
+						formData.videoLink = videoLinks[0];
+					}
+					
+					// HTMLをテキストに変換
+					dataToProcess = convertHTMLToText(htmlText);
+				}
+				// HTML形式がない場合はテキスト形式を使用
+				else if (clipboardItem.types.includes('text/plain')) {
+					const textBlob = await clipboardItem.getType('text/plain');
+					dataToProcess = await textBlob.text();
+				}
+				
+				if (dataToProcess) {
+					processClipboardData(dataToProcess);
+					return;
+				}
+			}
+			
+			toast.error('クリップボードにデータが見つかりませんでした');
+		} catch (error) {
+			console.error('クリップボードの読み取りに失敗しました:', error);
+			toast.error('クリップボードの読み取りに失敗しました。手動で貼り付けてください。');
+		}
+	};
+
+	const handlePasteData = () => {
+		processClipboardData(pasteText);
+	};
+
+	const togglePasteArea = async () => {
 		showPasteArea = !showPasteArea;
 		if (!showPasteArea) {
 			pasteText = '';
+			return;
+		}
+
+		// 貼り付けエリアを開く際に自動的にクリップボードを読み取る
+		try {
+			const clipboardItems = await navigator.clipboard.read();
+			for (const clipboardItem of clipboardItems) {
+				// HTML形式のデータを優先的に取得
+				if (clipboardItem.types.includes('text/html')) {
+					const htmlBlob = await clipboardItem.getType('text/html');
+					const htmlText = await htmlBlob.text();
+					
+					// HTMLから動画リンクを抽出
+					const videoLinks = extractVideoLinksFromHTML(htmlText);
+					if (videoLinks.length > 0) {
+						// 複数の動画リンクがある場合は最初のものを使用
+						formData.videoLink = videoLinks[0];
+					}
+					
+					// HTMLをテキストに変換してテキストエリアに表示
+					pasteText = convertHTMLToText(htmlText);
+					break;
+				}
+				// HTML形式がない場合はテキスト形式を使用
+				else if (clipboardItem.types.includes('text/plain')) {
+					const textBlob = await clipboardItem.getType('text/plain');
+					pasteText = await textBlob.text();
+					break;
+				}
+			}
+		} catch (error) {
+			console.warn('クリップボードの読み取りに失敗しました:', error);
+			// エラーの場合は通常通り手動入力を促す
 		}
 	};
 </script>
@@ -202,11 +314,19 @@
 					<Fa icon={faInfoCircle} />
 				</button>
 				<button
+					on:click={handleAutoImport}
+					class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm flex items-center space-x-1"
+					title="クリップボードから自動取り込み"
+				>
+					<Fa icon={faPaste} size="sm" />
+					<span>自動取り込み</span>
+				</button>
+				<button
 					on:click={togglePasteArea}
 					class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm flex items-center space-x-1"
 				>
 					<Fa icon={faPaste} size="sm" />
-					<span>{showPasteArea ? '閉じる' : '貼り付け'}</span>
+					<span>{showPasteArea ? '閉じる' : '手動貼り付け'}</span>
 				</button>
 			</div>
 		</div>
@@ -214,12 +334,26 @@
 		{#if showHelp}
 			<div class="bg-white border border-blue-200 rounded p-4 mb-4 text-sm">
 				<h4 class="font-medium text-blue-800 mb-2">使い方:</h4>
-				<ol class="list-decimal list-inside space-y-1 text-gray-700">
-					<li>Google Sheetsで同じセット番号の行を選択</li>
-					<li>Ctrl+C (Cmd+C) でコピー</li>
-					<li>下のテキストエリアにCtrl+V (Cmd+V) で貼り付け</li>
-					<li>「データを取り込む」ボタンをクリック</li>
-				</ol>
+				<div class="space-y-3">
+					<div>
+						<h5 class="font-medium text-green-700 mb-1">自動取り込み（推奨）:</h5>
+						<ol class="list-decimal list-inside space-y-1 text-gray-700">
+							<li>Google Sheetsで同じセット番号の行を選択</li>
+							<li>Ctrl+C (Cmd+C) でコピー</li>
+							<li>「自動取り込み」ボタンをクリック</li>
+						</ol>
+					</div>
+					<div>
+						<h5 class="font-medium text-blue-700 mb-1">手動貼り付け:</h5>
+						<ol class="list-decimal list-inside space-y-1 text-gray-700">
+							<li>Google Sheetsで同じセット番号の行を選択</li>
+							<li>Ctrl+C (Cmd+C) でコピー</li>
+							<li>「手動貼り付け」ボタンをクリック</li>
+							<li>テキストエリアにCtrl+V (Cmd+V) で貼り付け</li>
+							<li>「データを取り込む」ボタンをクリック</li>
+						</ol>
+					</div>
+				</div>
 				<div class="mt-3 text-xs text-gray-600 bg-gray-50 p-2 rounded">
 					<pre>{getSpreadsheetExample()}</pre>
 				</div>
