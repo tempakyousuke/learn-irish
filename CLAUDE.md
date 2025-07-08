@@ -9,6 +9,7 @@ Learn Irish is a SvelteKit web application that helps Celtic flute players learn
 ## Essential Commands
 
 ### Development
+
 ```bash
 npm run dev          # Start development server on port 5175
 npm run build        # Build for production (static site)
@@ -16,6 +17,7 @@ npm run preview      # Preview production build
 ```
 
 ### Code Quality
+
 ```bash
 npm run lint         # Run ESLint
 npm run format       # Format code with Prettier
@@ -23,6 +25,7 @@ npm run check        # Run svelte-check for TypeScript errors
 ```
 
 ### Firebase Deployment
+
 ```bash
 npm run deploy:rules     # Deploy Firestore security rules
 npm run deploy:hosting   # Deploy to Firebase hosting
@@ -30,6 +33,7 @@ npm run deploy:all       # Deploy both rules and hosting
 ```
 
 ### Testing
+
 ```bash
 npm test             # Run Vitest tests
 ```
@@ -37,6 +41,7 @@ npm test             # Run Vitest tests
 ## Architecture
 
 ### Directory Structure
+
 - `/src/core/` - Core services and business logic
   - `auth/` - Firebase authentication services
   - `repositories/` - Firestore data repositories
@@ -66,7 +71,7 @@ npm test             # Run Vitest tests
    - All Firebase/Firestore operations go through repositories
    - Repositories return typed data using interfaces from `/src/lib/models/`
 
-3. **Internationalization**: 
+3. **Internationalization**:
    - Uses svelte-i18n with languages in `/src/lib/i18n/`
    - Supports English and Japanese
    - Access translations via `$_()` in components
@@ -89,6 +94,10 @@ npm test             # Run Vitest tests
    - Migrate existing stores to Runes-based patterns where applicable
    - Prefer Runes over traditional Svelte stores for new components
 
+7. **Event Handling**: Use modern Svelte event handling patterns
+   - Use `onclick` instead of `on:click` for event handlers
+   - Avoid `createEventDispatcher` - use modern Svelte event handling approaches
+
 ### Firebase Integration
 
 - **Authentication**: Email/password authentication via Firebase Auth
@@ -105,3 +114,8 @@ npm test             # Run Vitest tests
 - Tune data is imported from `/static/tunes.csv`
 - The app tracks two types of memorization: tune names and melodies
 - Monthly statistics are cached to avoid recalculation
+
+### Important Instructions
+
+- **DO NOT run `npm run dev`**: The user typically has the development server already running. Instead of running the command, ask the user to verify functionality in their browser at localhost:5175
+- When making changes that require testing, ask the user to check the results rather than attempting to start the development server
