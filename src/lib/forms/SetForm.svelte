@@ -20,48 +20,48 @@
 		getSpreadsheetExample
 	} from '$core/utils/spreadsheetParser';
 
-	export let set: Partial<SetFull> | null = null;
-	export let mode: 'create' | 'edit' = 'create';
+	const { set = null, mode = 'create' }: { set?: Partial<SetFull> | null; mode?: 'create' | 'edit' } = $props();
 
 	const dispatch = createEventDispatcher();
 
 	// フォームデータ
-	let formData = {
+	let formData = $state({
 		name: '',
 		videoLink: '',
 		description: '',
 		setNo: ''
-	};
+	});
 
-	let selectedTuneIds: string[] = [];
-	let allTunes: TuneFull[] = [];
-	let filteredTunes: TuneFull[] = [];
-	let searchQuery = '';
-	let loading = true;
-	let showHelp = false;
-
-	// 既存セットの場合は初期値を設定
-	$: if (set && mode === 'edit') {
-		formData = {
-			name: set.name || '',
-			videoLink: set.videoLink || '',
-			description: set.description || '',
-			setNo: set.setNo || ''
-		};
-		selectedTuneIds = [...(set.tuneIds || [])];
-	}
+	let selectedTuneIds = $state<string[]>([]);
+	let allTunes = $state<TuneFull[]>([]);
+	let searchQuery = $state('');
+	let loading = $state(true);
+	let showHelp = $state(false);
 
 	// 検索フィルタリング
-	$: if (searchQuery) {
-		filteredTunes = allTunes.filter(
-			(tune) =>
-				tune.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				tune.tuneNo.toString().includes(searchQuery) ||
-				(tune.rhythm && tune.rhythm.toLowerCase().includes(searchQuery.toLowerCase()))
-		);
-	} else {
-		filteredTunes = allTunes;
-	}
+	let filteredTunes = $derived(
+		searchQuery
+			? allTunes.filter(
+					(tune) =>
+						tune.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+						tune.tuneNo.toString().includes(searchQuery) ||
+						(tune.rhythm && tune.rhythm.toLowerCase().includes(searchQuery.toLowerCase()))
+				)
+			: allTunes
+	);
+
+	// 既存セットの場合は初期値を設定
+	$effect(() => {
+		if (set && mode === 'edit') {
+			formData = {
+				name: set.name || '',
+				videoLink: set.videoLink || '',
+				description: set.description || '',
+				setNo: set.setNo || ''
+			};
+			selectedTuneIds = [...(set.tuneIds || [])];
+		}
+	});
 
 	onMount(async () => {
 		try {
@@ -261,14 +261,14 @@
 			<h3 class="text-lg font-semibold text-blue-800">スプレッドシートからデータ取り込み</h3>
 			<div class="flex space-x-2">
 				<button
-					on:click={() => (showHelp = !showHelp)}
+					onclick={() => (showHelp = !showHelp)}
 					class="text-blue-600 hover:text-blue-800 p-1"
 					title="ヘルプ"
 				>
 					<Fa icon={faInfoCircle} />
 				</button>
 				<button
-					on:click={handleAutoImport}
+					onclick={handleAutoImport}
 					class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm flex items-center space-x-1"
 					title="クリップボードから自動取り込み"
 				>
@@ -340,7 +340,7 @@
 				/>
 				<button
 					type="button"
-					on:click={() => window.open(formData.videoLink, '_blank')}
+					onclick={() => window.open(formData.videoLink, '_blank')}
 					disabled={!formData.videoLink.trim()}
 					class="px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg text-sm flex items-center space-x-1"
 					title="新しいタブで開く"
@@ -396,7 +396,7 @@
 
 						<div class="flex space-x-1">
 							<button
-								on:click={() => moveTuneUp(index)}
+								onclick={() => moveTuneUp(index)}
 								disabled={index === 0}
 								class="p-1 text-gray-500 hover:text-teal-600 disabled:opacity-50"
 								title="上に移動"
@@ -404,7 +404,7 @@
 								<Fa icon={faArrowUp} size="sm" />
 							</button>
 							<button
-								on:click={() => moveTuneDown(index)}
+								onclick={() => moveTuneDown(index)}
 								disabled={index === selectedTuneIds.length - 1}
 								class="p-1 text-gray-500 hover:text-teal-600 disabled:opacity-50"
 								title="下に移動"
@@ -412,7 +412,7 @@
 								<Fa icon={faArrowDown} size="sm" />
 							</button>
 							<button
-								on:click={() => removeTune(tuneId)}
+								onclick={() => removeTune(tuneId)}
 								class="p-1 text-red-500 hover:text-red-700"
 								title="削除"
 							>
@@ -465,7 +465,7 @@
 						</div>
 
 						<button
-							on:click={() => (isSelected ? removeTune(tune.id) : addTune(tune.id))}
+							onclick={() => (isSelected ? removeTune(tune.id) : addTune(tune.id))}
 							class="px-3 py-1 rounded text-sm font-medium {isSelected
 								? 'bg-red-100 text-red-700 hover:bg-red-200'
 								: 'bg-teal-100 text-teal-700 hover:bg-teal-200'}"
@@ -481,13 +481,13 @@
 	<!-- アクションボタン -->
 	<div class="flex justify-end space-x-4">
 		<button
-			on:click={handleCancel}
+			onclick={handleCancel}
 			class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
 		>
 			キャンセル
 		</button>
 		<button
-			on:click={handleSubmit}
+			onclick={handleSubmit}
 			class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
 		>
 			{mode === 'create' ? '作成' : '更新'}

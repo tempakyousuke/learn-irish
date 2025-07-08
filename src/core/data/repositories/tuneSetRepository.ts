@@ -69,9 +69,7 @@ export class TuneSetRepository {
 		try {
 			// Firestoreから曲-セット関係性データを取得
 			const qu = query(
-				collection(db, 'tuneSets'),
-				orderBy('setId', 'asc'),
-				orderBy('position', 'asc')
+				collection(db, 'tuneSets')
 			);
 			const snapshot = await getDocs(qu);
 
@@ -82,6 +80,14 @@ export class TuneSetRepository {
 				// 型安全な変換関数を使用
 				const tuneSet = parseTuneSetData(data, doc.id);
 				fetchedTuneSets.push(tuneSet);
+			});
+
+			// クライアントサイドでソート
+			fetchedTuneSets.sort((a, b) => {
+				if (a.setId !== b.setId) {
+					return a.setId.localeCompare(b.setId);
+				}
+				return a.position - b.position;
 			});
 
 			// キャッシュを更新
@@ -139,9 +145,7 @@ export class TuneSetRepository {
 			// キャッシュにない場合はクエリで取得
 			const qu = query(
 				collection(db, 'tuneSets'),
-				where('tuneId', '==', tuneId),
-				orderBy('setId', 'asc'),
-				orderBy('position', 'asc')
+				where('tuneId', '==', tuneId)
 			);
 			const snapshot = await getDocs(qu);
 
@@ -152,7 +156,13 @@ export class TuneSetRepository {
 				tuneSets.push(tuneSet);
 			});
 
-			return tuneSets;
+			// クライアントサイドでソート
+			return tuneSets.sort((a, b) => {
+				if (a.setId !== b.setId) {
+					return a.setId.localeCompare(b.setId);
+				}
+				return a.position - b.position;
+			});
 		} catch (error) {
 			console.error(`曲ID(${tuneId})のセット関係性取得エラー:`, error);
 			throw new Error(
@@ -180,8 +190,7 @@ export class TuneSetRepository {
 			// キャッシュにない場合はクエリで取得
 			const qu = query(
 				collection(db, 'tuneSets'),
-				where('setId', '==', setId),
-				orderBy('position', 'asc')
+				where('setId', '==', setId)
 			);
 			const snapshot = await getDocs(qu);
 
@@ -192,7 +201,8 @@ export class TuneSetRepository {
 				tuneSets.push(tuneSet);
 			});
 
-			return tuneSets;
+			// クライアントサイドでソート
+			return tuneSets.sort((a, b) => a.position - b.position);
 		} catch (error) {
 			console.error(`セットID(${setId})の曲関係性取得エラー:`, error);
 			throw new Error(
