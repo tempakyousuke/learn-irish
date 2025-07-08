@@ -11,7 +11,8 @@
 		faArrowUp,
 		faArrowDown,
 		faPaste,
-		faInfoCircle
+		faInfoCircle,
+		faExternalLinkAlt
 	} from '@fortawesome/free-solid-svg-icons';
 	import {
 		parseSpreadsheetData,
@@ -328,14 +329,25 @@
 			<label for="videoLink" class="block text-sm font-medium text-gray-700 mb-1">
 				動画リンク (YouTube URL) <span class="text-red-500">*</span>
 			</label>
-			<input
-				id="videoLink"
-				type="url"
-				bind:value={formData.videoLink}
-				class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-				placeholder="https://www.youtube.com/watch?v=..."
-				required
-			/>
+			<div class="flex space-x-2">
+				<input
+					id="videoLink"
+					type="url"
+					bind:value={formData.videoLink}
+					class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+					placeholder="https://www.youtube.com/watch?v=..."
+					required
+				/>
+				<button
+					type="button"
+					on:click={() => window.open(formData.videoLink, '_blank')}
+					disabled={!formData.videoLink.trim()}
+					class="px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg text-sm flex items-center space-x-1"
+					title="新しいタブで開く"
+				>
+					<Fa icon={faExternalLinkAlt} size="sm" />
+				</button>
+			</div>
 		</div>
 
 		<div class="mt-4">
