@@ -4,6 +4,7 @@
 	export let disabled = false;
 	export let buttonClass = '';
 	export let className = '';
+	export let type = 'button';
 
 	const dispatch = createEventDispatcher();
 	const handleClick = () => {
@@ -16,7 +17,7 @@
 		class="button {buttonClass}"
 		class:w-full={block}
 		class:disabled
-		type="button"
+		{type}
 		{disabled}
 		on:click={handleClick}
 	>

@@ -9,6 +9,7 @@
 	export let textColorClass = 'text-white';
 	export let buttonClass = '';
 	export let className = '';
+	export let type = 'button';
 
 	$: additionalClass = `${buttonClass} ${bgColorClass} ${textColorClass}${!disabled ? ' hover:bg-opacity-80' : ''}`;
 
@@ -16,7 +17,8 @@
 		block,
 		disabled,
 		className,
-		buttonClass: additionalClass
+		buttonClass: additionalClass,
+		type
 	};
 
 	const dispatch = createEventDispatcher();

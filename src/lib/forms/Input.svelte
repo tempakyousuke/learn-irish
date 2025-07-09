@@ -54,6 +54,17 @@
 				on:input={handleInput}
 			/>
 		{/if}
+		{#if type == 'number'}
+			<input
+				bind:value
+				{disabled}
+				{readonly}
+				{placeholder}
+				type="number"
+				on:change={handleChange}
+				on:input={handleInput}
+			/>
+		{/if}
 		<div class="label">
 			{label}
 		</div>
