@@ -4,7 +4,7 @@
 	export let disabled = false;
 	export let buttonClass = '';
 	export let className = '';
-	export let type = 'button';
+	export let type: 'button' | 'submit' | 'reset' = 'button';
 
 	const dispatch = createEventDispatcher();
 	const handleClick = () => {

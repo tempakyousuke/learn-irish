@@ -3,7 +3,7 @@
 	export let disabled = false;
 	export let readonly = false;
 	export let placeholder = '';
-	export let value = '';
+	export let value: string | number | undefined = '';
 	export let type = 'text';
 	export let label = '';
 	export let className = '';
