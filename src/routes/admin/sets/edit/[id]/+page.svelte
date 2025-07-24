@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { SetRepository } from '$data/repositories/setRepository';
-	import { TuneSetRepository } from '$data/repositories/tuneSetRepository';
+	import { SetRepository } from '$core/data/repositories/setRepository';
+	import { TuneSetRepository } from '$core/data/repositories/tuneSetRepository';
 	import SetForm from '$lib/forms/SetForm.svelte';
-	import type { SetFull } from '$data/models/Set';
+	import type { SetFull } from '$core/data/models/Set';
 	import { toast } from 'svelte-sonner';
 
 	const { data }: { data: { set: SetFull } } = $props();

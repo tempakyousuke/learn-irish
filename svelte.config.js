@@ -20,7 +20,6 @@ const config = {
 			$types: './types',
 			$core: './src/core',
 			$app: './src/app',
-			$data: './src/core/data',
 			$utils: './src/lib/utils'
 		}
 	}

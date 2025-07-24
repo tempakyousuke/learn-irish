@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getYoutubeId } from '$core/utils/youtubeUtils';
-	import type { SetFull } from '$data/models/Set';
+	import type { SetFull } from '$core/data/models/Set';
 
 	export let set: SetFull;
 	export let showTitle = true;

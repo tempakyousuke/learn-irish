@@ -10,10 +10,10 @@ import {
 	deleteDoc,
 	writeBatch
 } from 'firebase/firestore';
-import type { TuneSetFull, TuneSetBase, TuneSetMetadata } from '$data/models/TuneSet';
-import { parseTuneSetData, createTuneSet, generateTuneSetId } from '$data/models/TuneSet';
+import type { TuneSetFull, TuneSetBase, TuneSetMetadata } from '$core/data/models/TuneSet';
+import { parseTuneSetData, createTuneSet, generateTuneSetId } from '$core/data/models/TuneSet';
 import { createCache } from '$utils/cacheStorage';
-import { db } from '$data/firebase/firebaseClient';
+import { db } from '$core/data/firebase/firebaseClient';
 
 /**
  * 曲-セット関係性データのリポジトリクラス

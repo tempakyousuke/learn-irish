@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { TuneRepository } from '$data/repositories/tuneRepository';
-	import type { SetFull } from '$data/models/Set';
-	import type { TuneFull } from '$data/models/Tune';
+	import { TuneRepository } from '$core/data/repositories/tuneRepository';
+	import type { SetFull } from '$core/data/models/Set';
+	import type { TuneFull } from '$core/data/models/Tune';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import Fa from 'svelte-fa';

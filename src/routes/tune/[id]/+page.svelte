@@ -16,8 +16,8 @@
 	import { siteTitle } from '$core/config/configService';
 	import SetVideoPlayer from '$lib/video/SetVideoPlayer.svelte';
 	import SetTuneList from '$lib/video/SetTuneList.svelte';
-	import type { SetFull } from '$data/models/Set';
-	import type { TuneFull } from '$data/models/Tune';
+	import type { SetFull } from '$core/data/models/Set';
+	import type { TuneFull } from '$core/data/models/Tune';
 
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();

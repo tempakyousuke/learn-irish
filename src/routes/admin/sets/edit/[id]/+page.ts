@@ -1,4 +1,4 @@
-import { SetRepository } from '$data/repositories/setRepository';
+import { SetRepository } from '$core/data/repositories/setRepository';
 import { error } from '@sveltejs/kit';
 
 export async function load({ params }: { params: { id: string } }) {

@@ -1,10 +1,10 @@
 import { db } from '$core/data/firebase/firebaseClient';
 import { doc, getDoc } from 'firebase/firestore';
-import { parseTuneData } from '$data/models/Tune';
-import type { SetFull } from '$data/models/Set';
-import type { TuneFull } from '$data/models/Tune';
-import { SetRepository } from '$data/repositories/setRepository';
-import { TuneRepository } from '$data/repositories/tuneRepository';
+import { parseTuneData } from '$core/data/models/Tune';
+import type { SetFull } from '$core/data/models/Set';
+import type { TuneFull } from '$core/data/models/Tune';
+import { SetRepository } from '$core/data/repositories/setRepository';
+import { TuneRepository } from '$core/data/repositories/tuneRepository';
 
 export async function load({ params }: { params: { id: string } }) {
 	const d = await getDoc(doc(db, 'tunes', params.id));

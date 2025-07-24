@@ -11,10 +11,10 @@ import {
 	addDoc,
 	updateDoc
 } from 'firebase/firestore';
-import type { SetFull, SetBase, SetMetadata, SetComposition } from '$data/models/Set';
-import { parseSetData, createSet } from '$data/models/Set';
+import type { SetFull, SetBase, SetMetadata, SetComposition } from '$core/data/models/Set';
+import { parseSetData, createSet } from '$core/data/models/Set';
 import { createCache } from '$utils/cacheStorage';
-import { db } from '$data/firebase/firebaseClient';
+import { db } from '$core/data/firebase/firebaseClient';
 
 /**
  * セットデータのリポジトリクラス

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { TuneRepository } from '$data/repositories/tuneRepository';
-	import type { TuneFull } from '$data/models/Tune';
+	import { TuneRepository } from '$core/data/repositories/tuneRepository';
+	import type { TuneFull } from '$core/data/models/Tune';
 	import { toast } from 'svelte-sonner';
 	import Fa from 'svelte-fa';
 	import { faPlus, faEdit, faTrash, faEye, faMusic } from '@fortawesome/free-solid-svg-icons';

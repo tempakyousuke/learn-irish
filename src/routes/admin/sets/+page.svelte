@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { SetRepository } from '$data/repositories/setRepository';
-	import { TuneSetRepository } from '$data/repositories/tuneSetRepository';
-	import { TuneRepository } from '$data/repositories/tuneRepository';
-	import type { SetFull } from '$data/models/Set';
-	import type { TuneFull } from '$data/models/Tune';
+	import { SetRepository } from '$core/data/repositories/setRepository';
+	import { TuneSetRepository } from '$core/data/repositories/tuneSetRepository';
+	import { TuneRepository } from '$core/data/repositories/tuneRepository';
+	import type { SetFull } from '$core/data/models/Set';
+	import type { TuneFull } from '$core/data/models/Tune';
 	import { toast } from 'svelte-sonner';
 	import Fa from 'svelte-fa';
 	import { faPlus, faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
