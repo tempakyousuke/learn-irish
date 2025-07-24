@@ -319,17 +319,3 @@
 		</div>
 	{/if}
 </div>
-
-<style type="postcss">
-	.row {
-		@apply flex mt-5 text-xl;
-	}
-
-	.item-name {
-		@apply w-1/2 text-right pr-2;
-	}
-
-	.item-detail {
-		@apply w-1/2 pl-2;
-	}
-</style>
