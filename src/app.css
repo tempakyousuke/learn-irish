@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @variant responsive (screen(sm), screen(md), screen(lg), screen(xl), screen(2xl));
 
@@ -32,11 +32,6 @@ p {
 
 a {
 	text-decoration: none;
-}
-
-button,
-.btn {
-	@apply bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded transition-colors shadow;
 }
 
 @media (max-width: 768px) {
