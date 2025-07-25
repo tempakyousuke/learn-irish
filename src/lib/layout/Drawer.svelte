@@ -2,17 +2,21 @@
 	import { t } from 'svelte-i18n';
 	import { isAuthenticated, authLoaded, logout } from '$core/auth/authService';
 
-	export let isOpen = false;
-	export let closeDrawer: (event: Event) => void;
-	export let handleKeydown: (event: KeyboardEvent) => void;
+	type Props = {
+		isOpen?: boolean;
+		closeDrawer: (event: Event) => void;
+		handleKeydown: (event: KeyboardEvent) => void;
+	};
+
+	let { isOpen = false, closeDrawer, handleKeydown }: Props = $props();
 </script>
 
 <!-- Drawer Overlay -->
 {#if isOpen}
 	<div
 		class="fixed inset-0 z-40 bg-gray-900 opacity-50 drawer-overlay"
-		on:click={closeDrawer}
-		on:keydown={handleKeydown}
+		onclick={closeDrawer}
+		onkeydown={handleKeydown}
 		role="button"
 		tabindex="0"
 		aria-label="Close navigation menu"
@@ -48,7 +52,7 @@
 					<a href="/settings" class="block px-4 py-2 rounded hover:bg-gray-100">{$t('settings')}</a>
 				</li>
 				<li>
-					<button class="inline px-4 py-2 rounded hover:bg-gray-100" on:click={logout}
+					<button class="inline px-4 py-2 rounded hover:bg-gray-100" onclick={logout}
 						>{$t('sign_out')}</button
 					>
 				</li>
