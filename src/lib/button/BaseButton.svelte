@@ -29,7 +29,7 @@
 	@reference "../../app.css";
 
 	.button {
-		@apply py-1 px-3 rounded focus:outline-none bg-opacity-100;
+		@apply py-1 px-3 rounded focus:outline-none opacity-100;
 	}
 	.disabled {
 		opacity: 0.7;

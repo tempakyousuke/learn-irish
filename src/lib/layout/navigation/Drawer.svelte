@@ -10,7 +10,7 @@
 <!-- Drawer Overlay -->
 {#if isOpen}
 	<div
-		class="fixed inset-0 z-40 bg-gray-900 bg-opacity-50 drawer-overlay"
+		class="fixed inset-0 z-40 bg-gray-900 opacity-50 drawer-overlay"
 		on:click={closeDrawer}
 		on:keydown={handleKeydown}
 		role="button"

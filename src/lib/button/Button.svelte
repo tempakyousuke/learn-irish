@@ -11,7 +11,7 @@
 	export let className = '';
 	export let type: 'button' | 'submit' | 'reset' = 'button';
 
-	$: additionalClass = `${buttonClass} ${bgColorClass} ${textColorClass}${!disabled ? ' hover:bg-opacity-80' : ''}`;
+	$: additionalClass = `${buttonClass} ${bgColorClass} ${textColorClass}${!disabled ? ' hover:opacity-80' : ''}`;
 
 	$: props = {
 		block,
