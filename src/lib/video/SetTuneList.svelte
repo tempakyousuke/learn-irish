@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { TuneFull } from '$data/models/Tune';
-	import type { SetFull } from '$data/models/Set';
+	import type { TuneFull } from '$core/data/models/Tune';
 
 	export let tunes: TuneFull[] = [];
 	export let currentTuneId: string | null = null;
