@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import type { Tune } from '$core/data/models/Tune';
-	import StatCard from '$lib/stats/StatCard.svelte';
+	import StatCard from '$lib/features/stats/StatCard.svelte';
 	import { faBook, faMusic, faChartBar, faCalendarDay } from '@fortawesome/free-solid-svg-icons';
 
 	export let tunes: Tune[] = [];

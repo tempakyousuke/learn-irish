@@ -19,8 +19,8 @@
 	} from '$core/data/repositories/userTuneRepository';
 	import { incrementDailyPlayCount } from '$core/data/repositories/dailyStatsRepository';
 	import { siteTitle } from '$core/config/configService';
-	import SetVideoPlayer from '$lib/video/SetVideoPlayer.svelte';
-	import SetTuneList from '$lib/video/SetTuneList.svelte';
+	import SetVideoPlayer from '$lib/features/video/SetVideoPlayer.svelte';
+	import SetTuneList from '$lib/features/video/SetTuneList.svelte';
 	import type { SetFull } from '$core/data/models/Set';
 	import type { TuneFull } from '$core/data/models/Tune';
 

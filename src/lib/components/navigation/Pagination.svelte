@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import Button from '$lib/button/Button.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 
 	const {
 		currentPage,

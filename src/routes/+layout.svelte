@@ -7,8 +7,8 @@
 	import { onMount } from 'svelte';
 	import LanguageSwitcher from '$lib/layout/LanguageSwitcher.svelte';
 	import { writable } from 'svelte/store';
-	import Header from '$lib/layout/navigation/Header.svelte';
-	import Drawer from '$lib/layout/navigation/Drawer.svelte';
+	import Header from '$lib/layout/Header.svelte';
+	import Drawer from '$lib/layout/Drawer.svelte';
 	import { initializeAuth } from '$core/auth/authService';
 
 	// 認証サービスを初期化

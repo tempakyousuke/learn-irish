@@ -3,7 +3,7 @@
 	import * as yup from 'yup';
 	import { ValidationError } from 'yup';
 	import Input from '$lib/forms/Input.svelte';
-	import Button from '$lib/button/Button.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 	import { auth, db } from '$core/data/firebase/firebaseClient';
 	import { createUserWithEmailAndPassword } from 'firebase/auth';
 	import { doc, setDoc } from 'firebase/firestore';

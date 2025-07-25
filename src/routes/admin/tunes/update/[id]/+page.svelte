@@ -3,7 +3,7 @@
 	import type { Tune } from '$core/data/models/Tune';
 	import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 	import Input from '$lib/forms/Input.svelte';
-	import Button from '$lib/button/Button.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 

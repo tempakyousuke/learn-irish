@@ -2,7 +2,7 @@
 	import { t } from 'svelte-i18n';
 	import type { TuneListView } from '$core/data/models/Tune';
 	import type { UserTuneFull } from '$core/data/models/UserTune';
-	import TuneList from '$lib/tune/TuneList.svelte';
+	import TuneList from '$lib/features/tune/TuneList.svelte';
 	import { userId } from '$core/auth/authService';
 	import { getFirestore, doc, getDoc } from 'firebase/firestore';
 	import { serialize } from 'cookie';
@@ -11,8 +11,8 @@
 	import TuneStats from './TuneStats.svelte';
 	import FilterControls from './FilterControls.svelte';
 	// import DailyPlaysTable from './DailyPlaysTable.svelte';
-	import ErrorMessage from '$lib/ui/ErrorMessage.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+	import Pagination from '$lib/components/navigation/Pagination.svelte';
 	import { getFirebaseErrorMessage } from '$core/utils/errorHandling';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
 	import { calcUserTuneStats } from '$core/utils/userTuneStats';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { userStore, type LoginUser } from '$core/store/userStore';
-	import AdminBreadcrumb from '$lib/components/AdminBreadcrumb.svelte';
+	import AdminBreadcrumb from '$lib/components/navigation/AdminBreadcrumb.svelte';
 	
 	interface Props {
 		children: import('svelte').Snippet;
