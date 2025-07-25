@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	export let message: string | null = null;
-	export let dismissable = false;
-	export let type: 'error' | 'warning' | 'info' = 'error';
 
-	function getColorClasses() {
+	let { message = $bindable(null), dismissable = false, type = 'error' }: {
+		message?: string | null;
+		dismissable?: boolean;
+		type?: 'error' | 'warning' | 'info';
+	} = $props();
+
+	const colorClasses = $derived(() => {
 		switch (type) {
 			case 'error':
 				return 'bg-red-100 text-red-800 border-red-200';
@@ -13,7 +16,7 @@
 			case 'info':
 				return 'bg-blue-100 text-blue-800 border-blue-200';
 		}
-	}
+	});
 
 	function handleDismiss() {
 		message = null;
@@ -22,7 +25,7 @@
 
 {#if message}
 	<div
-		class="rounded-lg p-4 mb-4 border {getColorClasses()} flex items-start"
+		class="rounded-lg p-4 mb-4 border {colorClasses} flex items-start"
 		role="alert"
 		aria-live="assertive"
 	>
