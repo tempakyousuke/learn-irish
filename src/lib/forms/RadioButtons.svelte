@@ -1,25 +1,20 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-
 	type Option = {
 		label: string;
 		value: string | boolean | number;
 		id: string;
 	};
 
-	export let options: Option[];
-	export let className = '';
-	export let name: string;
-	export let userSelected = options[0].value;
+	interface Props {
+		options: Option[];
+		className?: string;
+		name: string;
+		userSelected?: string | boolean | number;
+		onchange?: () => void;
+		oninput?: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	const handleChange = () => {
-		dispatch('change');
-	};
-
-	const handleInput = () => {
-		dispatch('input');
-	};
+	let { options, className = '', name, userSelected = $bindable(options[0].value), onchange, oninput }: Props = $props();
 </script>
 
 <div class={className}>
@@ -32,8 +27,8 @@
 				id={option.id}
 				value={option.value}
 				bind:group={userSelected}
-				oninput={handleInput}
-				onchange={handleChange}
+				oninput={oninput}
+				onchange={onchange}
 			/>
 			<label class="cursor-pointer select-none text-sm" for={option.id}>{option.label}</label>
 		</div>
