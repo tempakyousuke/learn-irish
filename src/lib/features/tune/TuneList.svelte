@@ -2,10 +2,18 @@
 	import { t } from 'svelte-i18n';
 	import type { TuneListView } from '$core/data/models/Tune';
 	import type { UserTuneFull } from '$core/data/models/UserTune';
-	export let tunes: TuneListView[] = [];
-	export let userTuneStatus: { [key: string]: UserTuneFull } = {};
-	export let dailyData: { [key: string]: number } = {};
-	$: countExist = Object.keys(userTuneStatus).length > 0;
+
+	let {
+		tunes = $bindable([]),
+		userTuneStatus = $bindable({}),
+		dailyData = $bindable({})
+	}: {
+		tunes: TuneListView[];
+		userTuneStatus: { [key: string]: UserTuneFull };
+		dailyData: { [key: string]: number };
+	} = $props();
+
+	const countExist = $derived(Object.keys(userTuneStatus).length > 0);
 </script>
 
 {#snippet desktopTuneRow(tune: TuneListView)}
