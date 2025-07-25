@@ -8,7 +8,7 @@
 	import { sendPasswordResetEmail } from 'firebase/auth';
 	import { toast } from 'svelte-sonner';
 	import { siteTitle } from '$core/config/configService';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
 	let email = '';
@@ -51,7 +51,7 @@
 
 	const title = `パスワードリセット - ${siteTitle}`;
 	const description = `パスワードリセットページです。`;
-	const currentPageUrl = $page.url.href;
+	$: currentPageUrl = page.url.href;
 </script>
 
 <svelte:head>

@@ -2,7 +2,7 @@
 	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { siteTitle } from '$core/config/configService';
 	import {
@@ -168,7 +168,7 @@
 
 	const title = `${$t('account_settings')} - ${siteTitle}`;
 	const description = `${$t('account_settings')}ページです。`;
-	const currentPageUrl = $page.url.href;
+	$: currentPageUrl = page.url.href;
 </script>
 
 <svelte:head>

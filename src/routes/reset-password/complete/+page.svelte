@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import { siteTitle } from '$core/config/configService';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	const title = `${$t('password_reset_sent_title')} - ${siteTitle}`;
 	const description = `パスワードリセットメールを送信しました。`;
-	const currentPageUrl = $page.url.href;
+	$: currentPageUrl = page.url.href;
 </script>
 
 <svelte:head>

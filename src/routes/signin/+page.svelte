@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import { siteTitle } from '$core/config/configService';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { loginWithGoogle } from '$core/auth/authService';
 
 	let values = {
@@ -84,7 +84,7 @@
 
 	const title = `${$t('sign_in_page_title')} - ${siteTitle}`;
 	const description = $t('sign_in_page_description');
-	const currentPageUrl = $page.url.href;
+	$: currentPageUrl = page.url.href;
 </script>
 
 <svelte:head>

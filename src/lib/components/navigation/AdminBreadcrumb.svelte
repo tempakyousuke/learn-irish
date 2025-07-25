@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { _ } from 'svelte-i18n';
 
 	interface BreadcrumbItem {
@@ -10,7 +10,7 @@
 	let breadcrumbs = $state<BreadcrumbItem[]>([]);
 
 	$effect(() => {
-		const path = $page.url.pathname;
+		const path = page.url.pathname;
 		const segments = path.split('/').filter(Boolean);
 
 		const items: BreadcrumbItem[] = [{ href: '/', label: 'ホーム' }];

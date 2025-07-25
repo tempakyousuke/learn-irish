@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { siteTitle } from '$core/config/configService';
 	import { isAuthenticated, authLoaded } from '$core/auth/authService';
 	import { goto } from '$app/navigation';
@@ -14,7 +14,7 @@
 
 	const title = `${$t('settings')} - ${siteTitle}`;
 	const description = `${$t('settings')}ページです。`;
-	const currentPageUrl = $page.url.href;
+	$: currentPageUrl = page.url.href;
 </script>
 
 <svelte:head>
