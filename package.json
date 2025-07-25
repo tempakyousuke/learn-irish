@@ -45,7 +45,7 @@
 		"papaparse": "^5.5.3",
 		"svelte-fa": "^4.0.4",
 		"svelte-i18n": "^4.0.1",
-		"svelte-sonner": "^0.3.28",
+		"svelte-sonner": "^1.0.5",
 		"yup": "^1.6.1"
 	}
 }
