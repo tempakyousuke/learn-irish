@@ -13,9 +13,9 @@
 	// import DailyPlaysTable from './DailyPlaysTable.svelte';
 	import ErrorMessage from '$lib/ui/ErrorMessage.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
+	import { getFirebaseErrorMessage } from '$core/utils/errorHandling';
 	import { getUserTunes } from '$core/data/repositories/tuneRepository';
-	import { calcUserTuneStats } from '$lib/utils/userTuneStats';
+	import { calcUserTuneStats } from '$core/utils/userTuneStats';
 	import { ensureLastPlayedDate } from '$core/data/models/UserTune';
 
 	const {

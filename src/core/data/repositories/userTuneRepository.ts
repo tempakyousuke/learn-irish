@@ -1,5 +1,5 @@
 import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
-import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
+import { getFirebaseErrorMessage } from '$core/utils/errorHandling';
 import type { UserTuneFull } from '$core/data/models/UserTune';
 import { createUserTune, incrementPlayCount } from '$core/data/models/UserTune';
 

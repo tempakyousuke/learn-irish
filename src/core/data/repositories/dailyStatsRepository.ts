@@ -1,5 +1,5 @@
 import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
-import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
+import { getFirebaseErrorMessage } from '$core/utils/errorHandling';
 
 const db = getFirestore();
 

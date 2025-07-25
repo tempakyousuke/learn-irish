@@ -14,7 +14,7 @@
 		type UserTuneStats,
 		countRememberedMelodyByRhythm,
 		type RhythmMelodyStats
-	} from '$lib/utils/userTuneStats';
+	} from '$core/utils/userTuneStats';
 	import StatCard from '$lib/stats/StatCard.svelte';
 	import { faChartBar, faBook, faMusic } from '@fortawesome/free-solid-svg-icons';
 	import type { TuneFull } from '$core/data/models/Tune';
