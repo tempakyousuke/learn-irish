@@ -2,11 +2,19 @@
 	import type { SetFull } from '$core/data/models/Set';
 	import type { TuneFull } from '$core/data/models/Tune';
 
-	export let set: SetFull;
-	export let tunes: TuneFull[] = [];
-	export let showDescription = true;
-	export let showTuneCount = true;
-	export let compact = false;
+	let {
+		set,
+		tunes = [],
+		showDescription = true,
+		showTuneCount = true,
+		compact = false
+	}: {
+		set: SetFull;
+		tunes?: TuneFull[];
+		showDescription?: boolean;
+		showTuneCount?: boolean;
+		compact?: boolean;
+	} = $props();
 </script>
 
 <div class="bg-white rounded-lg shadow-md p-4 {compact ? 'space-y-2' : 'space-y-3'}">
