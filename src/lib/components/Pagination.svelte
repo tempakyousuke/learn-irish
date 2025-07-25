@@ -112,8 +112,8 @@
 	<!-- ページネーション controls -->
 	<div class="flex items-center justify-center gap-1 sm:gap-2 w-full">
 		<Button
-			buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm flex-shrink-0"
-			bgColorClass="bg-teal-600"
+			buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm flex-shrink-0 rounded-md"
+			bgColorClass="bg-teal-600 hover:bg-teal-500"
 			disabled={currentPage === 1}
 			on:click={() => handlePageChange(currentPage - 1)}
 		>
@@ -126,9 +126,11 @@
 					<span class="px-1 sm:px-2 py-1 text-gray-400 text-xs sm:text-sm flex-shrink-0">...</span>
 				{:else}
 					<Button
-						buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm min-w-[32px] sm:min-w-[40px] flex-shrink-0"
-						bgColorClass={currentPage === (page as number) ? 'bg-teal-600' : 'bg-gray-200'}
-						textColorClass={currentPage === (page as number) ? 'text-white' : 'text-gray-700'}
+						buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm min-w-[32px] sm:min-w-[40px] flex-shrink-0 rounded-md"
+						bgColorClass={currentPage !== (page as number)
+							? 'bg-teal-600 hover:bg-teal-500'
+							: 'bg-gray-200'}
+						textColorClass={currentPage !== (page as number) ? 'text-white' : 'text-gray-700'}
 						on:click={() => handlePageChange(page as number)}
 					>
 						{page}
@@ -138,8 +140,8 @@
 		</div>
 
 		<Button
-			buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm flex-shrink-0"
-			bgColorClass="bg-teal-600"
+			buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm flex-shrink-0 rounded-md"
+			bgColorClass="bg-teal-600 hover:bg-teal-500"
 			disabled={currentPage === totalPages}
 			on:click={() => handlePageChange(currentPage + 1)}
 		>
