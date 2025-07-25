@@ -1,14 +1,22 @@
 <script lang="ts">
-	export let title: string;
-	export let value: string | number;
-	export let icon: any; // FontAwesomeアイコン
-	export let color: string = 'teal'; // カラー名（例: teal, emerald, orange, blue など）
-
 	import { Fa } from 'svelte-fa';
+	import type { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
-	$: statColor = `var(--stat-color-${color})`;
-	$: statBg = `var(--stat-bg-${color})`;
-	$: styleVars = `--stat-color: ${statColor}; --stat-bg: ${statBg};`;
+	let {
+		title,
+		value,
+		icon,
+		color = 'teal'
+	}: {
+		title: string;
+		value: string | number;
+		icon: IconDefinition;
+		color?: string; // カラー名（例: teal, emerald, orange, blue など）
+	} = $props();
+
+	const statColor = $derived(`var(--stat-color-${color})`);
+	const statBg = $derived(`var(--stat-bg-${color})`);
+	const styleVars = $derived(`--stat-color: ${statColor}; --stat-bg: ${statBg};`);
 </script>
 
 <div
