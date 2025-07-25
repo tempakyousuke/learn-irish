@@ -115,7 +115,7 @@
 			buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm flex-shrink-0 rounded-md"
 			bgColorClass="bg-teal-600 hover:bg-teal-500"
 			disabled={currentPage === 1}
-			on:click={() => handlePageChange(currentPage - 1)}
+			onclick={() => handlePageChange(currentPage - 1)}
 		>
 			{$t('previous')}
 		</Button>
@@ -131,7 +131,7 @@
 							? 'bg-teal-600 hover:bg-teal-500'
 							: 'bg-gray-200'}
 						textColorClass={currentPage !== (page as number) ? 'text-white' : 'text-gray-700'}
-						on:click={() => handlePageChange(page as number)}
+						onclick={() => handlePageChange(page as number)}
 					>
 						{page}
 					</Button>
@@ -143,7 +143,7 @@
 			buttonClass="px-2 sm:px-3 py-1 text-xs sm:text-sm flex-shrink-0 rounded-md"
 			bgColorClass="bg-teal-600 hover:bg-teal-500"
 			disabled={currentPage === totalPages}
-			on:click={() => handlePageChange(currentPage + 1)}
+			onclick={() => handlePageChange(currentPage + 1)}
 		>
 			{$t('next')}
 		</Button>

@@ -118,12 +118,12 @@
 				error={errors.password}
 				on:input={() => validate('password')}
 			/>
-			<Button block className="mt-6" on:click={submit} disabled={hasError}>{$t('sign_in')}</Button>
+			<Button block className="mt-6" onclick={submit} disabled={hasError}>{$t('sign_in')}</Button>
 			<div class="mt-4 text-center">
 				<Button
 					block
 					className="mt-2 bg-red-500 hover:bg-red-600"
-					on:click={signInWithGoogleHandler}
+					onclick={signInWithGoogleHandler}
 				>
 					{$t('sign_in_with_google')}
 				</Button>

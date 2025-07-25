@@ -80,7 +80,7 @@
 				{error}
 				on:input={validate}
 			/>
-			<Button block className="mt-6" on:click={submit} disabled={error !== ''}>
+			<Button block className="mt-6" onclick={submit} disabled={error !== ''}>
 				{$t('send_password_reset_email')}
 			</Button>
 		</form>

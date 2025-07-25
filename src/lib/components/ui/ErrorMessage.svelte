@@ -38,7 +38,7 @@
 		</div>
 		{#if dismissable}
 			<button
-				on:click={handleDismiss}
+				onclick={handleDismiss}
 				class="ml-4 text-gray-500 hover:text-gray-800 transition-colors"
 				aria-label={$t('close')}
 			>

@@ -119,12 +119,12 @@
 				error={errors.password}
 				on:input={() => validate('password')}
 			/>
-			<Button block className="mt-5" on:click={submit}>{$t('register')}</Button>
+			<Button block className="mt-8" onclick={submit}>{$t('register')}</Button>
 			<div class="mt-4 text-center">
 				<Button
 					block
 					className="mt-2 bg-red-500 hover:bg-red-600"
-					on:click={signUpWithGoogleHandler}
+					onclick={signUpWithGoogleHandler}
 				>
 					{$t('sign_up_with_google')}
 				</Button>
