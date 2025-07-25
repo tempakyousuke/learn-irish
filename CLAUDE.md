@@ -49,10 +49,10 @@ npm test             # Run Vitest tests
   - `stores/` - Svelte stores for state management
   - `utils/` - Utility functions and helpers
 
-- `/src/lib/` - Reusable components
+- `/src/lib/` - Reusable components only
   - `components/` - UI components (buttons, forms, etc.)
   - `layouts/` - Layout components
-  - `models/` - TypeScript interfaces and types
+  - All other files (models, utils, etc.) should be placed in `/src/core/` instead
 
 - `/src/routes/` - SvelteKit routes
   - Main tune listing page
@@ -69,7 +69,7 @@ npm test             # Run Vitest tests
 
 2. **Data Access**: Repository pattern in `/src/core/repositories/`
    - All Firebase/Firestore operations go through repositories
-   - Repositories return typed data using interfaces from `/src/lib/models/`
+   - Repositories return typed data using interfaces from `/src/core/models/`
 
 3. **Internationalization**:
    - Uses svelte-i18n with languages in `/src/lib/i18n/`
@@ -77,9 +77,8 @@ npm test             # Run Vitest tests
    - Access translations via `$_()` in components
 
 4. **Component Imports**: Uses path aliases
-   - `$lib` → `/src/lib`
-   - `$core` → `/src/core`
-   - `$models` → `/src/lib/models`
+   - `$lib` → `/src/lib` (components only)
+   - `$core` → `/src/core` (business logic, models, utils)
 
 5. **Static Site Generation**:
    - Uses `@sveltejs/adapter-static` for Firebase hosting
