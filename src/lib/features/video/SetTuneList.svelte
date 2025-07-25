@@ -2,13 +2,21 @@
 	import { t } from 'svelte-i18n';
 	import type { TuneFull } from '$core/data/models/Tune';
 
-	export let tunes: TuneFull[] = [];
-	export let currentTuneId: string | null = null;
-	export let showRhythm = true;
-	export let showKey = true;
-	export let compact = false;
+	let {
+		tunes = [],
+		currentTuneId = null,
+		showRhythm = true,
+		showKey = true,
+		compact = false
+	}: {
+		tunes?: TuneFull[];
+		currentTuneId?: string | null;
+		showRhythm?: boolean;
+		showKey?: boolean;
+		compact?: boolean;
+	} = $props();
 
-	$: sortedTunes = tunes.sort((a, b) => a.tuneNo - b.tuneNo);
+	const sortedTunes = $derived(tunes.sort((a, b) => a.tuneNo - b.tuneNo));
 </script>
 
 <div class="space-y-3">
