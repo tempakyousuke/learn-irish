@@ -1,10 +1,4 @@
-import {
-	getFirestore,
-	getDoc,
-	doc,
-	setDoc,
-	serverTimestamp
-} from 'firebase/firestore';
+import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
 import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 import type { UserTuneFull } from '$core/data/models/UserTune';
 import { createUserTune, incrementPlayCount } from '$core/data/models/UserTune';
@@ -17,7 +11,10 @@ const db = getFirestore();
  * @param tuneId 曲ID
  * @returns ユーザーの曲データ、存在しない場合はデフォルト値
  */
-export async function getUserTuneData(userId: string, tuneId: string): Promise<UserTuneFull | null> {
+export async function getUserTuneData(
+	userId: string,
+	tuneId: string
+): Promise<UserTuneFull | null> {
 	if (!userId || !tuneId) {
 		console.warn('ユーザー曲データ取得: ユーザーIDまたは曲IDが指定されていません');
 		return null;
@@ -26,22 +23,25 @@ export async function getUserTuneData(userId: string, tuneId: string): Promise<U
 	try {
 		const docRef = doc(db, `users/${userId}/tunes/${tuneId}`);
 		const docSnap = await getDoc(docRef);
-		
+
 		if (!docSnap.exists()) {
 			return null;
 		}
 
 		const data = docSnap.data();
-		return createUserTune({
-			id: tuneId,
-			rememberName: data.rememberName || false,
-			rememberMelody: data.rememberMelody || false,
-			playCount: data.playCount || 0,
-			lastPlayedDate: data.lastPlayedDate
-		}, {
-			note: data.note || '',
-			playHistory: data.playHistory || {}
-		});
+		return createUserTune(
+			{
+				id: tuneId,
+				rememberName: data.rememberName || false,
+				rememberMelody: data.rememberMelody || false,
+				playCount: data.playCount || 0,
+				lastPlayedDate: data.lastPlayedDate
+			},
+			{
+				note: data.note || '',
+				playHistory: data.playHistory || {}
+			}
+		);
 	} catch (error) {
 		console.error('ユーザー曲データ取得エラー:', getFirebaseErrorMessage(error));
 		return null;
@@ -107,31 +107,37 @@ export async function incrementUserTunePlayCount(
 
 	try {
 		const today = date || new Date().toISOString().split('T')[0];
-		
+
 		// 現在のデータを取得
 		const currentData = await getUserTuneData(userId, tuneId);
-		
+
 		// データが存在しない場合は新規作成
-		const userTune = currentData || createUserTune({
-			id: tuneId,
-			rememberName: false,
-			rememberMelody: false,
-			playCount: 0
-		});
+		const userTune =
+			currentData ||
+			createUserTune({
+				id: tuneId,
+				rememberName: false,
+				rememberMelody: false,
+				playCount: 0
+			});
 
 		// 演奏回数を増やす
 		const updatedUserTune = incrementPlayCount(userTune, today, count);
 
 		// Firestoreに保存
 		const docRef = doc(db, `users/${userId}/tunes/${tuneId}`);
-		await setDoc(docRef, {
-			playCount: updatedUserTune.playCount,
-			playHistory: updatedUserTune.playHistory,
-			lastPlayedDate: updatedUserTune.lastPlayedDate,
-			rememberName: updatedUserTune.rememberName,
-			rememberMelody: updatedUserTune.rememberMelody,
-			note: updatedUserTune.note
-		}, { merge: true });
+		await setDoc(
+			docRef,
+			{
+				playCount: updatedUserTune.playCount,
+				playHistory: updatedUserTune.playHistory,
+				lastPlayedDate: updatedUserTune.lastPlayedDate,
+				rememberName: updatedUserTune.rememberName,
+				rememberMelody: updatedUserTune.rememberMelody,
+				note: updatedUserTune.note
+			},
+			{ merge: true }
+		);
 
 		return true;
 	} catch (error) {

@@ -1,9 +1,4 @@
-import {
-	getFirestore,
-	getDoc,
-	doc,
-	setDoc
-} from 'firebase/firestore';
+import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
 import { getFirebaseErrorMessage } from '$lib/utils/errorHandling';
 
 const db = getFirestore();
@@ -30,7 +25,7 @@ export async function getDailyStats(userId: string, date: string): Promise<Daily
 	try {
 		const docRef = doc(db, `users/${userId}/daily/${date}`);
 		const docSnap = await getDoc(docRef);
-		
+
 		if (!docSnap.exists()) {
 			return {};
 		}
@@ -49,7 +44,11 @@ export async function getDailyStats(userId: string, date: string): Promise<Daily
  * @param tuneId 曲ID
  * @returns その日の演奏回数
  */
-export async function getDailyTunePlayCount(userId: string, date: string, tuneId: string): Promise<number> {
+export async function getDailyTunePlayCount(
+	userId: string,
+	date: string,
+	tuneId: string
+): Promise<number> {
 	if (!userId || !date || !tuneId) {
 		console.warn('日次曲演奏回数取得: 必要なパラメータが指定されていません');
 		return 0;
@@ -115,7 +114,7 @@ export async function incrementDailyPlayCount(
 	try {
 		const currentCount = await getDailyTunePlayCount(userId, date, tuneId);
 		const newCount = currentCount + increment;
-		
+
 		const success = await updateDailyStats(userId, date, tuneId, newCount);
 		return success ? newCount : -1;
 	} catch (error) {

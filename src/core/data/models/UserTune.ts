@@ -95,7 +95,9 @@ export function incrementPlayCount(
  * @param playHistory 演奏履歴
  * @returns 最後に演奏した日付（YYYY-MM-DD形式）、演奏履歴がない場合はundefined
  */
-export function getLastPlayedDate(playHistory: { [key: string]: number } | undefined | null): string | undefined {
+export function getLastPlayedDate(
+	playHistory: { [key: string]: number } | undefined | null
+): string | undefined {
 	if (!playHistory) return undefined;
 	const dates = Object.keys(playHistory).filter((date) => playHistory[date] > 0);
 	if (dates.length === 0) return undefined;

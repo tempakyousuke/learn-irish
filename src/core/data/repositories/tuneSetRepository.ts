@@ -68,9 +68,7 @@ export class TuneSetRepository {
 
 		try {
 			// Firestoreから曲-セット関係性データを取得
-			const qu = query(
-				collection(db, 'tuneSets')
-			);
+			const qu = query(collection(db, 'tuneSets'));
 			const snapshot = await getDocs(qu);
 
 			// 取得したデータを処理
@@ -143,10 +141,7 @@ export class TuneSetRepository {
 			}
 
 			// キャッシュにない場合はクエリで取得
-			const qu = query(
-				collection(db, 'tuneSets'),
-				where('tuneId', '==', tuneId)
-			);
+			const qu = query(collection(db, 'tuneSets'), where('tuneId', '==', tuneId));
 			const snapshot = await getDocs(qu);
 
 			const tuneSets: TuneSetFull[] = [];
@@ -188,10 +183,7 @@ export class TuneSetRepository {
 			}
 
 			// キャッシュにない場合はクエリで取得
-			const qu = query(
-				collection(db, 'tuneSets'),
-				where('setId', '==', setId)
-			);
+			const qu = query(collection(db, 'tuneSets'), where('setId', '==', setId));
 			const snapshot = await getDocs(qu);
 
 			const tuneSets: TuneSetFull[] = [];
