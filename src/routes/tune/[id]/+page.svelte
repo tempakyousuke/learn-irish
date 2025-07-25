@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { Tune } from '$core/data/models/Tune';
 	import { getYoutubeId } from '$core/utils/youtubeUtils';
 	import { userStore } from '$core/store/userStore';
 	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
@@ -22,7 +21,7 @@
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
 
-	const { data }: { data: { tune: Tune; sets: SetFull[]; setTunes: TuneFull[][] } } = $props();
+	const { data }: { data: { tune: TuneFull; sets: SetFull[]; setTunes: TuneFull[][] } } = $props();
 	const tune = $derived(data.tune);
 	const sets = $derived(data.sets);
 	const setTunes = $derived(data.setTunes);
@@ -37,6 +36,8 @@
 	let isBookmarked = $state<boolean>(false);
 	let playHistory = $state<{ [key: string]: number }>({});
 	const date = getDate();
+
+	let currentTuneId = $state('');
 
 	$effect(() => {
 		(async () => {
