@@ -4,11 +4,19 @@
 	import StatCard from '$lib/features/stats/StatCard.svelte';
 	import { faBook, faMusic, faChartBar, faCalendarDay } from '@fortawesome/free-solid-svg-icons';
 
-	export let tunes: Tune[] = [];
-	export let rememberNameIds: string[] = [];
-	export let rememberMelodyIds: string[] = [];
-	export let totalCount: number = 0;
-	export let dailyTotal: number = 0;
+	const {
+		tunes = [],
+		rememberNameIds = [],
+		rememberMelodyIds = [],
+		totalCount = 0,
+		dailyTotal = 0
+	}: {
+		tunes?: Tune[];
+		rememberNameIds?: string[];
+		rememberMelodyIds?: string[];
+		totalCount?: number;
+		dailyTotal?: number;
+	} = $props();
 </script>
 
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-screen-xl w-full mx-auto my-8 px-4">
