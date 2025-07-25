@@ -10,12 +10,10 @@
 	// Firestoreのインスタンスを取得
 	const db = getFirestore();
 
-	export let data: {
-		tune: Tune;
-	};
-	const tune = data.tune;
+	let { data }: { data: { tune: Tune } } = $props();
+	let tune = $state(data.tune);
 
-	let errorMessage = '';
+	let errorMessage = $state('');
 
 	const submit = async (event: Event) => {
 		event.preventDefault();
@@ -63,7 +61,7 @@
 </svelte:head>
 
 <div>
-	<form on:submit={submit}>
+	<form onsubmit={submit}>
 		{#if errorMessage}
 			<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
 				{errorMessage}

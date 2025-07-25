@@ -2,8 +2,12 @@
 	import { t } from 'svelte-i18n';
 	import type { Tune } from '$core/data/models/Tune';
 
-	export let dailyData: { [key: string]: number } = {};
-	export let tuneObjects: { [key: string]: Tune } = {};
+	interface Props {
+		dailyData?: { [key: string]: number };
+		tuneObjects?: { [key: string]: Tune };
+	}
+
+	let { dailyData = {}, tuneObjects = {} }: Props = $props();
 </script>
 
 <div class="mt-7 mx-auto w-full max-w-screen-lg px-2">

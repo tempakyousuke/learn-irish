@@ -4,13 +4,17 @@
 	import { faClover } from '@fortawesome/free-solid-svg-icons';
 	import { isAuthenticated, authLoaded, logout } from '$core/auth/authService';
 
-	export let openDrawer: () => void;
+	interface Props {
+		openDrawer: () => void;
+	}
+
+	let { openDrawer }: Props = $props();
 </script>
 
 <header class="flex border-b bg-teal-800 md:px-10 pl-4 py-2">
 	<button
 		class="md:hidden bg-white rounded-lg py-1 px-1 mr-4 shadow-lg border text-3xl"
-		on:click={openDrawer}
+		onclick={openDrawer}
 		aria-label="Open navigation menu"
 	>
 		<Fa class="text-teal-800" icon={faClover} />
@@ -49,7 +53,7 @@
 		>
 		<button
 			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
-			on:click={logout}>{$t('sign_out')}</button
+			onclick={logout}>{$t('sign_out')}</button
 		>
 	{/if}
 </header>

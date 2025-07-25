@@ -18,13 +18,17 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import { Fa } from 'svelte-fa';
 
-	export let isLoggedIn: boolean;
-	export let rememberName: string;
-	export let rememberMelody: string;
-	export let onlyFavorite: string;
-	export let selectedRhythm: string;
-	export let sortBy: string;
-	export let rhythms: string[] = [];
+	interface Props {
+		isLoggedIn: boolean;
+		rememberName: string;
+		rememberMelody: string;
+		onlyFavorite: string;
+		selectedRhythm: string;
+		sortBy: string;
+		rhythms?: string[];
+	}
+
+	let { isLoggedIn, rememberName = $bindable(), rememberMelody = $bindable(), onlyFavorite = $bindable(), selectedRhythm = $bindable(), sortBy = $bindable(), rhythms = [] }: Props = $props();
 </script>
 
 <div
