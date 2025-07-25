@@ -9,7 +9,7 @@
 	export let textColorClass = 'text-white';
 	export let buttonClass = '';
 	export let className = '';
-	export let type = 'button';
+	export let type: 'button' | 'submit' | 'reset' = 'button';
 
 	$: additionalClass = `${buttonClass} ${bgColorClass} ${textColorClass}${!disabled ? ' hover:bg-opacity-80' : ''}`;
 
