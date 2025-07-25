@@ -43,7 +43,7 @@
 			>mydata</a
 		>
 		<a
-			href="/account"
+			href="/settings"
 			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
 			>{$t('settings')}</a
 		>
