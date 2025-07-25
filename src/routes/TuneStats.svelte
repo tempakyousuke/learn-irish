@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import type { Tune } from '$core/data/models/Tune';
+	import type { TuneFull } from '$core/data/models/Tune';
 	import StatCard from '$lib/features/stats/StatCard.svelte';
 	import { faBook, faMusic, faChartBar, faCalendarDay } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,7 +11,7 @@
 		totalCount = 0,
 		dailyTotal = 0
 	}: {
-		tunes?: Tune[];
+		tunes?: TuneFull[];
 		rememberNameIds?: string[];
 		rememberMelodyIds?: string[];
 		totalCount?: number;
