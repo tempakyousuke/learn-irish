@@ -45,7 +45,7 @@
 	<select
 		class="border rounded-lg px-2 py-1 text-sm bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 		bind:value={currentLocale}
-		on:change={onSelectChange}
+		onchange={onSelectChange}
 	>
 		{#each availableLocales as lang}
 			<option value={lang.code}>{lang.label}</option>

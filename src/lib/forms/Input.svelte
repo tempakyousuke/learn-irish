@@ -1,22 +1,29 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	export let disabled = false;
-	export let readonly = false;
-	export let placeholder = '';
-	export let value: string | number | undefined = '';
-	export let type = 'text';
-	export let label = '';
-	export let className = '';
-	export let error = '';
+	interface Props {
+		disabled?: boolean;
+		readonly?: boolean;
+		placeholder?: string;
+		value?: string | number | undefined;
+		type?: string;
+		label?: string;
+		className?: string;
+		error?: string;
+		onchange?: () => void;
+		oninput?: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	const handleChange = () => {
-		dispatch('change');
-	};
-
-	const handleInput = () => {
-		dispatch('input');
-	};
+	let {
+		disabled = false,
+		readonly = false,
+		placeholder = '',
+		value = $bindable(''),
+		type = 'text',
+		label = '',
+		className = '',
+		error = '',
+		onchange,
+		oninput
+	}: Props = $props();
 </script>
 
 <div class="flex justify-center items-center {className}">
@@ -27,8 +34,8 @@
 				{disabled}
 				{readonly}
 				{placeholder}
-				on:change={handleChange}
-				on:input={handleInput}
+				onchange={onchange}
+				oninput={oninput}
 			/>
 		{/if}
 		{#if type == 'email'}
@@ -38,8 +45,8 @@
 				{readonly}
 				{placeholder}
 				type="email"
-				on:change={handleChange}
-				on:input={handleInput}
+				onchange={onchange}
+				oninput={oninput}
 			/>
 		{/if}
 		{#if type == 'password'}
@@ -50,8 +57,8 @@
 				{placeholder}
 				type="password"
 				autocomplete="on"
-				on:change={handleChange}
-				on:input={handleInput}
+				onchange={onchange}
+				oninput={oninput}
 			/>
 		{/if}
 		{#if type == 'number'}
@@ -61,8 +68,8 @@
 				{readonly}
 				{placeholder}
 				type="number"
-				on:change={handleChange}
-				on:input={handleInput}
+				onchange={onchange}
+				oninput={oninput}
 			/>
 		{/if}
 		<div class="label">

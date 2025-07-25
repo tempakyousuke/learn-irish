@@ -108,7 +108,7 @@
 				label={$t('email')}
 				className="mt-2"
 				error={errors.email}
-				on:input={() => validate('email')}
+				oninput={() => validate('email')}
 			/>
 			<Input
 				bind:value={values.password}
@@ -116,7 +116,7 @@
 				label={$t('password')}
 				className="mt-6"
 				error={errors.password}
-				on:input={() => validate('password')}
+				oninput={() => validate('password')}
 			/>
 			<Button block className="mt-6" onclick={submit} disabled={hasError}>{$t('sign_in')}</Button>
 			<div class="mt-4 text-center">

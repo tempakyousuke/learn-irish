@@ -32,8 +32,8 @@
 				id={option.id}
 				value={option.value}
 				bind:group={userSelected}
-				on:input={handleInput}
-				on:change={handleChange}
+				oninput={handleInput}
+				onchange={handleChange}
 			/>
 			<label class="cursor-pointer select-none text-sm" for={option.id}>{option.label}</label>
 		</div>

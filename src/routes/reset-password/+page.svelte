@@ -78,7 +78,7 @@
 				label={$t('email')}
 				className="mt-4"
 				{error}
-				on:input={validate}
+				oninput={validate}
 			/>
 			<Button block className="mt-6" onclick={submit} disabled={error !== ''}>
 				{$t('send_password_reset_email')}

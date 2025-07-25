@@ -216,7 +216,7 @@
 
 								{#if linkedProviders.length > 1}
 									<Button
-										on:click={() => handleUnlinkProvider(provider.providerId)}
+										onclick={() => handleUnlinkProvider(provider.providerId)}
 										disabled={loading}
 										bgColorClass="bg-gray-100"
 										textColorClass="text-gray-700"
@@ -248,7 +248,7 @@
 									</div>
 								</div>
 								<Button
-									on:click={handleLinkGoogle}
+									onclick={handleLinkGoogle}
 									disabled={loading}
 									className="bg-red-500 hover:bg-red-600"
 								>
@@ -287,16 +287,16 @@
 										type="email"
 										label={$t('email')}
 										error={errors.email}
-										on:input={() => validate('email')}
+										oninput={() => validate('email')}
 									/>
 									<Input
 										bind:value={emailPasswordForm.password}
 										type="password"
 										label={$t('password')}
 										error={errors.password}
-										on:input={() => validate('password')}
+										oninput={() => validate('password')}
 									/>
-									<Button on:click={handleLinkEmailPassword} disabled={loading || hasError} block>
+									<Button onclick={handleLinkEmailPassword} disabled={loading || hasError} block>
 										{loading ? $t('linking') : $t('link_email_password_auth')}
 									</Button>
 								</div>
