@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import { SetRepository } from '$core/data/repositories/setRepository';
 	import { TuneSetRepository } from '$core/data/repositories/tuneSetRepository';
@@ -38,11 +39,11 @@
 				await TuneSetRepository.addTunesToSet(data.set.id, tuneIds);
 			}
 
-			toast.success('セットを更新しました');
+			toast.success($t('set_updated'));
 			goto('/admin/sets');
 		} catch (error) {
-			console.error('セット更新エラー:', error);
-			toast.error('セットの更新に失敗しました');
+			console.error($t('set_update_error'), error);
+			toast.error($t('set_update_failed'));
 		} finally {
 			saving = false;
 		}

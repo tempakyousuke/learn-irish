@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	export let message: string | null = null;
 	export let dismissable = false;
 	export let type: 'error' | 'warning' | 'info' = 'error';
@@ -39,7 +40,7 @@
 			<button
 				on:click={handleDismiss}
 				class="ml-4 text-gray-500 hover:text-gray-800 transition-colors"
-				aria-label="閉じる"
+				aria-label={$t('close')}
 			>
 				<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 					<path

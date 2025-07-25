@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import type { Tune } from '$core/data/models/Tune';
 	import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 	import Input from '$lib/forms/Input.svelte';
@@ -13,41 +14,41 @@
 		tune: Tune;
 	};
 	const tune = data.tune;
-	
+
 	let errorMessage = '';
-	
+
 	const submit = async (event: Event) => {
 		event.preventDefault();
-		
+
 		console.log('Submit function called');
 		console.log('Current tune data:', tune);
-		
+
 		// 必須フィールドの検証
 		if (!tune.name || tune.name.trim() === '') {
-			errorMessage = '曲名は必須です';
+			errorMessage = $t('tune_name_required');
 			return;
 		}
-		
+
 		if (!tune.tuneNo || tune.tuneNo <= 0) {
-			errorMessage = '曲番号は1以上の数値を入力してください';
+			errorMessage = $t('tune_number_invalid');
 			return;
 		}
-		
+
 		try {
 			console.log('Attempting to update document...');
 			const ref = doc(db, 'tunes', tune.id);
 			// Firestore用にオブジェクトを変換（idを除外）
 			const { id, ...tuneData } = tune;
 			console.log('Data to update:', tuneData);
-			
+
 			await updateDoc(ref, tuneData);
 			console.log('Update successful');
 			errorMessage = '';
-			toast.success('更新が完了しました');
+			toast.success($t('update_completed'));
 			goto('/admin/tunes');
 		} catch (error) {
-			console.error('更新エラー:', error);
-			errorMessage = '更新中にエラーが発生しました';
+			console.error($t('update_error'), error);
+			errorMessage = $t('update_failed');
 		}
 	};
 </script>
@@ -68,37 +69,37 @@
 				{errorMessage}
 			</div>
 		{/if}
-		
+
 		<h2 class="text-xl font-bold mb-4">基本情報</h2>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-			<Input bind:value={tune.tuneNo} label="曲番号" type="number" />
-			<Input bind:value={tune.name} label="曲名" />
+			<Input bind:value={tune.tuneNo} label={$t('tune_number')} type="number" />
+			<Input bind:value={tune.name} label={$t('tune_name_label')} />
 		</div>
 
 		<h2 class="text-xl font-bold mb-4">音楽的特性</h2>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-			<Input bind:value={tune.rhythm} label="リズム" />
-			<Input bind:value={tune.key} label="調" />
-			<Input bind:value={tune.mode} label="調性" />
-			<Input bind:value={tune.part} label="パート数" />
+			<Input bind:value={tune.rhythm} label={$t('rhythm')} />
+			<Input bind:value={tune.key} label={$t('key_label')} />
+			<Input bind:value={tune.mode} label={$t('mode_label')} />
+			<Input bind:value={tune.part} label={$t('part_count')} />
 		</div>
 
 		<h2 class="text-xl font-bold mb-4">メタ情報</h2>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-			<Input bind:value={tune.setNo} label="セット番号" />
-			<Input bind:value={tune.genre} label="ジャンル" />
-			<Input bind:value={tune.date} label="日付" />
-			<Input bind:value={tune.instrument} label="楽器" />
-			<Input bind:value={tune.composer} label="作曲者" />
-			<Input bind:value={tune.region} label="地域" />
-			<Input bind:value={tune.alsoKnown} label="別名" />
+			<Input bind:value={tune.setNo} label={$t('set_number')} />
+			<Input bind:value={tune.genre} label={$t('genre')} />
+			<Input bind:value={tune.date} label={$t('date')} />
+			<Input bind:value={tune.instrument} label={$t('instrument')} />
+			<Input bind:value={tune.composer} label={$t('composer')} />
+			<Input bind:value={tune.region} label={$t('region')} />
+			<Input bind:value={tune.alsoKnown} label={$t('also_known')} />
 		</div>
 
 		<h2 class="text-xl font-bold mb-4">外部リンク</h2>
 		<div class="grid grid-cols-1 gap-4 mb-6">
-			<Input bind:value={tune.link} label="YouTube等のリンク" />
-			<Input bind:value={tune.spotify} label="Spotifyリンク" />
-			<Input bind:value={tune.source} label="楽譜等のソース" />
+			<Input bind:value={tune.link} label={$t('youtube_link')} />
+			<Input bind:value={tune.spotify} label={$t('spotify_link')} />
+			<Input bind:value={tune.source} label={$t('source')} />
 		</div>
 
 		<Button className="mt-6" type="submit">更新</Button>

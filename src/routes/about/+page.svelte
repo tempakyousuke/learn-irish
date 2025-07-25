@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import TunePage from '$lib/assets/tune_page.png';
 	import PracticeRecord from '$lib/assets/practice_record.png';
 </script>
@@ -14,13 +15,13 @@
 
 	<h2 class="mt-10 text-3xl font-bold">機能について</h2>
 	<div class="mt-5 img-wrapper">
-		<img class="img" src={TunePage} alt="動画ページ画像" />
+		<img class="img" src={TunePage} alt={$t('video_page_image_alt')} />
 		<p class="img-text">
 			ログインすると上の画像のように名前やメロディーを覚えたことや、演奏した回数など、自分の練習の記録を残せるようになります。
 		</p>
 	</div>
 	<div class="img-wrapper">
-		<img class="img" src={PracticeRecord} alt="練習記録画像" />
+		<img class="img" src={PracticeRecord} alt={$t('practice_record_image_alt')} />
 		<p class="img-text">
 			トップページで名前を覚えた曲の総数やメロディーを覚えた曲の総数を確認できる他、その日に練習した曲の一覧を確認できます。
 		</p>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import { db } from '$core/data/firebase/firebaseClient';
 	import { addDoc, collection } from 'firebase/firestore';
 	import { toast } from 'svelte-sonner';
@@ -41,7 +42,7 @@
 
 	const saveTunes = async () => {
 		if (parsedTunes.length === 0) {
-			toast.error('保存する曲がありません。');
+			toast.error($t('no_tunes_to_save'));
 			return;
 		}
 
@@ -56,7 +57,7 @@
 			}
 			sheetText = '';
 		} catch (error) {
-			toast.error('保存中にエラーが発生しました。');
+			toast.error($t('save_error'));
 			console.error(error);
 		}
 	};
@@ -68,10 +69,7 @@
 </svelte:head>
 
 <div>
-	<textarea
-		class="w-full h-32"
-		bind:value={sheetText}
-		placeholder="ここにスプレッドシートの内容を貼り付け（複数行可）"
+	<textarea class="w-full h-32" bind:value={sheetText} placeholder={$t('paste_spreadsheet_content')}
 	></textarea>
 
 	{#if parsedTunes.length > 0}

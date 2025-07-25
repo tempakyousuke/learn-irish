@@ -105,9 +105,9 @@
 		}
 		const success = await updateUserTuneNote(uid, tune.id, note);
 		if (success) {
-			toast.success($t('note_saved') || 'メモを保存しました');
+			toast.success($t('note_saved'));
 		} else {
-			toast.error($t('note_save_failed') || 'メモの保存に失敗しました');
+			toast.error($t('note_save_failed'));
 		}
 	};
 	const title = $derived(`${tune.name} - ${siteTitle}`);

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { SetRepository } from '$core/data/repositories/setRepository';
 	import { TuneSetRepository } from '$core/data/repositories/tuneSetRepository';
@@ -24,15 +25,15 @@
 			sets = setsData.sort((a, b) => Number(b.setNo) - Number(a.setNo));
 			allTunes = tunesData;
 		} catch (error) {
-			console.error('データ取得エラー:', error);
-			toast.error('データの取得に失敗しました');
+			console.error($t('data_fetch_error'), error);
+			toast.error($t('data_fetch_failed'));
 		} finally {
 			loading = false;
 		}
 	});
 
 	const deleteSet = async (setId: string) => {
-		if (!confirm('このセットを削除しますか？関連する曲の関係性も削除されます。')) {
+		if (!confirm($t('confirm_delete_set'))) {
 			return;
 		}
 
@@ -46,10 +47,10 @@
 			// ローカルの配列からも削除
 			sets = sets.filter((set) => set.id !== setId);
 
-			toast.success('セットを削除しました');
+			toast.success($t('set_deleted'));
 		} catch (error) {
-			console.error('セット削除エラー:', error);
-			toast.error('セットの削除に失敗しました');
+			console.error($t('set_deletion_error'), error);
+			toast.error($t('set_deletion_failed'));
 		}
 	};
 
@@ -121,7 +122,7 @@
 								target="_blank"
 								rel="noopener noreferrer"
 								class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-sm flex items-center space-x-1"
-								title="動画を見る"
+								title={$t('watch_video')}
 							>
 								<Fa icon={faEye} size="sm" />
 								<span>動画</span>
@@ -130,15 +131,15 @@
 						<a
 							href="/admin/sets/edit/{set.id}"
 							class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-1 rounded text-sm flex items-center space-x-1"
-							title="編集"
+							title={$t('edit')}
 						>
 							<Fa icon={faEdit} size="sm" />
 							<span>編集</span>
 						</a>
 						<button
-							on:click={() => deleteSet(set.id)}
+							onclick={() => deleteSet(set.id)}
 							class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded text-sm flex items-center space-x-1"
-							title="削除"
+							title={$t('delete')}
 						>
 							<Fa icon={faTrash} size="sm" />
 							<span>削除</span>

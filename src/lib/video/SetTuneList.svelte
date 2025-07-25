@@ -79,7 +79,8 @@
 							<a
 								href="/tune/{tune.id}"
 								class="text-gray-400 hover:text-teal-600 transition-colors"
-								title="曲ページへ移動"
+								title={$t('go_to_tune_page')}
+								aria-label={$t('go_to_tune_page')}
 							>
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path

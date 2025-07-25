@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import { SetRepository } from '$core/data/repositories/setRepository';
 	import { TuneSetRepository } from '$core/data/repositories/tuneSetRepository';
@@ -37,11 +38,11 @@
 			// 曲-セット関係性を一括作成
 			await TuneSetRepository.addTunesToSet(setId, tuneIds);
 
-			toast.success('セットを作成しました');
+			toast.success($t('set_created'));
 			goto('/admin/sets');
 		} catch (error) {
-			console.error('セット作成エラー:', error);
-			toast.error('セットの作成に失敗しました');
+			console.error($t('set_creation_error'), error);
+			toast.error($t('set_creation_failed'));
 		} finally {
 			saving = false;
 		}

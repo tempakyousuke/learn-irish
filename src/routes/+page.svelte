@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import type { TuneListView } from '$core/data/models/Tune';
 	import type { UserTuneFull } from '$core/data/models/UserTune';
 	import TuneList from '$lib/tune/TuneList.svelte';
@@ -115,7 +116,7 @@
 			// お気に入りの取得
 			favoriteTuneIds = await getFavorites(uid);
 		} catch (error) {
-			console.error('ユーザーデータ取得エラー:', error);
+			console.error($t('user_data_fetch_error'), error);
 			// エラー時はデータを初期化
 			rememberNameIds = [];
 			rememberMelodyIds = [];
@@ -125,7 +126,7 @@
 			favoriteTuneIds = [];
 
 			// エラーメッセージを設定
-			errorMessage = getFirebaseErrorMessage(error, 'ユーザーデータの取得に失敗しました');
+			errorMessage = getFirebaseErrorMessage(error, $t('user_data_fetch_failed'));
 		}
 	}
 
@@ -331,7 +332,7 @@
 	<a
 		href="?refresh=true"
 		class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full shadow-lg flex items-center"
-		title="データを最新の状態に更新"
+		title={$t('refresh_data')}
 	>
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
 			<path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />

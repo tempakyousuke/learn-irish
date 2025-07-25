@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { TuneRepository } from '$core/data/repositories/tuneRepository';
 	import type { TuneFull } from '$core/data/models/Tune';
@@ -14,8 +15,8 @@
 		try {
 			tunes = await TuneRepository.getTunes();
 		} catch (error) {
-			console.error('楽曲データ取得エラー:', error);
-			toast.error('楽曲データの取得に失敗しました');
+			console.error($t('tune_data_fetch_error'), error);
+			toast.error($t('tune_data_fetch_failed'));
 		} finally {
 			loading = false;
 		}
@@ -40,10 +41,10 @@
 
 		try {
 			// TODO: 楽曲削除のAPI実装が必要
-			toast.info('楽曲削除機能は実装中です');
+			toast.info($t('tune_deletion_not_implemented'));
 		} catch (error) {
-			console.error('楽曲削除エラー:', error);
-			toast.error('楽曲の削除に失敗しました');
+			console.error($t('tune_deletion_error'), error);
+			toast.error($t('tune_deletion_failed'));
 		}
 	};
 </script>
@@ -69,7 +70,7 @@
 		<div class="max-w-md">
 			<input
 				type="text"
-				placeholder="楽曲名、番号、リズム、調で検索..."
+				placeholder={$t('search_placeholder')}
 				bind:value={searchTerm}
 				class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
 			/>
@@ -187,7 +188,7 @@
 											href="/tune/{tune.id}"
 											target="_blank"
 											class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-sm flex items-center space-x-1"
-											title="詳細を見る"
+											title={$t('view_details')}
 										>
 											<Fa icon={faEye} size="sm" />
 											<span>詳細</span>
@@ -195,7 +196,7 @@
 										<a
 											href="/admin/tunes/update/{tune.id}"
 											class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-1 rounded text-sm flex items-center space-x-1"
-											title="編集"
+											title={$t('edit')}
 										>
 											<Fa icon={faEdit} size="sm" />
 											<span>編集</span>
@@ -203,7 +204,7 @@
 										<button
 											onclick={() => deleteTune(tune.id, tune.name)}
 											class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded text-sm flex items-center space-x-1"
-											title="削除"
+											title={$t('delete')}
 										>
 											<Fa icon={faTrash} size="sm" />
 											<span>削除</span>
