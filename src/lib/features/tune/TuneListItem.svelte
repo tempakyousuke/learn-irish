@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { Tune } from '$core/data/models/Tune';
-	export let tune!: Tune;
+	import type { TuneFull } from '$core/data/models/Tune';
+
+	let { tune }: { tune: TuneFull } = $props();
 </script>
 
 <div class="border py-2 border-teal-300">
