@@ -87,16 +87,17 @@
 		}
 
 		const currentDate = getDate();
+		playCount++;
 
 		// Update play count using repository
 		const success = await incrementUserTunePlayCount(uid, tune.id, currentDate, 1);
 		if (success) {
-			// Update local state
-			playCount++;
 			const newDailyCount = await incrementDailyPlayCount(uid, currentDate, tune.id, 1);
 			if (newDailyCount > 0) {
 				playHistory[currentDate] = newDailyCount;
 			}
+		} else {
+			playCount += -1;
 		}
 	};
 	const updateNote = async () => {
