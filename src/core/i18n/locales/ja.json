@@ -99,6 +99,7 @@
 	"google": "Google",
 	"email_password": "メール/パスワード",
 	"settings": "設定",
+	"manage_authentication_methods": "認証方法の管理",
 	"sign_in_with_google": "Googleでサインイン",
 	"sign_up_with_google": "Googleでサインアップ",
 	"sign_in_page_description": "アカウントにサインインして、パーソナライズされた楽曲学習体験にアクセスしましょう。",

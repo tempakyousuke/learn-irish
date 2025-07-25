@@ -99,6 +99,7 @@
 	"google": "Google",
 	"email_password": "Email/Password",
 	"settings": "Settings",
+	"manage_authentication_methods": "Manage authentication methods",
 	"sign_in_with_google": "Sign in with Google",
 	"sign_up_with_google": "Sign up with Google",
 	"sign_in_page_description": "Sign in to your account to access your personalized tune learning experience.",
