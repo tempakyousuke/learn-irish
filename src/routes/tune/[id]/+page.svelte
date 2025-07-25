@@ -2,7 +2,6 @@
 	import { t } from 'svelte-i18n';
 	import { getYoutubeId } from '$core/utils/youtubeUtils';
 	import { userStore } from '$core/store/userStore';
-	import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 	import { getDate } from '$core/utils/dateUtils';
 	import Fa from 'svelte-fa';
 	import { faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
@@ -12,14 +11,21 @@
 		addFavorite,
 		removeFavorite
 	} from '$core/data/repositories/favoritesRepository';
+	import {
+		getUserTuneData,
+		updateMemoryStatus,
+		incrementUserTunePlayCount,
+		updateUserTuneNote
+	} from '$core/data/repositories/userTuneRepository';
+	import {
+		getDailyTunePlayCount,
+		incrementDailyPlayCount
+	} from '$core/data/repositories/dailyStatsRepository';
 	import { siteTitle } from '$core/config/configService';
 	import SetVideoPlayer from '$lib/video/SetVideoPlayer.svelte';
 	import SetTuneList from '$lib/video/SetTuneList.svelte';
 	import type { SetFull } from '$core/data/models/Set';
 	import type { TuneFull } from '$core/data/models/Tune';
-
-	// Firestoreのインスタンスを取得
-	const db = getFirestore();
 
 	const { data }: { data: { tune: TuneFull; sets: SetFull[]; setTunes: TuneFull[][] } } = $props();
 	const tune = $derived(data.tune);
@@ -30,14 +36,9 @@
 	let rememberMelody = $state<boolean>(false);
 	let playCount = $state<number>(0);
 	let uid = $state<string>('');
-	let dailyPlayCount = 0;
-	let dailyData: { [key: string]: number } = {};
 	let note = $state<string>('');
 	let isBookmarked = $state<boolean>(false);
 	let playHistory = $state<{ [key: string]: number }>({});
-	const date = getDate();
-
-	let currentTuneId = $state('');
 
 	$effect(() => {
 		(async () => {
@@ -53,32 +54,19 @@
 			playCount = 0;
 			note = '';
 			playHistory = {};
-			dailyPlayCount = 0;
 			isBookmarked = false;
 
-			const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-			const data = await getDoc(docRef);
-			const userTune = data.data();
-			if (userTune?.rememberName) {
-				rememberName = userTune.rememberName as boolean;
+			// Load user tune data using repository
+			const userTuneData = await getUserTuneData(uid, tune.id);
+			if (userTuneData) {
+				rememberName = userTuneData.rememberName;
+				rememberMelody = userTuneData.rememberMelody;
+				playCount = userTuneData.playCount;
+				note = userTuneData.note;
+				playHistory = userTuneData.playHistory;
 			}
-			if (userTune?.rememberMelody) {
-				rememberMelody = userTune.rememberMelody as boolean;
-			}
-			if (userTune?.playCount) {
-				playCount = userTune.playCount as number;
-			}
-			if (userTune?.note) {
-				note = userTune.note as string;
-			}
-			if (userTune?.playHistory) {
-				playHistory = userTune.playHistory as { [key: string]: number };
-			}
-			const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
-			const dailyData = (await getDoc(dailyDocRef)).data() || {};
-			if (dailyData[tune.id]) {
-				dailyPlayCount = dailyData[tune.id];
-			}
+
+			// Check if tune is bookmarked
 			isBookmarked = await checkFavorite(uid, tune.id);
 		})();
 	});
@@ -87,64 +75,43 @@
 		if (!uid) {
 			return;
 		}
-		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		await setDoc(
-			docRef,
-			{
-				rememberName
-			},
-			{ merge: true }
-		);
+		await updateMemoryStatus(uid, tune.id, rememberName, undefined);
 	};
 
 	const updateRememberMelody = async () => {
 		if (!uid) {
 			return;
 		}
-		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		await setDoc(
-			docRef,
-			{
-				rememberMelody
-			},
-			{ merge: true }
-		);
+		await updateMemoryStatus(uid, tune.id, undefined, rememberMelody);
 	};
 	const updatePlayCount = async () => {
 		if (!uid) {
 			return;
 		}
-		playCount++;
-		dailyPlayCount++;
-		dailyData[tune.id] = dailyPlayCount;
-		const date = getDate();
-		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		playHistory[date] = dailyPlayCount;
-		await setDoc(
-			docRef,
-			{
-				playCount,
-				playHistory,
-				lastPlayedDate: date
-			},
-			{ merge: true }
-		);
-		const dailyDocRef = doc(db, `users/${uid}/daily/${date}`);
-		await setDoc(dailyDocRef, { [tune.id]: dailyPlayCount }, { merge: true });
+
+		const currentDate = getDate();
+
+		// Update play count using repository
+		const success = await incrementUserTunePlayCount(uid, tune.id, currentDate, 1);
+		if (success) {
+			// Update local state
+			playCount++;
+			const newDailyCount = await incrementDailyPlayCount(uid, currentDate, tune.id, 1);
+			if (newDailyCount > 0) {
+				playHistory[currentDate] = newDailyCount;
+			}
+		}
 	};
 	const updateNote = async () => {
 		if (!uid) {
 			return;
 		}
-		const docRef = doc(db, `users/${uid}/tunes/${tune.id}`);
-		await setDoc(
-			docRef,
-			{
-				note
-			},
-			{ merge: true }
-		);
-		toast.success('メモを保存しました');
+		const success = await updateUserTuneNote(uid, tune.id, note);
+		if (success) {
+			toast.success($t('note_saved') || 'メモを保存しました');
+		} else {
+			toast.error($t('note_save_failed') || 'メモの保存に失敗しました');
+		}
 	};
 	const title = $derived(`${tune.name} - ${siteTitle}`);
 </script>
