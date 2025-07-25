@@ -17,10 +17,7 @@
 		incrementUserTunePlayCount,
 		updateUserTuneNote
 	} from '$core/data/repositories/userTuneRepository';
-	import {
-		getDailyTunePlayCount,
-		incrementDailyPlayCount
-	} from '$core/data/repositories/dailyStatsRepository';
+	import { incrementDailyPlayCount } from '$core/data/repositories/dailyStatsRepository';
 	import { siteTitle } from '$core/config/configService';
 	import SetVideoPlayer from '$lib/video/SetVideoPlayer.svelte';
 	import SetTuneList from '$lib/video/SetTuneList.svelte';
