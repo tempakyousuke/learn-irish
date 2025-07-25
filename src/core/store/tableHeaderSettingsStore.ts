@@ -7,6 +7,7 @@ import {
 	type TableHeaderSettings
 } from '$core/data/repositories/tableHeaderSettingsRepository';
 import { userStore } from '$core/store/userStore';
+import { AppError } from '$core/utils/errorHandling';
 
 /**
  * テーブルヘッダー設定ストアの状態型定義
@@ -15,6 +16,10 @@ interface TableHeaderSettingsState {
 	settings: TableHeaderSettings;
 	loading: boolean;
 	error: string | null;
+	isOnline: boolean;
+	pendingChanges: Partial<TableHeaderSettings> | null;
+	lastSyncTime: number | null;
+	retryCount: number;
 }
 
 /**
@@ -23,13 +28,89 @@ interface TableHeaderSettingsState {
 const initialState: TableHeaderSettingsState = {
 	settings: getDefaultSettings(),
 	loading: false,
-	error: null
+	error: null,
+	isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
+	pendingChanges: null,
+	lastSyncTime: null,
+	retryCount: 0
 };
 
 /**
  * テーブルヘッダー設定を管理するストア
  */
 export const tableHeaderSettingsStore: Writable<TableHeaderSettingsState> = writable(initialState);
+
+/**
+ * ネットワーク状態を監視し、オンライン/オフライン状態を管理する
+ */
+function initializeNetworkMonitoring(): void {
+	if (typeof window === 'undefined') return;
+
+	const updateOnlineStatus = () => {
+		const isOnline = navigator.onLine;
+		tableHeaderSettingsStore.update(state => ({
+			...state,
+			isOnline
+		}));
+
+		// オンラインに復帰した場合、保留中の変更を同期
+		if (isOnline) {
+			syncPendingChanges();
+		}
+	};
+
+	window.addEventListener('online', updateOnlineStatus);
+	window.addEventListener('offline', updateOnlineStatus);
+}
+
+/**
+ * 保留中の変更をサーバーに同期する
+ */
+async function syncPendingChanges(): Promise<void> {
+	const currentState = getCurrentState();
+	
+	if (!currentState.pendingChanges || !currentState.isOnline) {
+		return;
+	}
+
+	const currentUser = getCurrentUser();
+	if (!currentUser.isLoggedIn || !currentUser.uid) {
+		// 未認証の場合は保留中の変更をクリア
+		tableHeaderSettingsStore.update(state => ({
+			...state,
+			pendingChanges: null
+		}));
+		return;
+	}
+
+	try {
+		// 保留中の変更を現在の設定にマージ
+		const updatedSettings = {
+			...currentState.settings,
+			...currentState.pendingChanges
+		};
+
+		await updateSettings(currentUser.uid, updatedSettings);
+		
+		// 同期成功時は保留中の変更をクリア
+		tableHeaderSettingsStore.update(state => ({
+			...state,
+			pendingChanges: null,
+			lastSyncTime: Date.now(),
+			retryCount: 0,
+			error: null
+		}));
+	} catch (error) {
+		console.error('保留中の変更の同期に失敗:', error);
+		
+		// リトライ回数を増やし、エラー状態を更新
+		tableHeaderSettingsStore.update(state => ({
+			...state,
+			retryCount: state.retryCount + 1,
+			error: error instanceof Error ? error.message : '同期に失敗しました'
+		}));
+	}
+}
 
 /**
  * 認証状態の変更を監視し、設定を自動的に読み込み/クリアする
@@ -40,6 +121,9 @@ export function initializeAuthListener(): void {
 	if (isAuthListenerInitialized) {
 		return;
 	}
+
+	// ネットワーク監視を初期化
+	initializeNetworkMonitoring();
 
 	userStore.subscribe(async (user) => {
 		if (user.isLoggedIn && user.uid) {
@@ -61,7 +145,11 @@ function clearSettingsOnLogout(): void {
 	tableHeaderSettingsStore.set({
 		settings: getDefaultSettings(),
 		loading: false,
-		error: null
+		error: null,
+		isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
+		pendingChanges: null,
+		lastSyncTime: null,
+		retryCount: 0
 	});
 }
 
@@ -80,7 +168,9 @@ export async function loadSettings(uid?: string): Promise<void> {
 				...state,
 				settings: getDefaultSettings(),
 				loading: false,
-				error: null
+				error: null,
+				pendingChanges: null,
+				retryCount: 0
 			}));
 			return;
 		}
@@ -91,7 +181,8 @@ export async function loadSettings(uid?: string): Promise<void> {
 	tableHeaderSettingsStore.update(state => ({
 		...state,
 		loading: true,
-		error: null
+		error: null,
+		retryCount: 0
 	}));
 
 	try {
@@ -102,16 +193,41 @@ export async function loadSettings(uid?: string): Promise<void> {
 			...state,
 			settings,
 			loading: false,
-			error: null
+			error: null,
+			lastSyncTime: Date.now(),
+			retryCount: 0
 		}));
 	} catch (error) {
 		console.error('テーブルヘッダー設定読み込みエラー:', error);
-		const errorMessage = error instanceof Error ? error.message : '設定の読み込みに失敗しました';
+		
+		let errorMessage = '設定の読み込みに失敗しました';
+		let fallbackToDefaults = false;
+
+		if (error instanceof AppError) {
+			switch (error.code) {
+				case 'malformed-data':
+					errorMessage = '設定データが破損しています。デフォルト設定を使用します。';
+					fallbackToDefaults = true;
+					break;
+				case 'invalid-uid':
+					errorMessage = 'ユーザー認証に問題があります。再度ログインしてください。';
+					break;
+				default:
+					errorMessage = error.message;
+			}
+		} else {
+			errorMessage = error instanceof Error ? error.message : errorMessage;
+		}
+
+		// データが破損している場合はデフォルト設定を使用
+		const settings = fallbackToDefaults ? getDefaultSettings() : getCurrentState().settings;
 		
 		tableHeaderSettingsStore.update(state => ({
 			...state,
+			settings,
 			loading: false,
-			error: errorMessage
+			error: errorMessage,
+			retryCount: state.retryCount + 1
 		}));
 	}
 }
@@ -127,6 +243,8 @@ export async function updateSetting(
 	value: boolean,
 	uid?: string
 ): Promise<void> {
+	const currentState = getCurrentState();
+	
 	// uidが指定されていない場合は現在のユーザーを取得
 	if (!uid) {
 		const currentUser = getCurrentUser();
@@ -147,39 +265,82 @@ export async function updateSetting(
 	}
 
 	// 楽観的更新: UIを即座に更新
-	let previousSettings: TableHeaderSettings;
-	tableHeaderSettingsStore.update(state => {
-		previousSettings = { ...state.settings };
-		return {
-			...state,
-			settings: {
-				...state.settings,
-				[key]: value
-			},
-			error: null
-		};
-	});
+	const previousSettings = { ...currentState.settings };
+	const newSettings = {
+		...currentState.settings,
+		[key]: value
+	};
 
-	try {
-		// 現在の設定を取得して更新
-		const currentState = await new Promise<TableHeaderSettingsState>(resolve => {
-			const unsubscribe = tableHeaderSettingsStore.subscribe(state => {
-				unsubscribe();
-				resolve(state);
-			});
-		});
+	tableHeaderSettingsStore.update(state => ({
+		...state,
+		settings: newSettings,
+		error: null
+	}));
 
-		await updateSettings(uid, currentState.settings);
-	} catch (error) {
-		console.error('テーブルヘッダー設定更新エラー:', error);
-		const errorMessage = error instanceof Error ? error.message : '設定の更新に失敗しました';
-		
-		// エラー時は前の状態に戻す
+	// オフラインの場合は保留中の変更として保存
+	if (!currentState.isOnline) {
 		tableHeaderSettingsStore.update(state => ({
 			...state,
-			settings: previousSettings,
-			error: errorMessage
+			pendingChanges: {
+				...state.pendingChanges,
+				[key]: value
+			}
 		}));
+		return;
+	}
+
+	try {
+		await updateSettings(uid, newSettings);
+		
+		// 成功時は保留中の変更をクリア
+		tableHeaderSettingsStore.update(state => ({
+			...state,
+			lastSyncTime: Date.now(),
+			retryCount: 0,
+			pendingChanges: null
+		}));
+	} catch (error) {
+		console.error('テーブルヘッダー設定更新エラー:', error);
+		
+		let errorMessage = '設定の更新に失敗しました';
+		let shouldRevert = true;
+
+		if (error instanceof AppError) {
+			switch (error.code) {
+				case 'malformed-data':
+					errorMessage = '無効な設定データです。デフォルト設定に戻します。';
+					break;
+				case 'invalid-uid':
+					errorMessage = 'ユーザー認証に問題があります。再度ログインしてください。';
+					break;
+				default:
+					errorMessage = error.message;
+			}
+		} else {
+			errorMessage = error instanceof Error ? error.message : errorMessage;
+		}
+
+		// ネットワークエラーの場合は保留中の変更として保存し、リバートしない
+		if (errorMessage.includes('ネットワーク') || errorMessage.includes('接続')) {
+			shouldRevert = false;
+			tableHeaderSettingsStore.update(state => ({
+				...state,
+				pendingChanges: {
+					...state.pendingChanges,
+					[key]: value
+				},
+				error: errorMessage,
+				retryCount: state.retryCount + 1
+			}));
+		} else if (shouldRevert) {
+			// その他のエラーの場合は前の状態に戻す
+			tableHeaderSettingsStore.update(state => ({
+				...state,
+				settings: previousSettings,
+				error: errorMessage,
+				retryCount: state.retryCount + 1
+			}));
+		}
 	}
 }
 
@@ -189,12 +350,14 @@ export async function updateSetting(
  */
 export async function resetToDefaults(uid?: string): Promise<void> {
 	const defaultSettings = getDefaultSettings();
+	const currentState = getCurrentState();
 
 	// UIを即座に更新
 	tableHeaderSettingsStore.update(state => ({
 		...state,
 		settings: defaultSettings,
-		error: null
+		error: null,
+		pendingChanges: null
 	}));
 
 	// uidが指定されていない場合は現在のユーザーを取得
@@ -207,16 +370,55 @@ export async function resetToDefaults(uid?: string): Promise<void> {
 
 	// 認証済みユーザーの場合はFirestoreにも保存
 	if (uid) {
+		// オフラインの場合は保留中の変更として保存
+		if (!currentState.isOnline) {
+			tableHeaderSettingsStore.update(state => ({
+				...state,
+				pendingChanges: defaultSettings
+			}));
+			return;
+		}
+
 		try {
 			await updateSettings(uid, defaultSettings);
-		} catch (error) {
-			console.error('デフォルト設定保存エラー:', error);
-			const errorMessage = error instanceof Error ? error.message : 'デフォルト設定の保存に失敗しました';
 			
 			tableHeaderSettingsStore.update(state => ({
 				...state,
-				error: errorMessage
+				lastSyncTime: Date.now(),
+				retryCount: 0
 			}));
+		} catch (error) {
+			console.error('デフォルト設定保存エラー:', error);
+			
+			let errorMessage = 'デフォルト設定の保存に失敗しました';
+
+			if (error instanceof AppError) {
+				switch (error.code) {
+					case 'invalid-uid':
+						errorMessage = 'ユーザー認証に問題があります。再度ログインしてください。';
+						break;
+					default:
+						errorMessage = error.message;
+				}
+			} else {
+				errorMessage = error instanceof Error ? error.message : errorMessage;
+			}
+
+			// ネットワークエラーの場合は保留中の変更として保存
+			if (errorMessage.includes('ネットワーク') || errorMessage.includes('接続')) {
+				tableHeaderSettingsStore.update(state => ({
+					...state,
+					pendingChanges: defaultSettings,
+					error: errorMessage,
+					retryCount: state.retryCount + 1
+				}));
+			} else {
+				tableHeaderSettingsStore.update(state => ({
+					...state,
+					error: errorMessage,
+					retryCount: state.retryCount + 1
+				}));
+			}
 		}
 	}
 }
@@ -227,8 +429,49 @@ export async function resetToDefaults(uid?: string): Promise<void> {
 export function clearError(): void {
 	tableHeaderSettingsStore.update(state => ({
 		...state,
-		error: null
+		error: null,
+		retryCount: 0
 	}));
+}
+
+/**
+ * 失敗した操作を再試行する
+ */
+export async function retryFailedOperation(): Promise<void> {
+	const currentState = getCurrentState();
+	
+	if (!currentState.isOnline) {
+		tableHeaderSettingsStore.update(state => ({
+			...state,
+			error: 'オフラインです。接続を確認してください。'
+		}));
+		return;
+	}
+
+	// 保留中の変更がある場合は同期を試行
+	if (currentState.pendingChanges) {
+		await syncPendingChanges();
+	} else {
+		// 保留中の変更がない場合は設定を再読み込み
+		const currentUser = getCurrentUser();
+		if (currentUser.isLoggedIn && currentUser.uid) {
+			await loadSettings(currentUser.uid);
+		}
+	}
+}
+
+/**
+ * 現在のストア状態を同期的に取得する
+ */
+function getCurrentState(): TableHeaderSettingsState {
+	let currentState: TableHeaderSettingsState = initialState;
+	
+	const unsubscribe = tableHeaderSettingsStore.subscribe(state => {
+		currentState = state;
+	});
+	unsubscribe();
+	
+	return currentState;
 }
 
 /**

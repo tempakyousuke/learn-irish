@@ -11,11 +11,12 @@
 		loadSettings,
 		updateSetting,
 		resetToDefaults,
-		clearError
+		clearError,
+		retryFailedOperation
 	} from '$core/store/tableHeaderSettingsStore';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Fa from 'svelte-fa';
-	import { faArrowLeft, faTable, faRedo } from '@fortawesome/free-solid-svg-icons';
+	import { faArrowLeft, faTable, faRedo, faExclamationTriangle, faWifi } from '@fortawesome/free-solid-svg-icons';
 
 	let mounted = false;
 
@@ -32,30 +33,91 @@
 		clearError();
 	});
 
+	let isToggling = false;
+
 	// 個別の列設定を切り替える
 	async function toggleColumn(key: keyof typeof $tableHeaderSettingsStore.settings) {
-		const currentValue = $tableHeaderSettingsStore.settings[key];
-		await updateSetting(key, !currentValue);
+		if (isToggling) return;
 		
-		// 成功時のフィードバック
-		if (!$tableHeaderSettingsStore.error) {
-			toast.success($t('settings_saved'));
+		isToggling = true;
+		const currentValue = $tableHeaderSettingsStore.settings[key];
+		
+		try {
+			await updateSetting(key, !currentValue);
+			
+			// 成功時のフィードバック（エラーがない場合のみ）
+			if (!$tableHeaderSettingsStore.error) {
+				if ($tableHeaderSettingsStore.isOnline) {
+					toast.success($t('settings_saved'));
+				} else if ($tableHeaderSettingsStore.pendingChanges) {
+					toast.info($t('offline_mode'));
+				}
+			}
+		} catch (error) {
+			console.error('設定切り替えエラー:', error);
+		} finally {
+			isToggling = false;
 		}
 	}
 
 	// デフォルト設定にリセット
 	async function handleResetToDefaults() {
-		await resetToDefaults();
-		
-		if (!$tableHeaderSettingsStore.error) {
-			toast.success($t('settings_reset'));
+		try {
+			await resetToDefaults();
+			
+			if (!$tableHeaderSettingsStore.error) {
+				if ($tableHeaderSettingsStore.isOnline) {
+					toast.success($t('settings_reset'));
+				} else if ($tableHeaderSettingsStore.pendingChanges) {
+					toast.info($t('offline_mode'));
+				}
+			}
+		} catch (error) {
+			console.error('デフォルト設定リセットエラー:', error);
+		}
+	}
+
+	// 失敗した操作を再試行
+	async function handleRetry() {
+		try {
+			await retryFailedOperation();
+			
+			if (!$tableHeaderSettingsStore.error) {
+				toast.success($t('operation_completed'));
+			}
+		} catch (error) {
+			console.error('再試行エラー:', error);
 		}
 	}
 
 	// エラー表示時のトースト
 	$: if ($tableHeaderSettingsStore.error) {
-		toast.error($tableHeaderSettingsStore.error);
-		clearError();
+		// エラーの種類に応じて適切なメッセージを表示
+		const error = $tableHeaderSettingsStore.error;
+		
+		if (error.includes('ネットワーク') || error.includes('接続')) {
+			toast.error($t('network_error'));
+		} else if (error.includes('破損') || error.includes('無効')) {
+			toast.error($t('malformed_data_error'));
+		} else if (error.includes('認証') || error.includes('ログイン')) {
+			toast.error($t('permission_denied_error'));
+		} else if (error.includes('タイムアウト')) {
+			toast.error($t('timeout_error'));
+		} else if (error.includes('利用できません')) {
+			toast.error($t('firestore_unavailable'));
+		} else {
+			toast.error(error);
+		}
+		
+		// エラー状態をクリア（一定時間後）
+		setTimeout(() => {
+			clearError();
+		}, 5000);
+	}
+
+	// オンライン状態の変化を監視
+	$: if (mounted && $tableHeaderSettingsStore.isOnline && $tableHeaderSettingsStore.pendingChanges) {
+		toast.info($t('connection_restored'));
 	}
 
 	const title = `${$t('table_header_settings')} - ${siteTitle}`;
@@ -117,6 +179,54 @@
 			</div>
 
 			<div class="bg-white rounded-lg shadow-md p-6">
+				<!-- Network status indicator -->
+				{#if !$tableHeaderSettingsStore.isOnline}
+					<div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center">
+						<div class="w-4 h-4 bg-yellow-600 rounded-full mr-2"></div>
+						<div class="flex-1">
+							<p class="text-sm font-medium text-yellow-800">{$t('offline_mode')}</p>
+							{#if $tableHeaderSettingsStore.pendingChanges}
+								<p class="text-xs text-yellow-700 mt-1">変更は接続復旧時に保存されます</p>
+							{/if}
+						</div>
+					</div>
+				{:else if $tableHeaderSettingsStore.pendingChanges}
+					<div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center">
+						<Fa icon={faWifi} class="text-blue-600 mr-2" />
+						<div class="flex-1">
+							<p class="text-sm font-medium text-blue-800">{$t('connection_restored')}</p>
+							<p class="text-xs text-blue-700 mt-1">変更を同期しています...</p>
+						</div>
+					</div>
+				{/if}
+
+				<!-- Error display with retry option -->
+				{#if $tableHeaderSettingsStore.error && $tableHeaderSettingsStore.retryCount > 0}
+					<div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+						<div class="flex items-start">
+							<Fa icon={faExclamationTriangle} class="text-red-600 mr-2 mt-0.5" />
+							<div class="flex-1">
+								<p class="text-sm font-medium text-red-800">操作に失敗しました</p>
+								<p class="text-xs text-red-700 mt-1">
+									{$tableHeaderSettingsStore.error}
+									{#if $tableHeaderSettingsStore.retryCount > 1}
+										(試行回数: {$tableHeaderSettingsStore.retryCount})
+									{/if}
+								</p>
+							</div>
+							<Button
+								onclick={handleRetry}
+								disabled={$tableHeaderSettingsStore.loading || !$tableHeaderSettingsStore.isOnline}
+								bgColorClass="bg-red-100"
+								textColorClass="text-red-700"
+								className="text-xs px-2 py-1"
+							>
+								{$t('retry')}
+							</Button>
+						</div>
+					</div>
+				{/if}
+
 				<div class="mb-6">
 					<h2 class="text-xl font-semibold mb-2">{$t('mobile_display_options')}</h2>
 					<p class="text-gray-600 text-sm mb-4">{$t('desktop_shows_all_columns')}</p>
@@ -166,9 +276,9 @@
 								</div>
 								
 								<button
-									class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 {$tableHeaderSettingsStore.settings[column.key] ? 'bg-blue-600' : 'bg-gray-200'}"
+									class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 {$tableHeaderSettingsStore.settings[column.key] ? 'bg-blue-600' : 'bg-gray-200'} {isToggling || $tableHeaderSettingsStore.loading ? 'opacity-50 cursor-not-allowed' : ''}"
 									onclick={() => toggleColumn(column.key)}
-									disabled={$tableHeaderSettingsStore.loading}
+									disabled={isToggling || $tableHeaderSettingsStore.loading}
 									aria-label="Toggle {$t(column.labelKey)} column visibility"
 								>
 									<span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {$tableHeaderSettingsStore.settings[column.key] ? 'translate-x-6' : 'translate-x-1'}"></span>
@@ -181,7 +291,7 @@
 					<div class="mt-8 pt-6 border-t">
 						<Button
 							onclick={handleResetToDefaults}
-							disabled={$tableHeaderSettingsStore.loading}
+							disabled={$tableHeaderSettingsStore.loading || isToggling}
 							bgColorClass="bg-gray-100"
 							textColorClass="text-gray-700"
 							className="w-full"
@@ -189,6 +299,12 @@
 							<Fa icon={faRedo} class="mr-2" />
 							{$t('reset_to_defaults')}
 						</Button>
+						
+						{#if $tableHeaderSettingsStore.lastSyncTime}
+							<p class="text-xs text-gray-500 text-center mt-2">
+								最終同期: {new Date($tableHeaderSettingsStore.lastSyncTime).toLocaleString('ja-JP')}
+							</p>
+						{/if}
 					</div>
 				{/if}
 			</div>

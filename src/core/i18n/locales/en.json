@@ -208,5 +208,18 @@
 	"back_to_settings": "Back to Settings",
 	"mobile_display_options": "Mobile Display Options",
 	"desktop_shows_all_columns": "Desktop view always shows all columns",
-	"tune_name_always_visible": "Tune name is always visible and cannot be hidden"
+	"tune_name_always_visible": "Tune name is always visible and cannot be hidden",
+	"network_error": "Network connection error. Please check your internet connection.",
+	"retry": "Retry",
+	"operation_failed": "Operation failed. Please try again.",
+	"settings_corrupted": "Settings data is corrupted. Resetting to defaults.",
+	"offline_mode": "You are currently offline. Changes will be saved when connection is restored.",
+	"connection_restored": "Connection restored. Syncing your changes...",
+	"sync_failed": "Failed to sync changes. Please try again.",
+	"malformed_data_error": "Invalid settings data detected. Using default settings.",
+	"firestore_unavailable": "Database service is temporarily unavailable. Please try again later.",
+	"permission_denied_error": "Access denied. Please sign in again.",
+	"timeout_error": "Request timed out. Please try again.",
+	"unknown_error": "An unexpected error occurred. Please try again.",
+	"operation_completed": "Operation completed successfully"
 }
