@@ -19,8 +19,7 @@ const config = {
 			$modules: './src/modules',
 			$types: './types',
 			$core: './src/core',
-			$app: './src/app',
-			$utils: './src/lib/utils'
+			$app: './src/app'
 		}
 	}
 };

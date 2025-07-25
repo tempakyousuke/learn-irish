@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore';
 import type { TuneSetFull, TuneSetBase, TuneSetMetadata } from '$core/data/models/TuneSet';
 import { parseTuneSetData, createTuneSet, generateTuneSetId } from '$core/data/models/TuneSet';
-import { createCache } from '$utils/cacheStorage';
+import { createCache } from '$core/utils/cacheStorage';
 import { db } from '$core/data/firebase/firebaseClient';
 
 /**

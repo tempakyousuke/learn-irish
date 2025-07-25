@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import type { SetFull, SetBase, SetMetadata, SetComposition } from '$core/data/models/Set';
 import { parseSetData, createSet } from '$core/data/models/Set';
-import { createCache } from '$utils/cacheStorage';
+import { createCache } from '$core/utils/cacheStorage';
 import { db } from '$core/data/firebase/firebaseClient';
 
 /**

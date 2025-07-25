@@ -2,7 +2,7 @@ import { getDocs, collection, query, orderBy, FirestoreError } from 'firebase/fi
 import type { TuneFull, TuneListView } from '$core/data/models/Tune';
 import { parseTuneData, parseTuneListViewData } from '$core/data/models/Tune';
 import type { SetFull } from '$core/data/models/Set';
-import { createCache } from '$utils/cacheStorage';
+import { createCache } from '$core/utils/cacheStorage';
 import { db } from '$core/data/firebase/firebaseClient';
 import type { UserTuneFull } from '../models/UserTune';
 import { SetRepository } from './setRepository';
