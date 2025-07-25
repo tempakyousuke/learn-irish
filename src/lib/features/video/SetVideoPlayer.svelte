@@ -2,18 +2,24 @@
 	import { getYoutubeId } from '$core/utils/youtubeUtils';
 	import type { SetFull } from '$core/data/models/Set';
 
-	export let set: SetFull;
-	export let showTitle = true;
-	export let size: 'small' | 'medium' | 'large' = 'medium';
+	let {
+		set,
+		showTitle = true,
+		size = 'medium'
+	}: {
+		set: SetFull;
+		showTitle?: boolean;
+		size?: 'small' | 'medium' | 'large';
+	} = $props();
 
-	$: youtubeId = getYoutubeId(set.videoLink);
+	const youtubeId = $derived(getYoutubeId(set.videoLink));
 
 	// サイズに応じたクラス設定
-	$: sizeClasses = {
+	const sizeClasses = $derived({
 		small: 'w-full max-w-[280px] h-[158px] md:max-w-[320px] md:h-[180px]',
 		medium: 'w-full max-w-[320px] h-[180px] md:max-w-[400px] md:h-[225px]',
 		large: 'w-full max-w-[400px] h-[225px] md:max-w-[560px] md:h-[315px]'
-	};
+	});
 </script>
 
 {#if youtubeId}
