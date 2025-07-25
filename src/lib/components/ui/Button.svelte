@@ -1,36 +1,62 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import BaseButton from './BaseButton.svelte';
-	export let block = false;
-	export let href = '';
-	export let target = '';
-	export let disabled = false;
-	export let bgColorClass = 'bg-blue-500';
-	export let textColorClass = 'text-white';
-	export let buttonClass = '';
-	export let className = '';
-	export let type: 'button' | 'submit' | 'reset' = 'button';
+	import type { Snippet } from 'svelte';
 
-	$: additionalClass = `${buttonClass} ${bgColorClass} ${textColorClass}${!disabled ? ' hover:opacity-80' : ''}`;
+	interface Props {
+		children: Snippet;
+		block?: boolean;
+		href?: string;
+		target?: string;
+		disabled?: boolean;
+		bgColorClass?: string;
+		textColorClass?: string;
+		buttonClass?: string;
+		className?: string;
+		type?: 'button' | 'submit' | 'reset';
+		onclick?: () => void;
+	}
 
-	$: props = {
-		block,
-		disabled,
-		className,
-		buttonClass: additionalClass,
-		type
-	};
+	let {
+		children,
+		block = false,
+		href = '',
+		target = '',
+		disabled = false,
+		bgColorClass = 'bg-blue-500',
+		textColorClass = 'text-white',
+		buttonClass = '',
+		className = '',
+		type = 'button',
+		onclick
+	}: Props = $props();
 
-	const dispatch = createEventDispatcher();
+	const finalButtonClass = $derived(
+		`py-1 px-3 rounded focus:outline-none opacity-100 ${buttonClass} ${bgColorClass} ${textColorClass} ${!disabled ? ' hover:opacity-80' : ''}`
+	);
+
 	const handleClick = () => {
-		dispatch('click');
+		onclick?.();
 	};
 </script>
 
-{#if href !== ''}
-	<a {href} {target}>
-		<BaseButton {...props} on:click={handleClick}><slot /></BaseButton>
-	</a>
-{:else}
-	<BaseButton {...props} on:click={handleClick}><slot /></BaseButton>
-{/if}
+{#snippet buttonContent()}
+	<button
+		class={finalButtonClass}
+		class:w-full={block}
+		class:opacity-70={disabled}
+		{type}
+		{disabled}
+		onclick={handleClick}
+	>
+		{@render children()}
+	</button>
+{/snippet}
+
+<div class="inline-block {className}" class:w-full={block}>
+	{#if href !== ''}
+		<a {href} {target}>
+			{@render buttonContent()}
+		</a>
+	{:else}
+		{@render buttonContent()}
+	{/if}
+</div>
