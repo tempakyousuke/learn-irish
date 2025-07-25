@@ -29,6 +29,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../app.css";
+
 	.img-wrapper {
 		@apply border bg-white mx-auto md:w-[50rem] w-11/12 py-10 rounded-lg shadow-lg mt-10;
 	}

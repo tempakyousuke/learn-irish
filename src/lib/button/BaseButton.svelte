@@ -26,6 +26,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../app.css";
+
 	.button {
 		@apply py-1 px-3 rounded focus:outline-none bg-opacity-100;
 	}

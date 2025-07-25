@@ -77,6 +77,8 @@
 </div>
 
 <style lang="postcss">
+	@reference "../../app.css";
+
 	input {
 		@apply h-full w-full border-gray-300 px-2 transition-all rounded border-2;
 	}
