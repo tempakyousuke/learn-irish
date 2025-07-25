@@ -10,9 +10,13 @@
 	import Header from '$lib/layout/Header.svelte';
 	import Drawer from '$lib/layout/Drawer.svelte';
 	import { initializeAuth } from '$core/auth/authService';
+	import { initializeAuthListener } from '$core/store/tableHeaderSettingsStore';
 
 	// 認証サービスを初期化
 	initializeAuth();
+	
+	// テーブルヘッダー設定の認証リスナーを初期化
+	initializeAuthListener();
 
 	// Analytics初期化
 	getAnalytics(app);

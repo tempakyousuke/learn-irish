@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
-	import { onMount } from 'svelte';
 	import type { TuneListView } from '$core/data/models/Tune';
 	import type { UserTuneFull } from '$core/data/models/UserTune';
-	import { userStore } from '$core/store/userStore';
-	import { tableHeaderSettingsStore, loadSettings } from '$core/store/tableHeaderSettingsStore';
-	import { getDefaultSettings } from '$core/data/repositories/tableHeaderSettingsRepository';
+	import { tableHeaderSettingsStore } from '$core/store/tableHeaderSettingsStore';
 
 	let {
 		tunes = $bindable([]),
@@ -19,22 +16,7 @@
 
 	const countExist = $derived(Object.keys(userTuneStatus).length > 0);
 
-	// Initialize settings on component mount
-	onMount(async () => {
-		const currentUser = $userStore;
-		if (currentUser.isLoggedIn && currentUser.uid) {
-			// Load user settings for authenticated users
-			await loadSettings(currentUser.uid);
-		} else {
-			// Use default settings for unauthenticated users
-			tableHeaderSettingsStore.update(state => ({
-				...state,
-				settings: getDefaultSettings()
-			}));
-		}
-	});
-
-	// Reactive settings from store
+	// Reactive settings from store (automatically managed by auth listener)
 	const settings = $derived($tableHeaderSettingsStore.settings);
 </script>
 

@@ -24,10 +24,7 @@
 		goto('/signin');
 	}
 
-	// 認証済みユーザーの設定を読み込み
-	$: if ($authLoaded && $isAuthenticated && $userId && mounted) {
-		loadSettings($userId);
-	}
+	// 設定は認証リスナーによって自動的に読み込まれるため、手動読み込みは不要
 
 	onMount(() => {
 		mounted = true;
@@ -37,10 +34,8 @@
 
 	// 個別の列設定を切り替える
 	async function toggleColumn(key: keyof typeof $tableHeaderSettingsStore.settings) {
-		if (!$userId) return;
-		
 		const currentValue = $tableHeaderSettingsStore.settings[key];
-		await updateSetting($userId, key, !currentValue);
+		await updateSetting(key, !currentValue);
 		
 		// 成功時のフィードバック
 		if (!$tableHeaderSettingsStore.error) {
@@ -50,9 +45,7 @@
 
 	// デフォルト設定にリセット
 	async function handleResetToDefaults() {
-		if (!$userId) return;
-		
-		await resetToDefaults($userId);
+		await resetToDefaults();
 		
 		if (!$tableHeaderSettingsStore.error) {
 			toast.success($t('settings_reset'));

@@ -6,6 +6,7 @@ import {
 	getDefaultSettings,
 	type TableHeaderSettings
 } from '$core/data/repositories/tableHeaderSettingsRepository';
+import { userStore } from '$core/store/userStore';
 
 /**
  * テーブルヘッダー設定ストアの状態型定義
@@ -31,13 +32,59 @@ const initialState: TableHeaderSettingsState = {
 export const tableHeaderSettingsStore: Writable<TableHeaderSettingsState> = writable(initialState);
 
 /**
- * ユーザーのテーブルヘッダー設定を読み込む
- * @param uid ユーザーID
+ * 認証状態の変更を監視し、設定を自動的に読み込み/クリアする
  */
-export async function loadSettings(uid: string): Promise<void> {
-	if (!uid) {
-		console.warn('テーブルヘッダー設定読み込み: ユーザーIDが指定されていません');
+let isAuthListenerInitialized = false;
+
+export function initializeAuthListener(): void {
+	if (isAuthListenerInitialized) {
 		return;
+	}
+
+	userStore.subscribe(async (user) => {
+		if (user.isLoggedIn && user.uid) {
+			// ユーザーがログインした場合、設定を自動読み込み
+			await loadSettings(user.uid);
+		} else {
+			// ユーザーがログアウトした場合、設定をデフォルトにリセット
+			clearSettingsOnLogout();
+		}
+	});
+
+	isAuthListenerInitialized = true;
+}
+
+/**
+ * ログアウト時に設定をクリアしてデフォルトに戻す
+ */
+function clearSettingsOnLogout(): void {
+	tableHeaderSettingsStore.set({
+		settings: getDefaultSettings(),
+		loading: false,
+		error: null
+	});
+}
+
+/**
+ * ユーザーのテーブルヘッダー設定を読み込む
+ * @param uid ユーザーID（省略時は現在のユーザーを使用）
+ */
+export async function loadSettings(uid?: string): Promise<void> {
+	// uidが指定されていない場合は現在のユーザーを取得
+	if (!uid) {
+		const currentUser = getCurrentUser();
+		if (!currentUser.isLoggedIn || !currentUser.uid) {
+			console.warn('テーブルヘッダー設定読み込み: ユーザーがログインしていません');
+			// 未認証ユーザーの場合はデフォルト設定を使用
+			tableHeaderSettingsStore.update(state => ({
+				...state,
+				settings: getDefaultSettings(),
+				loading: false,
+				error: null
+			}));
+			return;
+		}
+		uid = currentUser.uid;
 	}
 
 	// ローディング状態を開始
@@ -71,18 +118,32 @@ export async function loadSettings(uid: string): Promise<void> {
 
 /**
  * 個別の列設定を更新する
- * @param uid ユーザーID
  * @param key 更新する設定のキー
  * @param value 新しい値
+ * @param uid ユーザーID（省略時は現在のユーザーを使用）
  */
 export async function updateSetting(
-	uid: string,
 	key: keyof TableHeaderSettings,
-	value: boolean
+	value: boolean,
+	uid?: string
 ): Promise<void> {
+	// uidが指定されていない場合は現在のユーザーを取得
 	if (!uid) {
-		console.warn('テーブルヘッダー設定更新: ユーザーIDが指定されていません');
-		return;
+		const currentUser = getCurrentUser();
+		if (!currentUser.isLoggedIn || !currentUser.uid) {
+			console.warn('テーブルヘッダー設定更新: ユーザーがログインしていません');
+			// 未認証ユーザーの場合はローカルのみ更新
+			tableHeaderSettingsStore.update(state => ({
+				...state,
+				settings: {
+					...state.settings,
+					[key]: value
+				},
+				error: null
+			}));
+			return;
+		}
+		uid = currentUser.uid;
 	}
 
 	// 楽観的更新: UIを即座に更新
@@ -124,7 +185,7 @@ export async function updateSetting(
 
 /**
  * 設定をデフォルトにリセットする
- * @param uid ユーザーID（認証済みユーザーの場合、Firestoreにも保存）
+ * @param uid ユーザーID（省略時は現在のユーザーを使用、認証済みユーザーの場合Firestoreにも保存）
  */
 export async function resetToDefaults(uid?: string): Promise<void> {
 	const defaultSettings = getDefaultSettings();
@@ -135,6 +196,14 @@ export async function resetToDefaults(uid?: string): Promise<void> {
 		settings: defaultSettings,
 		error: null
 	}));
+
+	// uidが指定されていない場合は現在のユーザーを取得
+	if (!uid) {
+		const currentUser = getCurrentUser();
+		if (currentUser.isLoggedIn && currentUser.uid) {
+			uid = currentUser.uid;
+		}
+	}
 
 	// 認証済みユーザーの場合はFirestoreにも保存
 	if (uid) {
@@ -175,4 +244,19 @@ export function getCurrentSettings(): TableHeaderSettings {
 	unsubscribe();
 	
 	return currentSettings;
+}
+
+/**
+ * 現在のユーザー情報を同期的に取得する
+ * @returns 現在のユーザー状態
+ */
+function getCurrentUser() {
+	let currentUser = { uid: '', isLoggedIn: false };
+	
+	const unsubscribe = userStore.subscribe(user => {
+		currentUser = user;
+	});
+	unsubscribe();
+	
+	return currentUser;
 }
