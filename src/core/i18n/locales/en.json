@@ -221,5 +221,12 @@
 	"permission_denied_error": "Access denied. Please sign in again.",
 	"timeout_error": "Request timed out. Please try again.",
 	"unknown_error": "An unexpected error occurred. Please try again.",
-	"operation_completed": "Operation completed successfully"
+	"operation_completed": "Operation completed successfully",
+	"about_page_title": "About This Site",
+	"about_page_description": "This site was created to make it easier to search for hatao's \"Learn an Irish Tune Every Day\" videos on YouTube and to help track your practice progress for motivation.",
+	"about_creator_title": "Creator",
+	"about_creator_name": "Kyousuke Maruyama",
+	"about_features_title": "Features",
+	"about_login_features": "When you log in, you can record your practice progress as shown in the image above, including whether you've memorized tune names or melodies, and how many times you've played each tune.",
+	"about_homepage_features": "On the homepage, you can check the total number of tunes whose names you've memorized and whose melodies you've memorized, as well as see a list of tunes you practiced that day."
 }

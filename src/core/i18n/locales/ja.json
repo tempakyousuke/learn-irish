@@ -221,5 +221,12 @@
 	"permission_denied_error": "アクセスが拒否されました。再度ログインしてください。",
 	"timeout_error": "リクエストがタイムアウトしました。もう一度お試しください。",
 	"unknown_error": "予期しないエラーが発生しました。もう一度お試しください。",
-	"operation_completed": "操作が完了しました"
+	"operation_completed": "操作が完了しました",
+	"about_page_title": "当サイトについて",
+	"about_page_description": "このサイトはhataoさんがyoutubeにあげている「Learn an Irish Tune Every Day」の動画を探しやすく、また自分の練習の進捗を記録してモチベーションを上げるために作成しました。",
+	"about_creator_title": "製作者",
+	"about_creator_name": "丸山恭輔",
+	"about_features_title": "機能について",
+	"about_login_features": "ログインすると上の画像のように名前やメロディーを覚えたことや、演奏した回数など、自分の練習の記録を残せるようになります。",
+	"about_homepage_features": "トップページで名前を覚えた曲の総数やメロディーを覚えた曲の総数を確認できる他、その日に練習した曲の一覧を確認できます。"
 }

@@ -5,25 +5,24 @@
 </script>
 
 <div class="md:w-[50rem] w-11/12 mx-auto">
-	<h2 class="text-3xl font-bold">当サイトについて</h2>
+	<h2 class="text-3xl font-bold">{$t('about_page_title')}</h2>
 	<div class="mt-5 text-xl">
-		このサイトはhataoさんがyoutubeにあげている「Learn an Irish Tune Every
-		Day」の動画を探しやすく、また自分の練習の進捗を記録してモチベーションを上げるために作成しました。
+		{$t('about_page_description')}
 	</div>
-	<h2 class="mt-10 text-3xl font-bold">製作者</h2>
-	<div class="mt-5 text-xl">丸山恭輔</div>
+	<h2 class="mt-10 text-3xl font-bold">{$t('about_creator_title')}</h2>
+	<div class="mt-5 text-xl">{$t('about_creator_name')}</div>
 
-	<h2 class="mt-10 text-3xl font-bold">機能について</h2>
+	<h2 class="mt-10 text-3xl font-bold">{$t('about_features_title')}</h2>
 	<div class="mt-5 img-wrapper">
 		<img class="img" src={TunePage} alt={$t('video_page_image_alt')} />
 		<p class="img-text">
-			ログインすると上の画像のように名前やメロディーを覚えたことや、演奏した回数など、自分の練習の記録を残せるようになります。
+			{$t('about_login_features')}
 		</p>
 	</div>
 	<div class="img-wrapper">
 		<img class="img" src={PracticeRecord} alt={$t('practice_record_image_alt')} />
 		<p class="img-text">
-			トップページで名前を覚えた曲の総数やメロディーを覚えた曲の総数を確認できる他、その日に練習した曲の一覧を確認できます。
+			{$t('about_homepage_features')}
 		</p>
 	</div>
 </div>
