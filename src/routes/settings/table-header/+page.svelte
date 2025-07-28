@@ -5,18 +5,21 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { siteTitle } from '$core/config/configService';
-	import { isAuthenticated, authLoaded, userId } from '$core/auth/authService';
+	import { isAuthenticated, authLoaded } from '$core/auth/authService';
 	import {
 		tableHeaderSettingsStore,
-		loadSettings,
 		updateSetting,
-		resetToDefaults,
 		clearError,
 		retryFailedOperation
 	} from '$core/store/tableHeaderSettingsStore';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Fa from 'svelte-fa';
-	import { faArrowLeft, faTable, faRedo, faExclamationTriangle, faWifi } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faArrowLeft,
+		faTable,
+		faExclamationTriangle,
+		faWifi
+	} from '@fortawesome/free-solid-svg-icons';
 
 	let mounted = false;
 
@@ -38,13 +41,13 @@
 	// 個別の列設定を切り替える
 	async function toggleColumn(key: keyof typeof $tableHeaderSettingsStore.settings) {
 		if (isToggling) return;
-		
+
 		isToggling = true;
 		const currentValue = $tableHeaderSettingsStore.settings[key];
-		
+
 		try {
 			await updateSetting(key, !currentValue);
-			
+
 			// 成功時のフィードバック（エラーがない場合のみ）
 			if (!$tableHeaderSettingsStore.error) {
 				if ($tableHeaderSettingsStore.isOnline) {
@@ -60,28 +63,11 @@
 		}
 	}
 
-	// デフォルト設定にリセット
-	async function handleResetToDefaults() {
-		try {
-			await resetToDefaults();
-			
-			if (!$tableHeaderSettingsStore.error) {
-				if ($tableHeaderSettingsStore.isOnline) {
-					toast.success($t('settings_reset'));
-				} else if ($tableHeaderSettingsStore.pendingChanges) {
-					toast.info($t('offline_mode'));
-				}
-			}
-		} catch (error) {
-			console.error('デフォルト設定リセットエラー:', error);
-		}
-	}
-
 	// 失敗した操作を再試行
 	async function handleRetry() {
 		try {
 			await retryFailedOperation();
-			
+
 			if (!$tableHeaderSettingsStore.error) {
 				toast.success($t('operation_completed'));
 			}
@@ -94,7 +80,7 @@
 	$: if ($tableHeaderSettingsStore.error) {
 		// エラーの種類に応じて適切なメッセージを表示
 		const error = $tableHeaderSettingsStore.error;
-		
+
 		if (error.includes('ネットワーク') || error.includes('接続')) {
 			toast.error($t('network_error'));
 		} else if (error.includes('破損') || error.includes('無効')) {
@@ -108,7 +94,7 @@
 		} else {
 			toast.error(error);
 		}
-		
+
 		// エラー状態をクリア（一定時間後）
 		setTimeout(() => {
 			clearError();
@@ -116,7 +102,11 @@
 	}
 
 	// オンライン状態の変化を監視
-	$: if (mounted && $tableHeaderSettingsStore.isOnline && $tableHeaderSettingsStore.pendingChanges) {
+	$: if (
+		mounted &&
+		$tableHeaderSettingsStore.isOnline &&
+		$tableHeaderSettingsStore.pendingChanges
+	) {
 		toast.info($t('connection_restored'));
 	}
 
@@ -126,10 +116,10 @@
 
 	// 列設定の定義
 	const columnSettings = [
-		{ key: 'rhythm', labelKey: 'column_rhythm' },
-		{ key: 'key', labelKey: 'column_key' },
-		{ key: 'mode', labelKey: 'column_mode' },
-		{ key: 'playCount', labelKey: 'column_play_count' },
+		{ key: 'rhythm', labelKey: 'tune_type' },
+		{ key: 'key', labelKey: 'key' },
+		{ key: 'mode', labelKey: 'mode' },
+		{ key: 'playCount', labelKey: 'total_plays' },
 		{ key: 'todaysPlays', labelKey: 'column_todays_plays' },
 		{ key: 'lastPlayedDate', labelKey: 'column_last_played' }
 	] as const;
@@ -160,7 +150,7 @@
 					<Fa icon={faArrowLeft} class="mr-2" />
 					{$t('back_to_settings')}
 				</Button>
-				
+
 				<nav class="text-sm text-gray-600 mb-2">
 					<a href="/settings" class="hover:text-blue-600">{$t('settings')}</a>
 					<span class="mx-2">›</span>
@@ -235,7 +225,9 @@
 				{#if $tableHeaderSettingsStore.loading}
 					<div class="flex items-center justify-center py-8">
 						<div class="text-center">
-							<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+							<div
+								class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"
+							></div>
 							<p class="text-gray-600">{$t('loading')}</p>
 						</div>
 					</div>
@@ -245,8 +237,18 @@
 						<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
 							<div class="flex items-center space-x-3">
 								<div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-									<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+									<svg
+										class="w-4 h-4 text-white"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M5 13l4 4L19 7"
+										></path>
 									</svg>
 								</div>
 								<div>
@@ -261,12 +263,28 @@
 
 						<!-- Customizable columns -->
 						{#each columnSettings as column}
-							<div class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+							<div
+								class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+							>
 								<div class="flex items-center space-x-3">
-									<div class="w-6 h-6 {$tableHeaderSettingsStore.settings[column.key] ? 'bg-blue-500' : 'bg-gray-300'} rounded-full flex items-center justify-center transition-colors">
+									<div
+										class="w-6 h-6 {$tableHeaderSettingsStore.settings[column.key]
+											? 'bg-blue-500'
+											: 'bg-gray-300'} rounded-full flex items-center justify-center transition-colors"
+									>
 										{#if $tableHeaderSettingsStore.settings[column.key]}
-											<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+											<svg
+												class="w-4 h-4 text-white"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M5 13l4 4L19 7"
+												></path>
 											</svg>
 										{/if}
 									</div>
@@ -274,37 +292,27 @@
 										<p class="font-medium">{$t(column.labelKey)}</p>
 									</div>
 								</div>
-								
+
 								<button
-									class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 {$tableHeaderSettingsStore.settings[column.key] ? 'bg-blue-600' : 'bg-gray-200'} {isToggling || $tableHeaderSettingsStore.loading ? 'opacity-50 cursor-not-allowed' : ''}"
+									class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 {$tableHeaderSettingsStore
+										.settings[column.key]
+										? 'bg-blue-600'
+										: 'bg-gray-200'} {isToggling || $tableHeaderSettingsStore.loading
+										? 'opacity-50 cursor-not-allowed'
+										: ''}"
 									onclick={() => toggleColumn(column.key)}
 									disabled={isToggling || $tableHeaderSettingsStore.loading}
 									aria-label="Toggle {$t(column.labelKey)} column visibility"
 								>
-									<span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {$tableHeaderSettingsStore.settings[column.key] ? 'translate-x-6' : 'translate-x-1'}"></span>
+									<span
+										class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {$tableHeaderSettingsStore
+											.settings[column.key]
+											? 'translate-x-6'
+											: 'translate-x-1'}"
+									></span>
 								</button>
 							</div>
 						{/each}
-					</div>
-
-					<!-- Reset to defaults button -->
-					<div class="mt-8 pt-6 border-t">
-						<Button
-							onclick={handleResetToDefaults}
-							disabled={$tableHeaderSettingsStore.loading || isToggling}
-							bgColorClass="bg-gray-100"
-							textColorClass="text-gray-700"
-							className="w-full"
-						>
-							<Fa icon={faRedo} class="mr-2" />
-							{$t('reset_to_defaults')}
-						</Button>
-						
-						{#if $tableHeaderSettingsStore.lastSyncTime}
-							<p class="text-xs text-gray-500 text-center mt-2">
-								最終同期: {new Date($tableHeaderSettingsStore.lastSyncTime).toLocaleString('ja-JP')}
-							</p>
-						{/if}
 					</div>
 				{/if}
 			</div>
