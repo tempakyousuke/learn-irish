@@ -6,6 +6,8 @@
 	import InquiryForm from '$lib/forms/InquiryForm.svelte';
 	import { siteTitle } from '$core/config/configService';
 	import { page } from '$app/state';
+	import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+	import { getAuthenticationErrorMessage } from '$core/utils/inquiryErrorHandling';
 
 	// ページメタデータ
 	const title = `問い合わせ - ${siteTitle}`;
@@ -14,6 +16,10 @@
 
 	// フォーム送信成功時の状態管理
 	let showSuccessMessage = $state(false);
+	
+	// エラー状態管理
+	let authError = $state<string | null>(null);
+	let pageError = $state<string | null>(null);
 
 	/**
 	 * 認証状態をチェックし、未ログインの場合はサインインページにリダイレクト
@@ -26,7 +32,14 @@
 
 		// ログインしていない場合はサインインページにリダイレクト
 		if (!$isAuthenticated) {
-			goto('/signin');
+			authError = getAuthenticationErrorMessage('contact') + ' ログインページに移動します。';
+			// 少し遅延してからリダイレクト（エラーメッセージを表示するため）
+			setTimeout(() => {
+				goto('/signin');
+			}, 2000);
+		} else {
+			// ログイン済みの場合はエラーをクリア
+			authError = null;
 		}
 	}
 
@@ -35,10 +48,19 @@
 	 */
 	function handleSubmitSuccess() {
 		showSuccessMessage = true;
+		pageError = null; // 成功時はページエラーをクリア
 		// 3秒後に成功メッセージを自動で非表示にする
 		setTimeout(() => {
 			showSuccessMessage = false;
 		}, 3000);
+	}
+
+	/**
+	 * フォーム送信エラー時のハンドラ
+	 */
+	function handleSubmitError(error: string) {
+		pageError = error;
+		showSuccessMessage = false;
 	}
 
 	/**
@@ -55,7 +77,12 @@
 
 	// コンポーネントマウント時の処理
 	onMount(() => {
-		checkAuthAndRedirect();
+		try {
+			checkAuthAndRedirect();
+		} catch (error) {
+			console.error('認証チェックエラー:', error);
+			pageError = '認証状態の確認に失敗しました。ページを再読み込みしてください。';
+		}
 	});
 </script>
 
@@ -85,6 +112,12 @@
 				システムに関するご意見、ご要望、不具合報告をお送りください。
 			</p>
 		</div>
+
+		<!-- 認証エラーメッセージ -->
+		<ErrorMessage bind:message={authError} dismissable={true} type="warning" />
+		
+		<!-- ページエラーメッセージ -->
+		<ErrorMessage bind:message={pageError} dismissable={true} type="error" />
 
 		<!-- 送信完了メッセージ -->
 		{#if showSuccessMessage}
@@ -139,7 +172,10 @@
 
 		<!-- 問い合わせフォーム -->
 		<div class="bg-white shadow-sm rounded-lg p-6">
-			<InquiryForm onSubmitSuccess={handleSubmitSuccess} />
+			<InquiryForm 
+				onSubmitSuccess={handleSubmitSuccess} 
+				onSubmitError={handleSubmitError}
+			/>
 		</div>
 	</div>
 {:else}

@@ -2,6 +2,8 @@
 	import type { InquiryFull, InquiryStatus } from '$core/data/models/Inquiry';
 	import InquiryItem from './InquiryItem.svelte';
 	import { InquiryRepository } from '$core/data/repositories/inquiryRepository';
+	import { getInquiryFetchErrorMessage, isNetworkError } from '$core/utils/inquiryErrorHandling';
+	import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -13,6 +15,8 @@
 
 	let isLoading = $state(false);
 	let error = $state<string | null>(null);
+	let retryCount = $state(0);
+	const MAX_RETRY_COUNT = 3;
 
 	const statusLabels: Record<InquiryStatus, string> = {
 		unconfirmed: '未確認',
@@ -30,28 +34,64 @@
 		return inquiries.filter(inquiry => inquiry.status === selectedStatus);
 	});
 
-	async function loadInquiries() {
+	async function loadInquiries(isRetry = false) {
 		if (isLoading) return;
+
+		if (!isRetry) {
+			retryCount = 0;
+		}
 
 		isLoading = true;
 		error = null;
 
 		try {
 			inquiries = await InquiryRepository.getAll();
+			retryCount = 0; // 成功時はリトライカウントをリセット
 		} catch (err) {
-			error = err instanceof Error ? err.message : '問い合わせの取得に失敗しました';
+			console.error('問い合わせ取得エラー:', err);
+			error = getInquiryFetchErrorMessage(err);
+			
+			// 自動リトライ機能（ネットワークエラーの場合のみ）
+			if (retryCount < MAX_RETRY_COUNT && isNetworkError(err)) {
+				retryCount++;
+				setTimeout(() => {
+					loadInquiries(true);
+				}, 2000 * retryCount); // 指数バックオフ
+			}
 		} finally {
 			isLoading = false;
 		}
 	}
 
+
+
+	/**
+	 * 手動リトライ
+	 */
+	function retryLoad() {
+		retryCount = 0;
+		loadInquiries();
+	}
+
 	function handleStatusUpdate(id: string, newStatus: InquiryStatus) {
-		// Update the inquiry in the local array
-		const index = inquiries.findIndex(inquiry => inquiry.id === id);
-		if (index !== -1) {
-			inquiries[index].status = newStatus;
-			inquiries = [...inquiries]; // Trigger reactivity
+		try {
+			// Update the inquiry in the local array
+			const index = inquiries.findIndex(inquiry => inquiry.id === id);
+			if (index !== -1) {
+				inquiries[index].status = newStatus;
+				inquiries = [...inquiries]; // Trigger reactivity
+			}
+		} catch (err) {
+			console.error('ステータス更新の反映エラー:', err);
+			// UI上のエラーは InquiryItem で処理されるため、ここでは何もしない
 		}
+	}
+
+	/**
+	 * ステータス更新エラー時のハンドラ
+	 */
+	function handleStatusUpdateError(errorMessage: string) {
+		error = errorMessage;
 	}
 
 	function getStatusCount(status: InquiryStatus): number {
@@ -70,13 +110,24 @@
 	<div class="bg-white rounded-lg shadow-md p-6">
 		<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
 			<h2 class="text-2xl font-bold text-gray-800">問い合わせ管理</h2>
-			<button
-				class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
-				disabled={isLoading}
-				onclick={loadInquiries}
-			>
-				{isLoading ? '読み込み中...' : '更新'}
-			</button>
+			<div class="flex gap-2">
+				<button
+					class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
+					disabled={isLoading}
+					onclick={() => loadInquiries()}
+				>
+					{isLoading ? '読み込み中...' : '更新'}
+				</button>
+				{#if error && retryCount < MAX_RETRY_COUNT}
+					<button
+						class="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+						disabled={isLoading}
+						onclick={retryLoad}
+					>
+						再試行
+					</button>
+				{/if}
+			</div>
 		</div>
 
 		<!-- Status filter -->
@@ -111,13 +162,15 @@
 	</div>
 
 	<!-- Error message -->
-	{#if error}
-		<div class="bg-red-100 border border-red-300 rounded-lg p-4 text-red-700">
+	<ErrorMessage bind:message={error} dismissable={true} type="error" />
+	
+	{#if error && retryCount > 0 && retryCount < MAX_RETRY_COUNT}
+		<div class="bg-blue-100 border border-blue-300 rounded-lg p-4 text-blue-700 mb-4">
 			<div class="flex items-center gap-2">
-				<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-					<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+				<svg class="w-5 h-5 animate-spin" fill="currentColor" viewBox="0 0 20 20">
+					<path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
 				</svg>
-				{error}
+				自動再試行中... ({retryCount}/{MAX_RETRY_COUNT})
 			</div>
 		</div>
 	{/if}
@@ -144,7 +197,11 @@
 		{:else}
 			<div class="space-y-4">
 				{#each filteredInquiries as inquiry (inquiry.id)}
-					<InquiryItem {inquiry} onStatusUpdate={handleStatusUpdate} />
+					<InquiryItem 
+						{inquiry} 
+						onStatusUpdate={handleStatusUpdate}
+						onStatusUpdateError={handleStatusUpdateError}
+					/>
 				{/each}
 			</div>
 		{/if}

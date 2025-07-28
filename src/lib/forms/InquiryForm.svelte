@@ -2,16 +2,20 @@
 	import { InquiryRepository } from '$core/data/repositories/inquiryRepository';
 	import { createInquiry, type InquiryType } from '$core/data/models/Inquiry';
 	import { userStore } from '$core/store/userStore';
-	import Input from './Input.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
+	import {
+		getInquiryCreationErrorMessage,
+		getAuthenticationErrorMessage
+	} from '$core/utils/inquiryErrorHandling';
 
 	interface Props {
 		onSubmitSuccess?: () => void;
+		onSubmitError?: (error: string) => void;
 		onCancel?: () => void;
 	}
 
-	let { onSubmitSuccess, onCancel }: Props = $props();
+	let { onSubmitSuccess, onSubmitError, onCancel }: Props = $props();
 
 	// フォームデータ
 	let formData = $state({
@@ -63,6 +67,7 @@
 	 */
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
+
 		// バリデーション
 		if (!validateForm()) {
 			return;
@@ -70,7 +75,9 @@
 
 		// ユーザー認証チェック
 		if (!$userStore.isLoggedIn || !$userStore.uid) {
-			submitError = 'ログインが必要です';
+			const authError = getAuthenticationErrorMessage('contact');
+			submitError = authError;
+			onSubmitError?.(authError);
 			return;
 		}
 
@@ -103,7 +110,13 @@
 			onSubmitSuccess?.();
 		} catch (error) {
 			console.error('問い合わせ送信エラー:', error);
-			submitError = error instanceof Error ? error.message : '問い合わせの送信に失敗しました';
+
+			// 問い合わせ固有のエラーメッセージを生成
+			const friendlyError = getInquiryCreationErrorMessage(error);
+			submitError = friendlyError;
+
+			// 親コンポーネントにもエラーを通知
+			onSubmitError?.(friendlyError);
 		} finally {
 			isSubmitting = false;
 		}

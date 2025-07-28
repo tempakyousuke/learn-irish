@@ -12,6 +12,11 @@ import {
 import type { InquiryFull, InquiryCreate, InquiryStatus } from '../models/Inquiry';
 import { parseInquiryData, inquiryToFirestoreData } from '../models/Inquiry';
 import { db } from '../firebase/firebaseClient';
+import { 
+	getInquiryCreationErrorMessage, 
+	getInquiryFetchErrorMessage, 
+	getInquiryStatusUpdateErrorMessage 
+} from '../../utils/inquiryErrorHandling';
 
 /**
  * 問い合わせデータのリポジトリクラス
@@ -39,26 +44,8 @@ export class InquiryRepository {
 			
 			return docRef.id;
 		} catch (error) {
-			// エラーをより具体的に変換
-			let errorMessage = '問い合わせの作成に失敗しました';
-
-			if (error instanceof FirestoreError) {
-				switch (error.code) {
-					case 'permission-denied':
-						errorMessage = '問い合わせの作成権限がありません';
-						break;
-					case 'unavailable':
-						errorMessage = 'サーバーに接続できません。ネットワーク接続を確認してください';
-						break;
-					case 'invalid-argument':
-						errorMessage = '問い合わせデータが無効です';
-						break;
-					default:
-						errorMessage = `問い合わせ作成エラー: ${error.message}`;
-				}
-			}
-
 			console.error('問い合わせ作成エラー:', error);
+			const errorMessage = getInquiryCreationErrorMessage(error);
 			throw new Error(errorMessage);
 		}
 	}
@@ -88,26 +75,8 @@ export class InquiryRepository {
 
 			return inquiries;
 		} catch (error) {
-			// エラーをより具体的に変換
-			let errorMessage = '問い合わせデータの取得に失敗しました';
-
-			if (error instanceof FirestoreError) {
-				switch (error.code) {
-					case 'permission-denied':
-						errorMessage = '問い合わせデータへのアクセス権限がありません';
-						break;
-					case 'unavailable':
-						errorMessage = 'サーバーに接続できません。ネットワーク接続を確認してください';
-						break;
-					case 'not-found':
-						errorMessage = '問い合わせデータが見つかりませんでした';
-						break;
-					default:
-						errorMessage = `データ取得エラー: ${error.message}`;
-				}
-			}
-
 			console.error('問い合わせデータ取得エラー:', error);
+			const errorMessage = getInquiryFetchErrorMessage(error);
 			throw new Error(errorMessage);
 		}
 	}
@@ -128,29 +97,8 @@ export class InquiryRepository {
 				status: status
 			});
 		} catch (error) {
-			// エラーをより具体的に変換
-			let errorMessage = '問い合わせステータスの更新に失敗しました';
-
-			if (error instanceof FirestoreError) {
-				switch (error.code) {
-					case 'permission-denied':
-						errorMessage = '問い合わせステータスの更新権限がありません';
-						break;
-					case 'not-found':
-						errorMessage = '指定された問い合わせが見つかりませんでした';
-						break;
-					case 'unavailable':
-						errorMessage = 'サーバーに接続できません。ネットワーク接続を確認してください';
-						break;
-					case 'invalid-argument':
-						errorMessage = '無効なステータス値です';
-						break;
-					default:
-						errorMessage = `ステータス更新エラー: ${error.message}`;
-				}
-			}
-
 			console.error(`問い合わせステータス更新エラー (ID: ${id}):`, error);
+			const errorMessage = getInquiryStatusUpdateErrorMessage(error);
 			throw new Error(errorMessage);
 		}
 	}

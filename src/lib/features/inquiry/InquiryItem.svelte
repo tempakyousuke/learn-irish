@@ -1,14 +1,17 @@
 <script lang="ts">
 	import type { InquiryFull, InquiryStatus } from '$core/data/models/Inquiry';
 	import Button from '$lib/components/ui/Button.svelte';
+	import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
 	import { InquiryRepository } from '$core/data/repositories/inquiryRepository';
+	import { getInquiryStatusUpdateErrorMessage } from '$core/utils/inquiryErrorHandling';
 
 	interface Props {
 		inquiry: InquiryFull;
 		onStatusUpdate?: (id: string, status: InquiryStatus) => void;
+		onStatusUpdateError?: (error: string) => void;
 	}
 
-	let { inquiry, onStatusUpdate }: Props = $props();
+	let { inquiry, onStatusUpdate, onStatusUpdateError }: Props = $props();
 
 	let isUpdating = $state(false);
 	let error = $state<string | null>(null);
@@ -36,15 +39,30 @@
 	async function updateStatus(newStatus: InquiryStatus) {
 		if (isUpdating || newStatus === inquiry.status) return;
 
+		const previousStatus = inquiry.status;
 		isUpdating = true;
 		error = null;
 
 		try {
-			await InquiryRepository.updateStatus(inquiry.id, newStatus);
+			// 楽観的UI更新
 			inquiry.status = newStatus;
 			onStatusUpdate?.(inquiry.id, newStatus);
+			
+			// サーバーに更新を送信
+			await InquiryRepository.updateStatus(inquiry.id, newStatus);
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'ステータス更新に失敗しました';
+			console.error('ステータス更新エラー:', err);
+			
+			// エラー時は元のステータスに戻す
+			inquiry.status = previousStatus;
+			onStatusUpdate?.(inquiry.id, previousStatus);
+			
+			// 問い合わせ固有のエラーメッセージを生成
+			const friendlyError = getInquiryStatusUpdateErrorMessage(err);
+			error = friendlyError;
+			
+			// 親コンポーネントにもエラーを通知
+			onStatusUpdateError?.(friendlyError);
 		} finally {
 			isUpdating = false;
 		}
@@ -108,8 +126,8 @@
 
 	<!-- Error message -->
 	{#if error}
-		<div class="mt-3 p-3 bg-red-100 border border-red-300 rounded text-red-700 text-sm">
-			{error}
+		<div class="mt-3">
+			<ErrorMessage bind:message={error} dismissable={true} type="error" />
 		</div>
 	{/if}
 
