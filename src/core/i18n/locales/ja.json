@@ -98,7 +98,7 @@
 	"minimum_one_auth_method": "最低1つの認証方法を残す必要があります",
 	"google": "Google",
 	"email_password": "メール/パスワード",
-	"settings": "設定",
+	"settings": "Settings",
 	"manage_authentication_methods": "認証方法の管理",
 	"sign_in_with_google": "Googleでサインイン",
 	"sign_up_with_google": "Googleでサインアップ",
