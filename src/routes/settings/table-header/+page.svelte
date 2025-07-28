@@ -151,11 +151,11 @@
 					{$t('back_to_settings')}
 				</Button>
 
-				<nav class="text-sm text-gray-600 mb-2">
+				<!-- <nav class="text-sm text-gray-600 mb-2">
 					<a href="/settings" class="hover:text-blue-600">{$t('settings')}</a>
 					<span class="mx-2">›</span>
 					<span>{$t('table_header_settings')}</span>
-				</nav>
+				</nav> -->
 			</div>
 
 			<div class="flex items-center mb-8">
