@@ -27,6 +27,8 @@
 				label = '曲管理';
 			} else if (segment === 'sets') {
 				label = 'セット管理';
+			} else if (segment === 'inquiries') {
+				label = '問い合わせ管理';
 			} else if (segment === 'add') {
 				label = '追加';
 			} else if (segment === 'edit') {
