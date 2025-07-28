@@ -75,6 +75,7 @@ npm test             # Run Vitest tests
    - Uses svelte-i18n with languages in `/src/lib/i18n/`
    - Supports English and Japanese
    - Access translations via `$_()` in components
+   - **管理者用ページにはi18n対応は不要** - 日本語のみで構わない
 
 4. **Component Imports**: Uses path aliases
    - `$lib` → `/src/lib` (components only)
