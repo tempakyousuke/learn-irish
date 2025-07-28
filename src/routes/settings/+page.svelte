@@ -5,7 +5,7 @@
 	import { isAuthenticated, authLoaded } from '$core/auth/authService';
 	import { goto } from '$app/navigation';
 	import Fa from 'svelte-fa';
-	import { faUser } from '@fortawesome/free-solid-svg-icons';
+	import { faUser, faTable } from '@fortawesome/free-solid-svg-icons';
 
 	// 認証状態の監視とリダイレクト
 	$: if ($authLoaded && !$isAuthenticated) {
@@ -47,6 +47,30 @@
 								<div>
 									<h2 class="text-xl font-semibold">{$t('account_settings')}</h2>
 									<p class="text-gray-600">{$t('manage_authentication_methods')}</p>
+								</div>
+							</div>
+							<div class="text-gray-400">
+								<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+								</svg>
+							</div>
+						</div>
+					</a>
+				</div>
+
+				<div class="bg-white rounded-lg shadow-md">
+					<a
+						href="/settings/table-header"
+						class="block p-6 hover:bg-gray-50 transition-colors duration-200"
+					>
+						<div class="flex items-center justify-between">
+							<div class="flex items-center space-x-4">
+								<div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+									<Fa icon={faTable} class="text-white text-lg" />
+								</div>
+								<div>
+									<h2 class="text-xl font-semibold">{$t('table_header_settings')}</h2>
+									<p class="text-gray-600">{$t('table_header_settings_description')}</p>
 								</div>
 							</div>
 							<div class="text-gray-400">

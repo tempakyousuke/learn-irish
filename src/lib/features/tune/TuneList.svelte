@@ -2,6 +2,7 @@
 	import { t } from 'svelte-i18n';
 	import type { TuneListView } from '$core/data/models/Tune';
 	import type { UserTuneFull } from '$core/data/models/UserTune';
+	import { tableHeaderSettingsStore } from '$core/store/tableHeaderSettingsStore';
 
 	let {
 		tunes = $bindable([]),
@@ -14,6 +15,9 @@
 	} = $props();
 
 	const countExist = $derived(Object.keys(userTuneStatus).length > 0);
+
+	// Reactive settings from store (automatically managed by auth listener)
+	const settings = $derived($tableHeaderSettingsStore.settings);
 </script>
 
 {#snippet desktopTuneRow(tune: TuneListView)}
@@ -73,20 +77,45 @@
 				{tune.name}
 			</a>
 		</td>
-		<td class="py-3 px-3 text-center">
-			<a class="block" href="/tune/{tune.id}">
-				{tune.rhythm}
-			</a>
-		</td>
-		{#if countExist}
+		{#if settings.rhythm}
+			<td class="py-3 px-3 text-center">
+				<a class="block" href="/tune/{tune.id}">
+					{tune.rhythm}
+				</a>
+			</td>
+		{/if}
+		{#if settings.key}
+			<td class="py-3 px-3 text-center">
+				<a class="block" href="/tune/{tune.id}">
+					{tune.key}
+				</a>
+			</td>
+		{/if}
+		{#if settings.mode}
+			<td class="py-3 px-3 text-center">
+				<a class="block" href="/tune/{tune.id}">
+					{tune.mode}
+				</a>
+			</td>
+		{/if}
+		{#if countExist && settings.playCount}
 			<td class="py-3 px-3 text-center">
 				<a class="block" href="/tune/{tune.id}">
 					{userTuneStatus[tune.id]?.playCount || ''}
 				</a>
 			</td>
+		{/if}
+		{#if countExist && settings.todaysPlays}
 			<td class="py-3 px-3 text-center">
 				<a class="block" href="/tune/{tune.id}">
 					{dailyData[tune.id] || ''}
+				</a>
+			</td>
+		{/if}
+		{#if countExist && settings.lastPlayedDate}
+			<td class="py-3 px-3 text-center">
+				<a class="block" href="/tune/{tune.id}">
+					{userTuneStatus[tune.id]?.lastPlayedDate || ''}
 				</a>
 			</td>
 		{/if}
@@ -108,10 +137,23 @@
 		</tr>
 		<tr class="border bg-teal-800 text-white table-row md:hidden">
 			<th class="py-3 px-3 w-96">{$t('tune_name')}</th>
-			<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
-			{#if countExist}
+			{#if settings.rhythm}
+				<th class="py-3 px-3 w-52">{$t('tune_type')}</th>
+			{/if}
+			{#if settings.key}
+				<th class="py-3 px-3 w-52">Key</th>
+			{/if}
+			{#if settings.mode}
+				<th class="py-3 px-3 w-52">Mode</th>
+			{/if}
+			{#if countExist && settings.playCount}
 				<th class="py-3 px-3 w-52">{$t('total_plays')}</th>
+			{/if}
+			{#if countExist && settings.todaysPlays}
 				<th class="py-3 px-3 w-52">{$t('todays_plays')}</th>
+			{/if}
+			{#if countExist && settings.lastPlayedDate}
+				<th class="py-3 px-3 w-52">{$t('last_played')}</th>
 			{/if}
 		</tr>
 	</thead>

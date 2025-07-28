@@ -17,6 +17,8 @@
 	import Input from '$lib/forms/Input.svelte';
 	import * as yup from 'yup';
 	import { ValidationError } from 'yup';
+	import Fa from 'svelte-fa';
+	import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 	let linkedProviders: any[] = [];
 	let loading = false;
@@ -185,6 +187,16 @@
 {#if $authLoaded && $isAuthenticated}
 	<div class="container mx-auto px-4 py-8">
 		<div class="max-w-2xl mx-auto">
+			<Button
+				href="/settings"
+				bgColorClass="bg-gray-100"
+				textColorClass="text-gray-700"
+				className="mb-4"
+			>
+				<Fa icon={faArrowLeft} class="mr-2" />
+				{$t('back_to_settings')}
+			</Button>
+
 			<h1 class="text-3xl font-bold mb-8">{$t('account_settings')}</h1>
 
 			<div class="bg-white rounded-lg shadow-md p-6">
