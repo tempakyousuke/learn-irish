@@ -14,30 +14,40 @@
 	const ADMIN_UID = 'dci2JB1vI3VYruel4U6L6q7N0As1';
 
 	let user = $state<LoginUser | null>(null);
+	let authLoadedState = $state(false);
 	let isAdmin = $derived(user?.uid === ADMIN_UID);
 	let authError = $state<string | null>(null);
 
 	$effect(() => {
-		const unsubscribe = userStore.subscribe((value) => {
+		const unsubscribeUser = userStore.subscribe((value) => {
 			user = value;
-			
-			// 認証状態が読み込まれた後にエラーメッセージを設定
-			if ($authLoaded) {
-				if (!user?.isLoggedIn) {
-					authError = getAuthenticationErrorMessage('admin');
-				} else if (!isAdmin) {
-					authError = '管理者権限が必要です。このページにアクセスする権限がありません。';
-				} else {
-					authError = null;
-				}
-			}
 		});
 
-		return unsubscribe;
+		const unsubscribeAuthLoaded = authLoaded.subscribe((loaded) => {
+			authLoadedState = loaded;
+		});
+
+		return () => {
+			unsubscribeUser();
+			unsubscribeAuthLoaded();
+		};
+	});
+
+	$effect(() => {
+		// 認証状態が読み込まれた後にエラーメッセージを設定
+		if (authLoadedState) {
+			if (!user?.isLoggedIn) {
+				authError = getAuthenticationErrorMessage('admin');
+			} else if (!isAdmin) {
+				authError = '管理者権限が必要です。このページにアクセスする権限がありません。';
+			} else {
+				authError = null;
+			}
+		}
 	});
 </script>
 
-{#if !$authLoaded}
+{#if !authLoadedState}
 	<!-- 認証状態の読み込み中 -->
 	<div class="flex justify-center items-center min-h-[400px]">
 		<div class="text-gray-600">認証状態を確認中...</div>

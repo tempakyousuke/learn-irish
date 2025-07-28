@@ -27,12 +27,11 @@
 
 	let selectedStatus = $state<InquiryStatus | 'all'>('all');
 
-	const filteredInquiries = $derived(() => {
-		if (selectedStatus === 'all') {
-			return inquiries;
-		}
-		return inquiries.filter(inquiry => inquiry.status === selectedStatus);
-	});
+	const filteredInquiries = $derived(
+		selectedStatus === 'all' 
+			? inquiries 
+			: inquiries.filter(inquiry => inquiry.status === selectedStatus)
+	);
 
 	async function loadInquiries(isRetry = false) {
 		if (isLoading) return;
