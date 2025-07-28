@@ -11,3 +11,6 @@ export * from './tuneSetRepository';
 
 // 設定関連のリポジトリ
 export * from './tableHeaderSettingsRepository';
+
+// 問い合わせ関連のリポジトリ
+export * from './inquiryRepository';
