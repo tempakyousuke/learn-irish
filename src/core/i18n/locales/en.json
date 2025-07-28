@@ -228,5 +228,16 @@
 	"about_creator_name": "Kyousuke Maruyama",
 	"about_features_title": "Features",
 	"about_login_features": "When you log in, you can record your practice progress as shown in the image above, including whether you've memorized tune names or melodies, and how many times you've played each tune.",
-	"about_homepage_features": "On the homepage, you can check the total number of tunes whose names you've memorized and whose melodies you've memorized, as well as see a list of tunes you practiced that day."
+	"about_homepage_features": "On the homepage, you can check the total number of tunes whose names you've memorized and whose melodies you've memorized, as well as see a list of tunes you practiced that day.",
+	"privacy_policy_title": "Privacy Policy",
+	"privacy_data_collection_title": "Data Collection",
+	"privacy_data_collection_content": "We collect your email address for account registration and authentication, and practice data to track your learning progress.",
+	"privacy_data_usage_title": "Data Usage",
+	"privacy_data_usage_content": "Your data is used solely to provide personalized tune learning experience and track your practice progress. We do not use your data for advertising purposes.",
+	"privacy_data_sharing_title": "Data Sharing",
+	"privacy_data_sharing_content": "We do not share your personal information with third parties. Your practice data remains private and is only visible to you.",
+	"privacy_data_security_title": "Data Security",
+	"privacy_data_security_content": "Your data is securely stored using Firebase authentication and Firestore database with appropriate security measures.",
+	"privacy_contact_title": "Contact",
+	"privacy_contact_content": "If you have any questions about this privacy policy, please contact us through the site creator's contact information."
 }

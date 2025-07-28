@@ -228,5 +228,16 @@
 	"about_creator_name": "丸山恭輔",
 	"about_features_title": "機能について",
 	"about_login_features": "ログインすると上の画像のように名前やメロディーを覚えたことや、演奏した回数など、自分の練習の記録を残せるようになります。",
-	"about_homepage_features": "トップページで名前を覚えた曲の総数やメロディーを覚えた曲の総数を確認できる他、その日に練習した曲の一覧を確認できます。"
+	"about_homepage_features": "トップページで名前を覚えた曲の総数やメロディーを覚えた曲の総数を確認できる他、その日に練習した曲の一覧を確認できます。",
+	"privacy_policy_title": "プライバシーポリシー",
+	"privacy_data_collection_title": "データ収集について",
+	"privacy_data_collection_content": "アカウント登録と認証のためのメールアドレス、および学習進捗を追跡するための練習データを収集します。",
+	"privacy_data_usage_title": "データの利用について",
+	"privacy_data_usage_content": "お客様のデータは、パーソナライズされた楽曲学習体験の提供と練習進捗の追跡のためにのみ使用されます。広告目的でデータが使用されることはありません。",
+	"privacy_data_sharing_title": "データの共有について",
+	"privacy_data_sharing_content": "お客様の個人情報を第三者と共有することはありません。練習データは非公開であり、お客様のみが閲覧できます。",
+	"privacy_data_security_title": "データのセキュリティについて",
+	"privacy_data_security_content": "お客様のデータは、適切なセキュリティ対策を講じたFirebase認証とFirestoreデータベースを使用して安全に保存されます。",
+	"privacy_contact_title": "お問い合わせ",
+	"privacy_contact_content": "このプライバシーポリシーについてご質問がございましたら、サイト作成者の連絡先までお問い合わせください。"
 }

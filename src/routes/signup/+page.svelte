@@ -4,6 +4,7 @@
 	import { ValidationError } from 'yup';
 	import Input from '$lib/forms/Input.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
+	import PrivacyPolicy from '$lib/components/ui/PrivacyPolicy.svelte';
 	import { auth, db } from '$core/data/firebase/firebaseClient';
 	import { createUserWithEmailAndPassword } from 'firebase/auth';
 	import { doc, setDoc } from 'firebase/firestore';
@@ -130,5 +131,9 @@
 				</Button>
 			</div>
 		</form>
+		
+		<div class="mt-6 pt-4 border-t border-gray-200">
+			<PrivacyPolicy showTitle={true} />
+		</div>
 	</div>
 </div>
