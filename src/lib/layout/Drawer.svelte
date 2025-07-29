@@ -45,7 +45,7 @@
 			{/if}
 			{#if $authLoaded && $isAuthenticated}
 				<li>
-					<a href="/mydata" class="block px-4 py-2 rounded hover:bg-gray-100">My data</a>
+					<a href="/mydata" class="block px-4 py-2 rounded hover:bg-gray-100">My Data</a>
 				</li>
 				<li>
 					<a href="/contact" class="block px-4 py-2 rounded hover:bg-gray-100">Contact</a>
