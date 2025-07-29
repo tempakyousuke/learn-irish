@@ -1,4 +1,4 @@
-import { getDocs, collection, query, orderBy, FirestoreError } from 'firebase/firestore';
+import { getDocs, collection, query, orderBy, FirestoreError, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { TuneFull, TuneListView } from '$core/data/models/Tune';
 import { parseTuneData, parseTuneListViewData } from '$core/data/models/Tune';
 import type { SetFull } from '$core/data/models/Set';
@@ -6,6 +6,8 @@ import { createCache } from '$core/utils/cacheStorage';
 import { db } from '$core/data/firebase/firebaseClient';
 import type { UserTuneFull } from '../models/UserTune';
 import { SetRepository } from './setRepository';
+import type { TuneListViewCache } from '../models/Cache';
+import { CACHE_CONFIG } from '../models/Cache';
 
 /**
  * 曲データのリポジトリクラス
@@ -156,12 +158,13 @@ export class TuneRepository {
 
 	/**
 	 * トップページ用の軽量な曲データを取得する
+	 * キャッシュドキュメントから優先的に取得し、読み取り回数を大幅削減
 	 * @param forceRefresh 強制的に再取得するかどうか
 	 * @returns 軽量な曲データの配列
 	 * @throws {Error} データ取得に失敗した場合
 	 */
 	public static async getTunesForListView(forceRefresh = false): Promise<TuneListView[]> {
-		// 強制更新でない場合は軽量キャッシュをチェック
+		// 強制更新でない場合はまずlocalstorageキャッシュをチェック
 		if (!forceRefresh) {
 			const cachedTunes = this.tunesListViewCache.get();
 			if (cachedTunes) {
@@ -169,7 +172,49 @@ export class TuneRepository {
 			}
 		}
 
+		// Firestoreキャッシュドキュメントから取得を試行
+		if (!forceRefresh) {
+			try {
+				const cacheDocRef = doc(db, CACHE_CONFIG.COLLECTION_NAME, CACHE_CONFIG.TUNE_LIST_VIEW_DOC_ID);
+				const cacheDoc = await getDoc(cacheDocRef);
+				
+				if (cacheDoc.exists()) {
+					const cacheData = cacheDoc.data() as TuneListViewCache;
+					
+					// データ整合性チェック
+					if (cacheData.data && Array.isArray(cacheData.data) && cacheData.data.length > 0) {
+						// console.log(`キャッシュから楽曲データを取得: ${cacheData.totalCount}件`);
+						
+						// localstorageにも保存して次回高速化
+						this.tunesListViewCache.set(cacheData.data);
+						
+						// エラー状態をクリア
+						this.lastError = null;
+						return cacheData.data;
+					} else {
+						console.warn('キャッシュドキュメントのデータが無効です');
+					}
+				} else {
+					console.warn('キャッシュドキュメントが存在しません。通常の方法で取得します');
+				}
+			} catch (error) {
+				console.warn('キャッシュドキュメント取得エラー、通常の方法で取得します:', error);
+			}
+		}
+
+		// キャッシュが無い場合は従来の方法でフォールバック
+		return this.getTunesFromCollection();
+	}
+
+	/**
+	 * 従来の方法でFirestoreのtunesコレクションから直接取得
+	 * @returns 軽量な曲データの配列
+	 * @throws {Error} データ取得に失敗した場合
+	 */
+	private static async getTunesFromCollection(): Promise<TuneListView[]> {
 		try {
+			console.log('tunesコレクションから直接取得します');
+			
 			// Firestoreから曲データを取得
 			const qu = query(collection(db, 'tunes'), orderBy('tuneNo', 'asc'));
 			const snapshot = await getDocs(qu);
@@ -188,6 +233,7 @@ export class TuneRepository {
 
 			// エラー状態をクリア
 			this.lastError = null;
+			console.log(`tunesコレクションから取得完了: ${fetchedTunes.length}件`);
 			return fetchedTunes;
 		} catch (error) {
 			// エラーをより具体的に変換
@@ -231,12 +277,74 @@ export class TuneRepository {
 		// 強制的に再取得
 		return this.getTunes(true);
 	}
+
+	/**
+	 * 楽曲一覧キャッシュドキュメントを手動で更新する
+	 * tunesコレクションの全データを取得してcacheコレクションに保存
+	 * @returns 更新されたキャッシュデータ
+	 * @throws {Error} キャッシュ更新に失敗した場合
+	 */
+	public static async updateTuneListViewCache(): Promise<TuneListViewCache> {
+		try {
+			console.log('楽曲一覧キャッシュを更新開始...');
+
+			// tunesコレクションから最新データを取得
+			const qu = query(collection(db, 'tunes'), orderBy('tuneNo', 'asc'));
+			const snapshot = await getDocs(qu);
+
+			// TuneListView形式に変換
+			const tuneData: TuneListView[] = [];
+			snapshot.forEach((doc) => {
+				const data = doc.data();
+				const tune = parseTuneListViewData(data, doc.id);
+				tuneData.push(tune);
+			});
+
+			// キャッシュドキュメントを作成
+			const cacheData: TuneListViewCache = {
+				data: tuneData,
+				lastUpdated: serverTimestamp() as any,
+				version: CACHE_CONFIG.CURRENT_VERSION,
+				totalCount: tuneData.length
+			};
+
+			// Firestoreのcacheコレクションに保存
+			const cacheDocRef = doc(db, CACHE_CONFIG.COLLECTION_NAME, CACHE_CONFIG.TUNE_LIST_VIEW_DOC_ID);
+			await setDoc(cacheDocRef, cacheData);
+
+			// ローカルキャッシュも更新
+			this.tunesListViewCache.set(tuneData);
+
+			console.log(`楽曲一覧キャッシュ更新完了: ${tuneData.length}件`);
+			return cacheData;
+
+		} catch (error) {
+			console.error('楽曲一覧キャッシュ更新エラー:', error);
+			
+			let errorMessage = '楽曲一覧キャッシュの更新に失敗しました';
+			if (error instanceof FirestoreError) {
+				switch (error.code) {
+					case 'permission-denied':
+						errorMessage = 'キャッシュ更新の権限がありません';
+						break;
+					case 'unavailable':
+						errorMessage = 'サーバーに接続できません。ネットワーク接続を確認してください';
+						break;
+					default:
+						errorMessage = `キャッシュ更新エラー: ${error.message}`;
+				}
+			}
+
+			throw new Error(errorMessage, { cause: error });
+		}
+	}
 }
 
 // 互換性のために従来の関数もエクスポート
 export const getTunes = TuneRepository.getTunes.bind(TuneRepository);
 export const getTunesForListView = TuneRepository.getTunesForListView.bind(TuneRepository);
 export const refreshTunes = TuneRepository.refreshTunes.bind(TuneRepository);
+export const updateTuneListViewCache = TuneRepository.updateTuneListViewCache.bind(TuneRepository);
 
 /**
  * 指定ユーザーのUserTune（習得状況）一覧を取得する
