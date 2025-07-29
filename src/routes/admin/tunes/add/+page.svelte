@@ -6,12 +6,7 @@
 
 	let sheetText = $state('');
 
-	const rows = $derived(
-		sheetText
-			.trim()
-			.split('\n')
-			.filter((row) => row.trim())
-	);
+	const rows = $derived(sheetText.split('\n'));
 
 	const parsedTunes = $derived(
 		rows.map((row) => {
