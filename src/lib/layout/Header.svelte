@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 	import Fa from 'svelte-fa';
-	import { faClover } from '@fortawesome/free-solid-svg-icons';
+	import { faClover, faBars } from '@fortawesome/free-solid-svg-icons';
 	import { isAuthenticated, authLoaded, logout } from '$core/auth/authService';
 
 	interface Props {
@@ -17,7 +17,7 @@
 		onclick={openDrawer}
 		aria-label="Open navigation menu"
 	>
-		<Fa class="text-teal-800" icon={faClover} />
+		<Fa class="text-teal-800" icon={faBars} />
 	</button>
 	<a href="/" class="text-white text-3xl grow my-auto flex hover:text-white">
 		<Fa class="mr-3 mt-0.5 md:block hidden" icon={faClover} />
