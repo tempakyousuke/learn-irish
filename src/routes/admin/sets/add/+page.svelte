@@ -54,7 +54,7 @@
 </script>
 
 <svelte:head>
-	<title>新しいセット作成 - Learn Irish</title>
+	<title>新しいセット作成 - Practicing Irish tunes with hatao's YouTube</title>
 </svelte:head>
 
 <div class="max-w-6xl mx-auto p-6">

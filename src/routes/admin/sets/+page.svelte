@@ -63,7 +63,7 @@
 </script>
 
 <svelte:head>
-	<title>セット管理 - Learn Irish</title>
+	<title>セット管理 - Practicing Irish tunes with hatao's YouTube</title>
 </svelte:head>
 
 <div class="flex justify-between items-center mb-6">

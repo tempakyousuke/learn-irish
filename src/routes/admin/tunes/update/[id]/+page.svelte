@@ -52,7 +52,7 @@
 </script>
 
 <svelte:head>
-	<title>Learn Irish from hatao's youtube</title>
+	<title>Practicing Irish tunes with hatao's YouTube</title>
 	<meta
 		name="description"
 		content="このサイトはhataoさんがyoutubeにあげている「Learn an Irish Tune Every

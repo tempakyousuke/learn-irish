@@ -323,8 +323,8 @@
 </script>
 
 <svelte:head>
-	<title>Learn Irish From hatao's youtube</title>
-	<meta name="description" content="learn irish music from hatao's youtube movie." />
+	<title>Practicing Irish tunes with hatao's YouTube</title>
+	<meta name="description" content="Practicing Irish tunes with hatao's YouTube" />
 </svelte:head>
 
 <!-- 更新ボタンは必要に応じて有効化

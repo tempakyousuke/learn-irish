@@ -1,2 +1,2 @@
-export const siteTitle = "Learn Irish from hatao's youtube";
+export const siteTitle = "Practicing Irish tunes with hatao's YouTube";
 export const siteUrl = '';

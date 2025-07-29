@@ -30,7 +30,6 @@
 	class:-translate-x-full={!isOpen}
 >
 	<div class="p-4 w-full">
-		<h2 class="text-lg font-bold">Learn Irish</h2>
 		<ul class="mt-4 space-y-2">
 			<li><a href="/" class="block px-4 py-2 rounded hover:bg-gray-100">TOP</a></li>
 			<li><a href="/about" class="block px-4 py-2 rounded hover:bg-gray-100">About</a></li>
