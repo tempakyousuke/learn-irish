@@ -21,7 +21,8 @@ export async function load({ url }: { url: URL }) {
 		sortBy: cookies.sortBy || 'sort_by_number_asc',
 		onlyFavorite: cookies.onlyFavorite || 'off',
 		currentPage: cookies.currentPage || '1',
-		itemsPerPage: cookies.itemsPerPage || '20'
+		itemsPerPage: cookies.itemsPerPage || '20',
+		tuneName: cookies.tuneName || ''
 	};
 
 	return {

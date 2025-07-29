@@ -125,16 +125,17 @@ export function parseInquiryData(data: Record<string, unknown>, id: string): Inq
  * ステータスが有効かどうかをチェックする型ガード
  */
 function isValidStatus(status: unknown): status is InquiryStatus {
-	return typeof status === 'string' && 
-		['unconfirmed', 'in_progress', 'completed', 'not_required'].includes(status);
+	return (
+		typeof status === 'string' &&
+		['unconfirmed', 'in_progress', 'completed', 'not_required'].includes(status)
+	);
 }
 
 /**
  * 問い合わせタイプが有効かどうかをチェックする型ガード
  */
 function isValidType(type: unknown): type is InquiryType {
-	return typeof type === 'string' && 
-		['opinion', 'request', 'bug_report'].includes(type);
+	return typeof type === 'string' && ['opinion', 'request', 'bug_report'].includes(type);
 }
 
 /**

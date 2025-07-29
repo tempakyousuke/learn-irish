@@ -16,7 +16,7 @@
 
 	// フォーム送信成功時の状態管理
 	let showSuccessMessage = $state(false);
-	
+
 	// エラー状態管理
 	let authError = $state<string | null>(null);
 	let pageError = $state<string | null>(null);
@@ -108,14 +108,12 @@
 		<!-- ページヘッダー -->
 		<div class="mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 mb-4">問い合わせ</h1>
-			<p class="text-gray-600">
-				システムに関するご意見、ご要望、不具合報告をお送りください。
-			</p>
+			<p class="text-gray-600">システムに関するご意見、ご要望、不具合報告をお送りください。</p>
 		</div>
 
 		<!-- 認証エラーメッセージ -->
 		<ErrorMessage bind:message={authError} dismissable={true} type="warning" />
-		
+
 		<!-- ページエラーメッセージ -->
 		<ErrorMessage bind:message={pageError} dismissable={true} type="error" />
 
@@ -172,10 +170,7 @@
 
 		<!-- 問い合わせフォーム -->
 		<div class="bg-white shadow-sm rounded-lg p-6">
-			<InquiryForm 
-				onSubmitSuccess={handleSubmitSuccess} 
-				onSubmitError={handleSubmitError}
-			/>
+			<InquiryForm onSubmitSuccess={handleSubmitSuccess} onSubmitError={handleSubmitError} />
 		</div>
 	</div>
 {:else}

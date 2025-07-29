@@ -11,6 +11,8 @@
 	"tunes_played_today": "今日演奏した曲",
 	"tune_type": "種類",
 	"search_filter": "検索フィルター",
+	"tune_name_filter": "曲名フィルター",
+	"tune_name_filter_placeholder": "曲名で検索...",
 	"memorized": "覚えた",
 	"incomplete": "未達成",
 	"not_memorized": "覚えていない",

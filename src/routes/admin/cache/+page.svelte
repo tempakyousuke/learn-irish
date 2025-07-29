@@ -17,7 +17,7 @@
 		try {
 			const cacheDocRef = doc(db, CACHE_CONFIG.COLLECTION_NAME, CACHE_CONFIG.TUNE_LIST_VIEW_DOC_ID);
 			const cacheDoc = await getDoc(cacheDocRef);
-			
+
 			if (cacheDoc.exists()) {
 				cacheInfo = cacheDoc.data() as TuneListViewCache;
 			} else {
@@ -61,7 +61,7 @@
 	<!-- キャッシュ情報表示 -->
 	<div class="bg-white p-6 rounded-lg shadow">
 		<h2 class="text-xl font-semibold mb-4">現在のキャッシュ状況</h2>
-		
+
 		{#if isLoadingInfo}
 			<p class="text-gray-600">読み込み中...</p>
 		{:else if cacheInfo}
@@ -86,7 +86,9 @@
 				</div>
 			</div>
 		{:else}
-			<p class="text-orange-600">キャッシュドキュメントが存在しません。キャッシュを作成してください。</p>
+			<p class="text-orange-600">
+				キャッシュドキュメントが存在しません。キャッシュを作成してください。
+			</p>
 		{/if}
 	</div>
 
@@ -96,7 +98,7 @@
 		<p class="text-gray-600 mb-4">
 			tunesコレクションの最新データでキャッシュを更新します。この操作により、トップページの読み取り回数を600回→1回に削減できます。
 		</p>
-		
+
 		<button
 			onclick={handleUpdateCache}
 			disabled={isUpdating}
@@ -125,7 +127,9 @@
 			<li>トップページで600件の楽曲データを1回の読み取りで取得できます</li>
 			<li>ボットアクセス時の読み取り量を大幅に削減します</li>
 			<li>楽曲データに変更があった場合は手動でキャッシュを更新してください</li>
-			<li>キャッシュは <code class="bg-gray-200 px-1 rounded">cache/tune-list-view</code> ドキュメントに保存されます</li>
+			<li>
+				キャッシュは <code class="bg-gray-200 px-1 rounded">cache/tune-list-view</code> ドキュメントに保存されます
+			</li>
 		</ul>
 	</div>
 </div>

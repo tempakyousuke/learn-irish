@@ -14,7 +14,14 @@
 		oninput?: () => void;
 	}
 
-	let { options, className = '', name, userSelected = $bindable(options[0].value), onchange, oninput }: Props = $props();
+	let {
+		options,
+		className = '',
+		name,
+		userSelected = $bindable(options[0].value),
+		onchange,
+		oninput
+	}: Props = $props();
 </script>
 
 <div class={className}>
@@ -27,8 +34,8 @@
 				id={option.id}
 				value={option.value}
 				bind:group={userSelected}
-				oninput={oninput}
-				onchange={onchange}
+				{oninput}
+				{onchange}
 			/>
 			<label class="cursor-pointer select-none text-sm" for={option.id}>{option.label}</label>
 		</div>

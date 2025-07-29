@@ -1,21 +1,21 @@
-import { 
-	collection, 
-	addDoc, 
-	getDocs, 
-	doc, 
-	updateDoc, 
-	query, 
-	orderBy, 
+import {
+	collection,
+	addDoc,
+	getDocs,
+	doc,
+	updateDoc,
+	query,
+	orderBy,
 	FirestoreError,
-	Timestamp 
+	Timestamp
 } from 'firebase/firestore';
 import type { InquiryFull, InquiryCreate, InquiryStatus } from '../models/Inquiry';
 import { parseInquiryData, inquiryToFirestoreData } from '../models/Inquiry';
 import { db } from '../firebase/firebaseClient';
-import { 
-	getInquiryCreationErrorMessage, 
-	getInquiryFetchErrorMessage, 
-	getInquiryStatusUpdateErrorMessage 
+import {
+	getInquiryCreationErrorMessage,
+	getInquiryFetchErrorMessage,
+	getInquiryStatusUpdateErrorMessage
 } from '../../utils/inquiryErrorHandling';
 
 /**
@@ -35,13 +35,13 @@ export class InquiryRepository {
 		try {
 			// Firestoreに保存するためのデータに変換
 			const firestoreData = inquiryToFirestoreData(inquiry);
-			
+
 			// createdAtをFirestore Timestampに変換
 			firestoreData.createdAt = Timestamp.fromDate(inquiry.createdAt);
 
 			// Firestoreに問い合わせを追加
 			const docRef = await addDoc(collection(db, this.COLLECTION_NAME), firestoreData);
-			
+
 			return docRef.id;
 		} catch (error) {
 			console.error('問い合わせ作成エラー:', error);
@@ -58,10 +58,7 @@ export class InquiryRepository {
 	public static async getAll(): Promise<InquiryFull[]> {
 		try {
 			// 作成日時の降順で問い合わせを取得
-			const qu = query(
-				collection(db, this.COLLECTION_NAME), 
-				orderBy('createdAt', 'desc')
-			);
+			const qu = query(collection(db, this.COLLECTION_NAME), orderBy('createdAt', 'desc'));
 			const snapshot = await getDocs(qu);
 
 			// 取得したデータを処理
@@ -91,7 +88,7 @@ export class InquiryRepository {
 		try {
 			// ドキュメント参照を取得
 			const docRef = doc(db, this.COLLECTION_NAME, id);
-			
+
 			// ステータスのみを更新
 			await updateDoc(docRef, {
 				status: status
@@ -114,7 +111,7 @@ export class InquiryRepository {
 			// 全ての問い合わせを取得してフィルタリング
 			// 将来的にはFirestoreクエリでフィルタリングすることも検討
 			const allInquiries = await this.getAll();
-			return allInquiries.filter(inquiry => inquiry.userId === userId);
+			return allInquiries.filter((inquiry) => inquiry.userId === userId);
 		} catch (error) {
 			console.error(`ユーザー問い合わせ取得エラー (UserID: ${userId}):`, error);
 			throw new Error(
@@ -134,7 +131,7 @@ export class InquiryRepository {
 			// 全ての問い合わせを取得して該当するものを探す
 			// 将来的には単一ドキュメント取得の最適化も検討
 			const allInquiries = await this.getAll();
-			return allInquiries.find(inquiry => inquiry.id === id) || null;
+			return allInquiries.find((inquiry) => inquiry.id === id) || null;
 		} catch (error) {
 			console.error(`問い合わせ取得エラー (ID: ${id}):`, error);
 			throw new Error(

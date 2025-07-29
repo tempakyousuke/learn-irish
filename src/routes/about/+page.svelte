@@ -33,12 +33,22 @@
 		</p>
 		<p class="mb-4">
 			(2) {$t('support_paypal_description')}<br />
-			<a href="https://paypal.me/celtnofue" class="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+			<a
+				href="https://paypal.me/celtnofue"
+				class="text-blue-600 underline"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				https://paypal.me/celtnofue
 			</a>
 		</p>
 		<p class="mb-4">
-			<a href="https://www.patreon.com/tune_everyday" class="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+			<a
+				href="https://www.patreon.com/tune_everyday"
+				class="text-blue-600 underline"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				https://www.patreon.com/tune_everyday
 			</a>
 		</p>

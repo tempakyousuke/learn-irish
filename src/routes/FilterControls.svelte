@@ -14,7 +14,8 @@
 		faMusic,
 		faStar,
 		faList,
-		faSort
+		faSort,
+		faSearch
 	} from '@fortawesome/free-solid-svg-icons';
 	import { Fa } from 'svelte-fa';
 
@@ -25,10 +26,20 @@
 		onlyFavorite: string;
 		selectedRhythm: string;
 		sortBy: string;
+		tuneName: string;
 		rhythms?: string[];
 	}
 
-	let { isLoggedIn, rememberName = $bindable(), rememberMelody = $bindable(), onlyFavorite = $bindable(), selectedRhythm = $bindable(), sortBy = $bindable(), rhythms = [] }: Props = $props();
+	let {
+		isLoggedIn,
+		rememberName = $bindable(),
+		rememberMelody = $bindable(),
+		onlyFavorite = $bindable(),
+		selectedRhythm = $bindable(),
+		sortBy = $bindable(),
+		tuneName = $bindable(),
+		rhythms = []
+	}: Props = $props();
 </script>
 
 <div
@@ -77,6 +88,19 @@
 				/>
 			</div>
 		{/if}
+		<div class="filter-block">
+			<div class="label flex items-center">
+				<Fa icon={faSearch} class="w-5 h-5 text-emerald-500 mr-2" />{$t('tune_name_filter')}
+			</div>
+			<input
+				class="input"
+				bind:value={tuneName}
+				name="tuneName"
+				id="tuneName"
+				type="text"
+				placeholder={$t('tune_name_filter_placeholder')}
+			/>
+		</div>
 		<div class="filter-block">
 			<div class="label flex items-center">
 				<Fa icon={faList} class="w-5 h-5 text-emerald-500 mr-2" />{$t('tune_type')}

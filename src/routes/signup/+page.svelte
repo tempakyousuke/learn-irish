@@ -131,7 +131,7 @@
 				</Button>
 			</div>
 		</form>
-		
+
 		<div class="mt-6 pt-4 border-t border-gray-200">
 			<PrivacyPolicy showTitle={true} />
 		</div>

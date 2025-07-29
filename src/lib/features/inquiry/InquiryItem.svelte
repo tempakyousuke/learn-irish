@@ -47,20 +47,20 @@
 			// 楽観的UI更新
 			inquiry.status = newStatus;
 			onStatusUpdate?.(inquiry.id, newStatus);
-			
+
 			// サーバーに更新を送信
 			await InquiryRepository.updateStatus(inquiry.id, newStatus);
 		} catch (err) {
 			console.error('ステータス更新エラー:', err);
-			
+
 			// エラー時は元のステータスに戻す
 			inquiry.status = previousStatus;
 			onStatusUpdate?.(inquiry.id, previousStatus);
-			
+
 			// 問い合わせ固有のエラーメッセージを生成
 			const friendlyError = getInquiryStatusUpdateErrorMessage(err);
 			error = friendlyError;
-			
+
 			// 親コンポーネントにもエラーを通知
 			onStatusUpdateError?.(friendlyError);
 		} finally {
@@ -133,8 +133,6 @@
 
 	<!-- Loading indicator -->
 	{#if isUpdating}
-		<div class="mt-3 text-sm text-gray-500">
-			更新中...
-		</div>
+		<div class="mt-3 text-sm text-gray-500">更新中...</div>
 	{/if}
 </div>

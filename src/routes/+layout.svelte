@@ -14,7 +14,7 @@
 
 	// 認証サービスを初期化
 	initializeAuth();
-	
+
 	// テーブルヘッダー設定の認証リスナーを初期化
 	initializeAuthListener();
 
@@ -51,17 +51,17 @@
 		<Drawer isOpen={drawer} {closeDrawer} {handleKeydown} />
 
 		<div class="flex bg-teal-50 justify-end items-center gap-4 pr-4 pt-2">
-			<a 
-				href="https://www.youtube.com/@hatao" 
-				target="_blank" 
+			<a
+				href="https://www.youtube.com/@hatao"
+				target="_blank"
 				rel="noopener noreferrer"
 				class="text-blue-600 hover:text-blue-800 underline"
 			>
 				Youtube
 			</a>
-			<a 
-				href="https://www.patreon.com/tune_everyday" 
-				target="_blank" 
+			<a
+				href="https://www.patreon.com/tune_everyday"
+				target="_blank"
 				rel="noopener noreferrer"
 				class="text-blue-600 hover:text-blue-800 underline"
 			>

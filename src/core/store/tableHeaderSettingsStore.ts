@@ -48,7 +48,7 @@ function initializeNetworkMonitoring(): void {
 
 	const updateOnlineStatus = () => {
 		const isOnline = navigator.onLine;
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			isOnline
 		}));
@@ -68,7 +68,7 @@ function initializeNetworkMonitoring(): void {
  */
 async function syncPendingChanges(): Promise<void> {
 	const currentState = getCurrentState();
-	
+
 	if (!currentState.pendingChanges || !currentState.isOnline) {
 		return;
 	}
@@ -76,7 +76,7 @@ async function syncPendingChanges(): Promise<void> {
 	const currentUser = getCurrentUser();
 	if (!currentUser.isLoggedIn || !currentUser.uid) {
 		// 未認証の場合は保留中の変更をクリア
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			pendingChanges: null
 		}));
@@ -91,9 +91,9 @@ async function syncPendingChanges(): Promise<void> {
 		};
 
 		await updateSettings(currentUser.uid, updatedSettings);
-		
+
 		// 同期成功時は保留中の変更をクリア
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			pendingChanges: null,
 			lastSyncTime: Date.now(),
@@ -102,9 +102,9 @@ async function syncPendingChanges(): Promise<void> {
 		}));
 	} catch (error) {
 		console.error('保留中の変更の同期に失敗:', error);
-		
+
 		// リトライ回数を増やし、エラー状態を更新
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			retryCount: state.retryCount + 1,
 			error: error instanceof Error ? error.message : '同期に失敗しました'
@@ -164,7 +164,7 @@ export async function loadSettings(uid?: string): Promise<void> {
 		if (!currentUser.isLoggedIn || !currentUser.uid) {
 			console.warn('テーブルヘッダー設定読み込み: ユーザーがログインしていません');
 			// 未認証ユーザーの場合はデフォルト設定を使用
-			tableHeaderSettingsStore.update(state => ({
+			tableHeaderSettingsStore.update((state) => ({
 				...state,
 				settings: getDefaultSettings(),
 				loading: false,
@@ -178,7 +178,7 @@ export async function loadSettings(uid?: string): Promise<void> {
 	}
 
 	// ローディング状態を開始
-	tableHeaderSettingsStore.update(state => ({
+	tableHeaderSettingsStore.update((state) => ({
 		...state,
 		loading: true,
 		error: null,
@@ -189,7 +189,7 @@ export async function loadSettings(uid?: string): Promise<void> {
 		const userSettings = await getSettings(uid);
 		const settings = userSettings || getDefaultSettings();
 
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			settings,
 			loading: false,
@@ -199,7 +199,7 @@ export async function loadSettings(uid?: string): Promise<void> {
 		}));
 	} catch (error) {
 		console.error('テーブルヘッダー設定読み込みエラー:', error);
-		
+
 		let errorMessage = '設定の読み込みに失敗しました';
 		let fallbackToDefaults = false;
 
@@ -221,8 +221,8 @@ export async function loadSettings(uid?: string): Promise<void> {
 
 		// データが破損している場合はデフォルト設定を使用
 		const settings = fallbackToDefaults ? getDefaultSettings() : getCurrentState().settings;
-		
-		tableHeaderSettingsStore.update(state => ({
+
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			settings,
 			loading: false,
@@ -244,14 +244,14 @@ export async function updateSetting(
 	uid?: string
 ): Promise<void> {
 	const currentState = getCurrentState();
-	
+
 	// uidが指定されていない場合は現在のユーザーを取得
 	if (!uid) {
 		const currentUser = getCurrentUser();
 		if (!currentUser.isLoggedIn || !currentUser.uid) {
 			console.warn('テーブルヘッダー設定更新: ユーザーがログインしていません');
 			// 未認証ユーザーの場合はローカルのみ更新
-			tableHeaderSettingsStore.update(state => ({
+			tableHeaderSettingsStore.update((state) => ({
 				...state,
 				settings: {
 					...state.settings,
@@ -271,7 +271,7 @@ export async function updateSetting(
 		[key]: value
 	};
 
-	tableHeaderSettingsStore.update(state => ({
+	tableHeaderSettingsStore.update((state) => ({
 		...state,
 		settings: newSettings,
 		error: null
@@ -279,7 +279,7 @@ export async function updateSetting(
 
 	// オフラインの場合は保留中の変更として保存
 	if (!currentState.isOnline) {
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			pendingChanges: {
 				...state.pendingChanges,
@@ -291,9 +291,9 @@ export async function updateSetting(
 
 	try {
 		await updateSettings(uid, newSettings);
-		
+
 		// 成功時は保留中の変更をクリア
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			lastSyncTime: Date.now(),
 			retryCount: 0,
@@ -301,7 +301,7 @@ export async function updateSetting(
 		}));
 	} catch (error) {
 		console.error('テーブルヘッダー設定更新エラー:', error);
-		
+
 		let errorMessage = '設定の更新に失敗しました';
 		let shouldRevert = true;
 
@@ -323,7 +323,7 @@ export async function updateSetting(
 		// ネットワークエラーの場合は保留中の変更として保存し、リバートしない
 		if (errorMessage.includes('ネットワーク') || errorMessage.includes('接続')) {
 			shouldRevert = false;
-			tableHeaderSettingsStore.update(state => ({
+			tableHeaderSettingsStore.update((state) => ({
 				...state,
 				pendingChanges: {
 					...state.pendingChanges,
@@ -334,7 +334,7 @@ export async function updateSetting(
 			}));
 		} else if (shouldRevert) {
 			// その他のエラーの場合は前の状態に戻す
-			tableHeaderSettingsStore.update(state => ({
+			tableHeaderSettingsStore.update((state) => ({
 				...state,
 				settings: previousSettings,
 				error: errorMessage,
@@ -353,7 +353,7 @@ export async function resetToDefaults(uid?: string): Promise<void> {
 	const currentState = getCurrentState();
 
 	// UIを即座に更新
-	tableHeaderSettingsStore.update(state => ({
+	tableHeaderSettingsStore.update((state) => ({
 		...state,
 		settings: defaultSettings,
 		error: null,
@@ -372,7 +372,7 @@ export async function resetToDefaults(uid?: string): Promise<void> {
 	if (uid) {
 		// オフラインの場合は保留中の変更として保存
 		if (!currentState.isOnline) {
-			tableHeaderSettingsStore.update(state => ({
+			tableHeaderSettingsStore.update((state) => ({
 				...state,
 				pendingChanges: defaultSettings
 			}));
@@ -381,15 +381,15 @@ export async function resetToDefaults(uid?: string): Promise<void> {
 
 		try {
 			await updateSettings(uid, defaultSettings);
-			
-			tableHeaderSettingsStore.update(state => ({
+
+			tableHeaderSettingsStore.update((state) => ({
 				...state,
 				lastSyncTime: Date.now(),
 				retryCount: 0
 			}));
 		} catch (error) {
 			console.error('デフォルト設定保存エラー:', error);
-			
+
 			let errorMessage = 'デフォルト設定の保存に失敗しました';
 
 			if (error instanceof AppError) {
@@ -406,14 +406,14 @@ export async function resetToDefaults(uid?: string): Promise<void> {
 
 			// ネットワークエラーの場合は保留中の変更として保存
 			if (errorMessage.includes('ネットワーク') || errorMessage.includes('接続')) {
-				tableHeaderSettingsStore.update(state => ({
+				tableHeaderSettingsStore.update((state) => ({
 					...state,
 					pendingChanges: defaultSettings,
 					error: errorMessage,
 					retryCount: state.retryCount + 1
 				}));
 			} else {
-				tableHeaderSettingsStore.update(state => ({
+				tableHeaderSettingsStore.update((state) => ({
 					...state,
 					error: errorMessage,
 					retryCount: state.retryCount + 1
@@ -427,7 +427,7 @@ export async function resetToDefaults(uid?: string): Promise<void> {
  * エラー状態をクリアする
  */
 export function clearError(): void {
-	tableHeaderSettingsStore.update(state => ({
+	tableHeaderSettingsStore.update((state) => ({
 		...state,
 		error: null,
 		retryCount: 0
@@ -439,9 +439,9 @@ export function clearError(): void {
  */
 export async function retryFailedOperation(): Promise<void> {
 	const currentState = getCurrentState();
-	
+
 	if (!currentState.isOnline) {
-		tableHeaderSettingsStore.update(state => ({
+		tableHeaderSettingsStore.update((state) => ({
 			...state,
 			error: 'オフラインです。接続を確認してください。'
 		}));
@@ -465,12 +465,12 @@ export async function retryFailedOperation(): Promise<void> {
  */
 function getCurrentState(): TableHeaderSettingsState {
 	let currentState: TableHeaderSettingsState = initialState;
-	
-	const unsubscribe = tableHeaderSettingsStore.subscribe(state => {
+
+	const unsubscribe = tableHeaderSettingsStore.subscribe((state) => {
 		currentState = state;
 	});
 	unsubscribe();
-	
+
 	return currentState;
 }
 
@@ -480,12 +480,12 @@ function getCurrentState(): TableHeaderSettingsState {
  */
 export function getCurrentSettings(): TableHeaderSettings {
 	let currentSettings: TableHeaderSettings = getDefaultSettings();
-	
-	const unsubscribe = tableHeaderSettingsStore.subscribe(state => {
+
+	const unsubscribe = tableHeaderSettingsStore.subscribe((state) => {
 		currentSettings = state.settings;
 	});
 	unsubscribe();
-	
+
 	return currentSettings;
 }
 
@@ -495,11 +495,11 @@ export function getCurrentSettings(): TableHeaderSettings {
  */
 function getCurrentUser() {
 	let currentUser = { uid: '', isLoggedIn: false };
-	
-	const unsubscribe = userStore.subscribe(user => {
+
+	const unsubscribe = userStore.subscribe((user) => {
 		currentUser = user;
 	});
 	unsubscribe();
-	
+
 	return currentUser;
 }

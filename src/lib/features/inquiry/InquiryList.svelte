@@ -28,9 +28,9 @@
 	let selectedStatus = $state<InquiryStatus | 'all'>('all');
 
 	const filteredInquiries = $derived(
-		selectedStatus === 'all' 
-			? inquiries 
-			: inquiries.filter(inquiry => inquiry.status === selectedStatus)
+		selectedStatus === 'all'
+			? inquiries
+			: inquiries.filter((inquiry) => inquiry.status === selectedStatus)
 	);
 
 	async function loadInquiries(isRetry = false) {
@@ -49,7 +49,7 @@
 		} catch (err) {
 			console.error('問い合わせ取得エラー:', err);
 			error = getInquiryFetchErrorMessage(err);
-			
+
 			// 自動リトライ機能（ネットワークエラーの場合のみ）
 			if (retryCount < MAX_RETRY_COUNT && isNetworkError(err)) {
 				retryCount++;
@@ -62,8 +62,6 @@
 		}
 	}
 
-
-
 	/**
 	 * 手動リトライ
 	 */
@@ -75,7 +73,7 @@
 	function handleStatusUpdate(id: string, newStatus: InquiryStatus) {
 		try {
 			// Update the inquiry in the local array
-			const index = inquiries.findIndex(inquiry => inquiry.id === id);
+			const index = inquiries.findIndex((inquiry) => inquiry.id === id);
 			if (index !== -1) {
 				inquiries[index].status = newStatus;
 				inquiries = [...inquiries]; // Trigger reactivity
@@ -94,7 +92,7 @@
 	}
 
 	function getStatusCount(status: InquiryStatus): number {
-		return inquiries.filter(inquiry => inquiry.status === status).length;
+		return inquiries.filter((inquiry) => inquiry.status === status).length;
 	}
 
 	onMount(() => {
@@ -132,15 +130,21 @@
 		<!-- Status filter -->
 		<div class="flex flex-wrap gap-2 mb-4">
 			<button
-				class="px-3 py-1 rounded-full text-sm font-medium transition-colors {selectedStatus === 'all' ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
-				onclick={() => selectedStatus = 'all'}
+				class="px-3 py-1 rounded-full text-sm font-medium transition-colors {selectedStatus ===
+				'all'
+					? 'bg-teal-600 text-white'
+					: 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+				onclick={() => (selectedStatus = 'all')}
 			>
 				すべて ({inquiries.length})
 			</button>
 			{#each Object.entries(statusLabels) as [status, label]}
 				<button
-					class="px-3 py-1 rounded-full text-sm font-medium transition-colors {selectedStatus === status ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
-					onclick={() => selectedStatus = status as InquiryStatus}
+					class="px-3 py-1 rounded-full text-sm font-medium transition-colors {selectedStatus ===
+					status
+						? 'bg-teal-600 text-white'
+						: 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+					onclick={() => (selectedStatus = status as InquiryStatus)}
 				>
 					{label} ({getStatusCount(status as InquiryStatus)})
 				</button>
@@ -162,12 +166,16 @@
 
 	<!-- Error message -->
 	<ErrorMessage bind:message={error} dismissable={true} type="error" />
-	
+
 	{#if error && retryCount > 0 && retryCount < MAX_RETRY_COUNT}
 		<div class="bg-blue-100 border border-blue-300 rounded-lg p-4 text-blue-700 mb-4">
 			<div class="flex items-center gap-2">
 				<svg class="w-5 h-5 animate-spin" fill="currentColor" viewBox="0 0 20 20">
-					<path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+					<path
+						fill-rule="evenodd"
+						d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+						clip-rule="evenodd"
+					></path>
 				</svg>
 				自動再試行中... ({retryCount}/{MAX_RETRY_COUNT})
 			</div>
@@ -186,18 +194,30 @@
 	{#if !isLoading}
 		{#if filteredInquiries.length === 0}
 			<div class="text-center py-8 bg-white rounded-lg shadow-md">
-				<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1H7a1 1 0 00-1 1v1m8 0V4.5"></path>
+				<svg
+					class="mx-auto h-12 w-12 text-gray-400"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1H7a1 1 0 00-1 1v1m8 0V4.5"
+					></path>
 				</svg>
 				<p class="mt-2 text-gray-600">
-					{selectedStatus === 'all' ? '問い合わせがありません' : `${statusLabels[selectedStatus as InquiryStatus]}の問い合わせがありません`}
+					{selectedStatus === 'all'
+						? '問い合わせがありません'
+						: `${statusLabels[selectedStatus as InquiryStatus]}の問い合わせがありません`}
 				</p>
 			</div>
 		{:else}
 			<div class="space-y-4">
 				{#each filteredInquiries as inquiry (inquiry.id)}
-					<InquiryItem 
-						{inquiry} 
+					<InquiryItem
+						{inquiry}
 						onStatusUpdate={handleStatusUpdate}
 						onStatusUpdateError={handleStatusUpdateError}
 					/>

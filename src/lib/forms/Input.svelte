@@ -29,25 +29,10 @@
 <div class="flex justify-center items-center {className}">
 	<div class="relative h-10 w-full" class:empty={!placeholder && value === ''}>
 		{#if type == 'text'}
-			<input
-				bind:value
-				{disabled}
-				{readonly}
-				{placeholder}
-				onchange={onchange}
-				oninput={oninput}
-			/>
+			<input bind:value {disabled} {readonly} {placeholder} {onchange} {oninput} />
 		{/if}
 		{#if type == 'email'}
-			<input
-				bind:value
-				{disabled}
-				{readonly}
-				{placeholder}
-				type="email"
-				onchange={onchange}
-				oninput={oninput}
-			/>
+			<input bind:value {disabled} {readonly} {placeholder} type="email" {onchange} {oninput} />
 		{/if}
 		{#if type == 'password'}
 			<input
@@ -57,20 +42,12 @@
 				{placeholder}
 				type="password"
 				autocomplete="on"
-				onchange={onchange}
-				oninput={oninput}
+				{onchange}
+				{oninput}
 			/>
 		{/if}
 		{#if type == 'number'}
-			<input
-				bind:value
-				{disabled}
-				{readonly}
-				{placeholder}
-				type="number"
-				onchange={onchange}
-				oninput={oninput}
-			/>
+			<input bind:value {disabled} {readonly} {placeholder} type="number" {onchange} {oninput} />
 		{/if}
 		<div class="label">
 			{label}

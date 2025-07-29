@@ -4,11 +4,11 @@
 	import AdminBreadcrumb from '$lib/components/navigation/AdminBreadcrumb.svelte';
 	import ErrorMessage from '$lib/components/ui/ErrorMessage.svelte';
 	import { getAuthenticationErrorMessage } from '$core/utils/inquiryErrorHandling';
-	
+
 	interface Props {
 		children: import('svelte').Snippet;
 	}
-	
+
 	let { children }: Props = $props();
 
 	const ADMIN_UID = 'dci2JB1vI3VYruel4U6L6q7N0As1';

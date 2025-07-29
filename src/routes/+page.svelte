@@ -31,6 +31,7 @@
 				onlyFavorite: string;
 				currentPage: string;
 				itemsPerPage: string;
+				tuneName: string;
 			};
 		};
 	} = $props();
@@ -43,6 +44,7 @@
 	let rememberMelody = $state<string>(data.formValues.rememberMelody);
 	let selectedRhythm = $state<string>(data.formValues.selectedRhythm);
 	let onlyFavorite = $state<string>(data.formValues.onlyFavorite);
+	let tuneName = $state<string>(data.formValues.tuneName);
 	let userTuneStatus = $state<{ [key: string]: UserTuneFull }>({});
 	let totalCount = $state<number>(0);
 	let favoriteTuneIds = $state<string[]>([]);
@@ -142,6 +144,10 @@
 				if (onlyFavorite === 'on' && !favoriteTuneIds.includes(tune.id)) return false;
 			}
 			if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
+			if (tuneName && tuneName.trim() !== '') {
+				const searchTerm = tuneName.toLowerCase().trim();
+				if (!tune.name?.toLowerCase().includes(searchTerm)) return false;
+			}
 			return true;
 		})
 	);
@@ -257,6 +263,7 @@
 		selectedRhythm;
 		sortBy;
 		onlyFavorite;
+		tuneName;
 
 		// フィルター変更時に1ページ目にリセット
 		currentPage = 1;
@@ -307,6 +314,9 @@
 	});
 	$effect(() => {
 		updateCookie('itemsPerPage', itemsPerPage.toString());
+	});
+	$effect(() => {
+		updateCookie('tuneName', tuneName);
 	});
 
 	// ページネーション関連のイベントハンドラー
@@ -365,6 +375,7 @@
 		bind:onlyFavorite
 		bind:selectedRhythm
 		bind:sortBy
+		bind:tuneName
 		{rhythms}
 	/>
 

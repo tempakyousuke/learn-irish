@@ -39,7 +39,12 @@ function validateSettingsData(data: any): { isValid: boolean; settings?: TableHe
 
 	// 必要なプロパティが存在し、boolean型であることを確認
 	const requiredKeys: (keyof TableHeaderSettings)[] = [
-		'rhythm', 'key', 'mode', 'playCount', 'todaysPlays', 'lastPlayedDate'
+		'rhythm',
+		'key',
+		'mode',
+		'playCount',
+		'todaysPlays',
+		'lastPlayedDate'
 	];
 
 	for (const key of requiredKeys) {
@@ -80,14 +85,14 @@ async function withRetry<T>(
 			return await operation();
 		} catch (error) {
 			lastError = error instanceof Error ? error : new Error(String(error));
-			
+
 			// 最後の試行でない場合、かつリトライ可能なエラーの場合のみリトライ
 			if (attempt < maxRetries && isRetryableError(error)) {
 				console.warn(`操作失敗 (試行 ${attempt}/${maxRetries}):`, getFirebaseErrorMessage(error));
-				await new Promise(resolve => setTimeout(resolve, delay * attempt)); // 指数バックオフ
+				await new Promise((resolve) => setTimeout(resolve, delay * attempt)); // 指数バックオフ
 				continue;
 			}
-			
+
 			throw lastError;
 		}
 	}
@@ -102,7 +107,7 @@ async function withRetry<T>(
  */
 function isRetryableError(error: unknown): boolean {
 	const errorMessage = getFirebaseErrorMessage(error);
-	
+
 	// ネットワークエラー、タイムアウト、サーバーエラーなどはリトライ可能
 	const retryablePatterns = [
 		'unavailable',
@@ -115,7 +120,7 @@ function isRetryableError(error: unknown): boolean {
 		'サーバー'
 	];
 
-	return retryablePatterns.some(pattern => 
+	return retryablePatterns.some((pattern) =>
 		errorMessage.toLowerCase().includes(pattern.toLowerCase())
 	);
 }
@@ -158,11 +163,11 @@ export async function getSettings(uid: string): Promise<TableHeaderSettings | nu
 		});
 	} catch (error) {
 		console.error('テーブルヘッダー設定取得エラー:', getFirebaseErrorMessage(error));
-		
+
 		if (error instanceof AppError) {
 			throw error;
 		}
-		
+
 		throw new AppError(
 			`テーブルヘッダー設定の取得に失敗しました: ${getFirebaseErrorMessage(error)}`,
 			{ cause: error instanceof Error ? error : new Error(String(error)) }
@@ -196,7 +201,7 @@ export async function updateSettings(uid: string, settings: TableHeaderSettings)
 	try {
 		await withRetry(async () => {
 			const docRef = doc(db, `users/${uid}`);
-			
+
 			await setDoc(
 				docRef,
 				{
@@ -207,11 +212,11 @@ export async function updateSettings(uid: string, settings: TableHeaderSettings)
 		});
 	} catch (error) {
 		console.error('テーブルヘッダー設定更新エラー:', getFirebaseErrorMessage(error));
-		
+
 		if (error instanceof AppError) {
 			throw error;
 		}
-		
+
 		throw new AppError(
 			`テーブルヘッダー設定の更新に失敗しました: ${getFirebaseErrorMessage(error)}`,
 			{ cause: error instanceof Error ? error : new Error(String(error)) }

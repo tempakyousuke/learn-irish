@@ -11,7 +11,7 @@ export function getInquiryCreationErrorMessage(error: unknown): string {
 	// Firebase固有のエラーを先にチェック
 	if (error && typeof error === 'object' && 'code' in error) {
 		const code = (error as any).code;
-		
+
 		switch (code) {
 			case 'permission-denied':
 				return 'ログインが必要です。ログインしてから再度お試しください。';
@@ -25,9 +25,12 @@ export function getInquiryCreationErrorMessage(error: unknown): string {
 				return '一時的にアクセスが集中しています。しばらく時間をおいてから再度お試しください。';
 		}
 	}
-	
+
 	// 一般的なFirebaseエラーメッセージを使用
-	return getFirebaseErrorMessage(error, '問い合わせの送信に失敗しました。しばらく時間をおいてから再度お試しください。');
+	return getFirebaseErrorMessage(
+		error,
+		'問い合わせの送信に失敗しました。しばらく時間をおいてから再度お試しください。'
+	);
 }
 
 /**
@@ -36,7 +39,7 @@ export function getInquiryCreationErrorMessage(error: unknown): string {
 export function getInquiryFetchErrorMessage(error: unknown): string {
 	if (error && typeof error === 'object' && 'code' in error) {
 		const code = (error as any).code;
-		
+
 		switch (code) {
 			case 'permission-denied':
 				return '問い合わせデータへのアクセス権限がありません。管理者権限が必要です。';
@@ -48,7 +51,7 @@ export function getInquiryFetchErrorMessage(error: unknown): string {
 				return '問い合わせデータが見つかりませんでした。';
 		}
 	}
-	
+
 	return getFirebaseErrorMessage(error, '問い合わせデータの取得に失敗しました。');
 }
 
@@ -58,7 +61,7 @@ export function getInquiryFetchErrorMessage(error: unknown): string {
 export function getInquiryStatusUpdateErrorMessage(error: unknown): string {
 	if (error && typeof error === 'object' && 'code' in error) {
 		const code = (error as any).code;
-		
+
 		switch (code) {
 			case 'permission-denied':
 				return 'ステータス更新権限がありません。管理者権限が必要です。';
@@ -72,7 +75,7 @@ export function getInquiryStatusUpdateErrorMessage(error: unknown): string {
 				return '無効なステータス値です。';
 		}
 	}
-	
+
 	return getFirebaseErrorMessage(error, 'ステータスの更新に失敗しました。');
 }
 
@@ -96,10 +99,12 @@ export function getAuthenticationErrorMessage(context: 'contact' | 'admin'): str
 export function isNetworkError(error: unknown): boolean {
 	if (error && typeof error === 'object' && 'code' in error) {
 		const code = (error as any).code;
-		return code === 'unavailable' || 
-			   code === 'deadline-exceeded' || 
-			   code === 'network-request-failed' ||
-			   code === 'timeout';
+		return (
+			code === 'unavailable' ||
+			code === 'deadline-exceeded' ||
+			code === 'network-request-failed' ||
+			code === 'timeout'
+		);
 	}
 	return false;
 }
@@ -119,7 +124,11 @@ export function isPermissionError(error: unknown): boolean {
  * 一時的なエラーかどうかを判定（リトライ可能）
  */
 export function isRetryableError(error: unknown): boolean {
-	return isNetworkError(error) || 
-		   (error && typeof error === 'object' && 'code' in error && 
-		    (error as any).code === 'resource-exhausted');
+	return (
+		isNetworkError(error) ||
+		(error &&
+			typeof error === 'object' &&
+			'code' in error &&
+			(error as any).code === 'resource-exhausted')
+	);
 }

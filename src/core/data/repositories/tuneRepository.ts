@@ -1,4 +1,14 @@
-import { getDocs, collection, query, orderBy, FirestoreError, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import {
+	getDocs,
+	collection,
+	query,
+	orderBy,
+	FirestoreError,
+	doc,
+	getDoc,
+	setDoc,
+	serverTimestamp
+} from 'firebase/firestore';
 import type { TuneFull, TuneListView } from '$core/data/models/Tune';
 import { parseTuneData, parseTuneListViewData } from '$core/data/models/Tune';
 import type { SetFull } from '$core/data/models/Set';
@@ -175,19 +185,23 @@ export class TuneRepository {
 		// Firestoreキャッシュドキュメントから取得を試行
 		if (!forceRefresh) {
 			try {
-				const cacheDocRef = doc(db, CACHE_CONFIG.COLLECTION_NAME, CACHE_CONFIG.TUNE_LIST_VIEW_DOC_ID);
+				const cacheDocRef = doc(
+					db,
+					CACHE_CONFIG.COLLECTION_NAME,
+					CACHE_CONFIG.TUNE_LIST_VIEW_DOC_ID
+				);
 				const cacheDoc = await getDoc(cacheDocRef);
-				
+
 				if (cacheDoc.exists()) {
 					const cacheData = cacheDoc.data() as TuneListViewCache;
-					
+
 					// データ整合性チェック
 					if (cacheData.data && Array.isArray(cacheData.data) && cacheData.data.length > 0) {
 						// console.log(`キャッシュから楽曲データを取得: ${cacheData.totalCount}件`);
-						
+
 						// localstorageにも保存して次回高速化
 						this.tunesListViewCache.set(cacheData.data);
-						
+
 						// エラー状態をクリア
 						this.lastError = null;
 						return cacheData.data;
@@ -214,7 +228,7 @@ export class TuneRepository {
 	private static async getTunesFromCollection(): Promise<TuneListView[]> {
 		try {
 			console.log('tunesコレクションから直接取得します');
-			
+
 			// Firestoreから曲データを取得
 			const qu = query(collection(db, 'tunes'), orderBy('tuneNo', 'asc'));
 			const snapshot = await getDocs(qu);
@@ -317,10 +331,9 @@ export class TuneRepository {
 
 			console.log(`楽曲一覧キャッシュ更新完了: ${tuneData.length}件`);
 			return cacheData;
-
 		} catch (error) {
 			console.error('楽曲一覧キャッシュ更新エラー:', error);
-			
+
 			let errorMessage = '楽曲一覧キャッシュの更新に失敗しました';
 			if (error instanceof FirestoreError) {
 				switch (error.code) {

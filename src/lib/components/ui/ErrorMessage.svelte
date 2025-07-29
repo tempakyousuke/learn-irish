@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { t } from 'svelte-i18n';
 
-	let { message = $bindable(null), dismissable = false, type = 'error' }: {
+	let {
+		message = $bindable(null),
+		dismissable = false,
+		type = 'error'
+	}: {
 		message?: string | null;
 		dismissable?: boolean;
 		type?: 'error' | 'warning' | 'info';

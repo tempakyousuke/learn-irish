@@ -11,6 +11,8 @@
 	"tunes_played_today": "Tunes Played Today",
 	"tune_type": "Tune Type",
 	"search_filter": "Search Filter",
+	"tune_name_filter": "Tune Name Filter",
+	"tune_name_filter_placeholder": "Search by tune name...",
 	"memorized": "Memorized",
 	"incomplete": "Incomplete",
 	"not_memorized": "Not Memorized",
