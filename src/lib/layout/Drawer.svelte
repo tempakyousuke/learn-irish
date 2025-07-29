@@ -49,6 +49,9 @@
 					<a href="/mydata" class="block px-4 py-2 rounded hover:bg-gray-100">My data</a>
 				</li>
 				<li>
+					<a href="/contact" class="block px-4 py-2 rounded hover:bg-gray-100">Contact</a>
+				</li>
+				<li>
 					<a href="/settings" class="block px-4 py-2 rounded hover:bg-gray-100">{$t('settings')}</a>
 				</li>
 				<li>

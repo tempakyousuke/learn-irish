@@ -47,6 +47,11 @@
 			>mydata</a
 		>
 		<a
+			href="/contact"
+			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
+			>Contact</a
+		>
+		<a
 			href="/settings"
 			class="text-white text-2xl ml-3 py-5 border-b-2 border-teal-800 hover:border-white hover:text-white focus:text-white hidden md:block"
 			>{$t('settings')}</a
