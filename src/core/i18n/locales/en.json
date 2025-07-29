@@ -239,5 +239,8 @@
 	"privacy_data_security_title": "Data Security",
 	"privacy_data_security_content": "Your data is securely stored using Firebase authentication and Firestore database with appropriate security measures.",
 	"privacy_contact_title": "Contact",
-	"privacy_contact_content": "If you have any questions about this privacy policy, please contact us through the site creator's contact information."
+	"privacy_contact_content": "If you have any questions about this privacy policy, please contact us through the site creator's contact information.",
+	"support_title": "To support this project.",
+	"support_patreon_description": "By becoming my supporter from $5/Month on Patreon, you can download the printable scores, music tracks, and request traditional tunes you want to learn.",
+	"support_paypal_description": "You can send a few bucks through PayPal for a cup of coffee."
 }

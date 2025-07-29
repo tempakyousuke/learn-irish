@@ -239,5 +239,8 @@
 	"privacy_data_security_title": "データのセキュリティについて",
 	"privacy_data_security_content": "お客様のデータは、適切なセキュリティ対策を講じたFirebase認証とFirestoreデータベースを使用して安全に保存されます。",
 	"privacy_contact_title": "お問い合わせ",
-	"privacy_contact_content": "このプライバシーポリシーについてご質問がございましたら、サイト作成者の連絡先までお問い合わせください。"
+	"privacy_contact_content": "このプライバシーポリシーについてご質問がございましたら、サイト作成者の連絡先までお問い合わせください。",
+	"support_title": "このプロジェクトをご支援ください！",
+	"support_patreon_description": "Patreonでは、毎月＄５〜のサブスクリプションで、楽譜や音声データのダウンロードができます。",
+	"support_paypal_description": "PayPalでチップをお送りください。"
 }
