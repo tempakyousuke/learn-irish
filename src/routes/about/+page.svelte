@@ -1,7 +1,13 @@
 <script lang="ts">
-	import { t } from 'svelte-i18n';
-	import TunePage from '$lib/assets/tune_page.png';
-	import PracticeRecord from '$lib/assets/practice_record.png';
+	import { t, locale } from 'svelte-i18n';
+	import TunePageJa from '$lib/assets/tune_page_ja.png';
+	import PracticeRecordJa from '$lib/assets/practice_record_ja.png';
+	import TunePageEn from '$lib/assets/tune_page_en.png';
+	import PracticeRecordEn from '$lib/assets/practice_record_en.png';
+
+	const isJapanese = $derived($locale === 'ja');
+	const tunePage = $derived(isJapanese ? TunePageJa : TunePageEn);
+	const practiceRecord = $derived(isJapanese ? PracticeRecordJa : PracticeRecordEn);
 </script>
 
 <div class="md:w-[50rem] w-11/12 mx-auto">
@@ -14,13 +20,13 @@
 
 	<h2 class="mt-10 text-3xl font-bold">{$t('about_features_title')}</h2>
 	<div class="mt-5 img-wrapper">
-		<img class="img" src={TunePage} alt={$t('video_page_image_alt')} />
+		<img class="img" src={tunePage} alt={$t('video_page_image_alt')} />
 		<p class="img-text">
 			{$t('about_login_features')}
 		</p>
 	</div>
 	<div class="img-wrapper">
-		<img class="img" src={PracticeRecord} alt={$t('practice_record_image_alt')} />
+		<img class="img" src={practiceRecord} alt={$t('practice_record_image_alt')} />
 		<p class="img-text">
 			{$t('about_homepage_features')}
 		</p>
