@@ -39,7 +39,7 @@
 			await TuneSetRepository.addTunesToSet(setId, tuneIds);
 
 			toast.success($t('set_created'));
-			goto('/admin/sets');
+			goto('/admin-k7m3x9q2/sets');
 		} catch (error) {
 			console.error($t('set_creation_error'), error);
 			toast.error($t('set_creation_failed'));
@@ -49,7 +49,7 @@
 	};
 
 	const handleCancel = () => {
-		goto('/admin/sets');
+		goto('/admin-k7m3x9q2/sets');
 	};
 </script>
 

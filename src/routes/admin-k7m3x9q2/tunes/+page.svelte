@@ -57,7 +57,7 @@
 	<div class="flex justify-between items-center mb-6">
 		<h1 class="text-3xl font-bold text-teal-800">楽曲管理</h1>
 		<a
-			href="/admin/tunes/add"
+			href="/admin-k7m3x9q2/tunes/add"
 			class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
 		>
 			<Fa icon={faPlus} />
@@ -94,7 +94,7 @@
 			{:else}
 				<p class="text-gray-600 mb-4">楽曲がまだ登録されていません</p>
 				<a
-					href="/admin/tunes/add"
+					href="/admin-k7m3x9q2/tunes/add"
 					class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg inline-flex items-center space-x-2"
 				>
 					<Fa icon={faPlus} />
@@ -194,7 +194,7 @@
 											<span>詳細</span>
 										</a>
 										<a
-											href="/admin/tunes/update/{tune.id}"
+											href="/admin-k7m3x9q2/tunes/update/{tune.id}"
 											class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-3 py-1 rounded text-sm flex items-center space-x-1"
 											title={$t('edit')}
 										>

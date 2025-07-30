@@ -2,7 +2,7 @@
 
 <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 	<a
-		href="/admin/sets"
+		href="/admin-k7m3x9q2/sets"
 		class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
 	>
 		<h2 class="text-xl font-semibold mb-2">Sets</h2>
@@ -10,7 +10,7 @@
 	</a>
 
 	<a
-		href="/admin/tunes"
+		href="/admin-k7m3x9q2/tunes"
 		class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
 	>
 		<h2 class="text-xl font-semibold mb-2">Tunes</h2>
@@ -18,7 +18,7 @@
 	</a>
 
 	<a
-		href="/admin/inquiries"
+		href="/admin-k7m3x9q2/inquiries"
 		class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
 	>
 		<h2 class="text-xl font-semibold mb-2">問い合わせ</h2>
@@ -26,7 +26,7 @@
 	</a>
 
 	<a
-		href="/admin/cache"
+		href="/admin-k7m3x9q2/cache"
 		class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
 	>
 		<h2 class="text-xl font-semibold mb-2">キャッシュ管理</h2>

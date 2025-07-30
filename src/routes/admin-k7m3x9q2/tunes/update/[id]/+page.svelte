@@ -43,7 +43,7 @@
 			console.log('Update successful');
 			errorMessage = '';
 			toast.success($t('update_completed'));
-			goto('/admin/tunes');
+			goto('/admin-k7m3x9q2/tunes');
 		} catch (error) {
 			console.error($t('update_error'), error);
 			errorMessage = $t('update_failed');

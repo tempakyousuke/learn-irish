@@ -40,7 +40,7 @@
 			}
 
 			toast.success($t('set_updated'));
-			goto('/admin/sets');
+			goto('/admin-k7m3x9q2/sets');
 		} catch (error) {
 			console.error($t('set_update_error'), error);
 			toast.error($t('set_update_failed'));
@@ -50,7 +50,7 @@
 	};
 
 	const handleCancel = () => {
-		goto('/admin/sets');
+		goto('/admin-k7m3x9q2/sets');
 	};
 </script>
 
@@ -62,7 +62,7 @@
 	<div class="mb-6">
 		<h1 class="text-3xl font-bold text-teal-800 mb-2">セット編集: {data.set.name}</h1>
 		<nav class="text-sm text-gray-600">
-			<a href="/admin/sets" class="hover:text-teal-600">セット管理</a>
+			<a href="/admin-k7m3x9q2/sets" class="hover:text-teal-600">セット管理</a>
 			<span class="mx-2">></span>
 			<span>編集</span>
 		</nav>
