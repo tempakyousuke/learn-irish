@@ -8,6 +8,7 @@
 		getInquiryCreationErrorMessage,
 		getAuthenticationErrorMessage
 	} from '$core/utils/inquiryErrorHandling';
+	import { _ } from 'svelte-i18n';
 
 	interface Props {
 		onSubmitSuccess?: () => void;
@@ -34,11 +35,11 @@
 	let submitSuccess = $state(false);
 
 	// 問い合わせタイプのオプション
-	const inquiryTypes = [
-		{ value: 'opinion', label: '意見' },
-		{ value: 'request', label: '要望' },
-		{ value: 'bug_report', label: '不具合報告' }
-	] as const;
+	const inquiryTypes = $derived([
+		{ value: 'opinion', label: $_('inquiry_type_opinion') },
+		{ value: 'request', label: $_('inquiry_type_request') },
+		{ value: 'bug_report', label: $_('inquiry_type_bug_report') }
+	] as const);
 
 	/**
 	 * フォームバリデーション
@@ -49,13 +50,13 @@
 
 		// 内容の必須チェック
 		if (!formData.content.trim()) {
-			errors.content = '問い合わせ内容を入力してください';
+			errors.content = $_('inquiry_content_required');
 			isValid = false;
 		} else if (formData.content.trim().length < 10) {
-			errors.content = '問い合わせ内容は10文字以上で入力してください';
+			errors.content = $_('inquiry_content_min_length');
 			isValid = false;
 		} else if (formData.content.trim().length > 2000) {
-			errors.content = '問い合わせ内容は2000文字以内で入力してください';
+			errors.content = $_('inquiry_content_max_length');
 			isValid = false;
 		}
 
@@ -151,13 +152,13 @@
 		<div class="mb-6 p-4 bg-green-100 border border-green-200 rounded-lg text-green-800">
 			<div class="flex items-start justify-between">
 				<div>
-					<h3 class="font-medium">送信完了</h3>
-					<p class="mt-1">問い合わせを送信しました。ご協力ありがとうございます。</p>
+					<h3 class="font-medium">{$_('inquiry_form_success_title')}</h3>
+					<p class="mt-1">{$_('inquiry_form_success_message')}</p>
 				</div>
 				<button
 					onclick={dismissSuccess}
 					class="ml-4 text-green-600 hover:text-green-800 transition-colors"
-					aria-label="閉じる"
+					aria-label={$_('close')}
 				>
 					<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 						<path
@@ -176,11 +177,11 @@
 
 	<!-- 免責事項 -->
 	<div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-		<h3 class="font-medium text-yellow-800 mb-2">ご注意</h3>
+		<h3 class="font-medium text-yellow-800 mb-2">{$_('inquiry_form_disclaimer_title')}</h3>
 		<ul class="text-sm text-yellow-700 space-y-1">
-			<li>• 問い合わせに対する個別の返信は行っておりません</li>
-			<li>• すべての問い合わせに対応できるわけではありません</li>
-			<li>• 送信された内容は管理者が確認いたします</li>
+			<li>• {$_('inquiry_form_disclaimer_1')}</li>
+			<li>• {$_('inquiry_form_disclaimer_2')}</li>
+			<li>• {$_('inquiry_form_disclaimer_3')}</li>
 		</ul>
 	</div>
 
@@ -189,7 +190,7 @@
 		<!-- 問い合わせ種類 -->
 		<fieldset>
 			<legend class="block text-sm font-medium text-gray-700 mb-3">
-				問い合わせ種類 <span class="text-red-500">*</span>
+				{$_('inquiry_type_label')} <span class="text-red-500">{$_('required_field')}</span>
 			</legend>
 			<div class="space-y-2">
 				{#each inquiryTypes as option}
@@ -209,7 +210,7 @@
 		<!-- 問い合わせ内容 -->
 		<div>
 			<label for="content" class="block text-sm font-medium text-gray-700 mb-2">
-				問い合わせ内容 <span class="text-red-500">*</span>
+				{$_('inquiry_content_label')} <span class="text-red-500">{$_('required_field')}</span>
 			</label>
 			<textarea
 				id="content"
@@ -217,14 +218,14 @@
 				rows="8"
 				class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 				class:border-red-500={errors.content}
-				placeholder="問い合わせ内容を詳しくご記入ください..."
+				placeholder={$_('inquiry_content_placeholder')}
 				disabled={isSubmitting}
 			></textarea>
 			{#if errors.content}
 				<p class="mt-1 text-sm text-red-600">{errors.content}</p>
 			{/if}
 			<p class="mt-1 text-sm text-gray-500">
-				{formData.content.length}/2000文字
+				{$_('inquiry_content_counter', { values: { count: formData.content.length } })}
 			</p>
 		</div>
 
@@ -237,7 +238,7 @@
 					bgColorClass="bg-gray-500"
 					textColorClass="text-white"
 				>
-					キャンセル
+					{$_('cancel')}
 				</Button>
 			{/if}
 			<Button
@@ -246,7 +247,7 @@
 				bgColorClass="bg-blue-600"
 				textColorClass="text-white"
 			>
-				{isSubmitting ? '送信中...' : '送信'}
+				{isSubmitting ? $_('submitting') : $_('submit')}
 			</Button>
 		</div>
 	</form>
