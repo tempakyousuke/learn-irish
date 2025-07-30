@@ -67,6 +67,14 @@
 			>
 				Patreon
 			</a>
+			<a
+				href="https://docs.google.com/spreadsheets/d/1bdquYIFZy1nfOItR9BMxazVB6aoE-rkE/edit?usp=sharing&ouid=108672383276090709994&rtpof=true&sd=true"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-blue-600 hover:text-blue-800 underline"
+			>
+				Database
+			</a>
 			<LanguageSwitcher />
 		</div>
 		<main class="bg-teal-50 min-h-screen pt-10">
