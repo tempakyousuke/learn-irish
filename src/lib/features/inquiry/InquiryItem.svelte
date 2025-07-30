@@ -109,7 +109,8 @@
 		<div>ユーザーID: {inquiry.userId}</div>
 		{#if inquiry.userAgent}
 			<div class="font-mono text-xs bg-gray-50 p-2 rounded border">
-				<span class="font-semibold">UserAgent:</span> {inquiry.userAgent}
+				<span class="font-semibold">UserAgent:</span>
+				{inquiry.userAgent}
 			</div>
 		{/if}
 	</div>

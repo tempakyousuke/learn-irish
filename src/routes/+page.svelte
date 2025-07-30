@@ -27,6 +27,7 @@
 				rememberName: string;
 				rememberMelody: string;
 				selectedRhythm: string;
+				selectedKeyMode: string;
 				sortBy: string;
 				onlyFavorite: string;
 				currentPage: string;
@@ -43,6 +44,7 @@
 	let rememberName = $state<string>(data.formValues.rememberName);
 	let rememberMelody = $state<string>(data.formValues.rememberMelody);
 	let selectedRhythm = $state<string>(data.formValues.selectedRhythm);
+	let selectedKeyMode = $state<string>(data.formValues.selectedKeyMode);
 	let onlyFavorite = $state<string>(data.formValues.onlyFavorite);
 	let tuneName = $state<string>(data.formValues.tuneName);
 	let userTuneStatus = $state<{ [key: string]: UserTuneFull }>({});
@@ -51,6 +53,12 @@
 
 	const rhythms: string[] =
 		([...new Set(tunes.map((tune) => tune.rhythm))].sort() as string[]) || [];
+	const keyModes: string[] =
+		([
+			...new Set(
+				tunes.filter((tune) => tune.key && tune.mode).map((tune) => `${tune.key} ${tune.mode}`)
+			)
+		].sort() as string[]) || [];
 	const date = getDate();
 	let dailyData = $state<{ [key: string]: number }>({});
 
@@ -144,6 +152,8 @@
 				if (onlyFavorite === 'on' && !favoriteTuneIds.includes(tune.id)) return false;
 			}
 			if (selectedRhythm !== 'notSelected' && tune.rhythm !== selectedRhythm) return false;
+			if (selectedKeyMode !== 'notSelected' && selectedKeyMode !== `${tune.key} ${tune.mode}`)
+				return false;
 			if (tuneName && tuneName.trim() !== '') {
 				const searchTerm = tuneName.toLowerCase().trim();
 				if (!tune.name?.toLowerCase().includes(searchTerm)) return false;
@@ -261,6 +271,7 @@
 		rememberName;
 		rememberMelody;
 		selectedRhythm;
+		selectedKeyMode;
 		sortBy;
 		onlyFavorite;
 		tuneName;
@@ -275,16 +286,6 @@
 		const endIndex = startIndex + itemsPerPage;
 		return sortedTunes.slice(startIndex, endIndex);
 	});
-
-	const tuneObjects = $derived(
-		tunes.reduce(
-			(acc, tune) => {
-				acc[tune.id] = tune;
-				return acc;
-			},
-			{} as { [key: string]: TuneListView }
-		)
-	);
 
 	function updateCookie(name: string, value: string) {
 		document.cookie = serialize(name, value, {
@@ -301,6 +302,9 @@
 	});
 	$effect(() => {
 		updateCookie('selectedRhythm', selectedRhythm);
+	});
+	$effect(() => {
+		updateCookie('selectedKeyMode', selectedKeyMode);
 	});
 	$effect(() => {
 		updateCookie('sortBy', sortBy);
@@ -363,7 +367,6 @@
 			</div>
 		{:else}
 			<TuneStats {tunes} {rememberNameIds} {rememberMelodyIds} {totalCount} {dailyTotal} />
-			<!-- <DailyPlaysTable {dailyData} {tuneObjects} /> -->
 		{/if}
 	{/if}
 
@@ -373,9 +376,11 @@
 		bind:rememberMelody
 		bind:onlyFavorite
 		bind:selectedRhythm
+		bind:selectedKeyMode
 		bind:sortBy
 		bind:tuneName
 		{rhythms}
+		{keyModes}
 	/>
 
 	<div class="mx-auto mt-10 px-3">

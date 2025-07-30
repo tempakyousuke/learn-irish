@@ -23,6 +23,7 @@
 	"tune_name": "Tune Name",
 	"key": "Key",
 	"mode": "Mode",
+	"key_mode": "Key & Mode",
 	"tune_information": "Tune Information",
 	"times_played": "Times Played",
 	"favorite": "Favorite",

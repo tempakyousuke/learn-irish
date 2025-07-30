@@ -25,9 +25,11 @@
 		rememberMelody: string;
 		onlyFavorite: string;
 		selectedRhythm: string;
+		selectedKeyMode: string;
 		sortBy: string;
 		tuneName: string;
 		rhythms?: string[];
+		keyModes?: string[];
 	}
 
 	let {
@@ -36,9 +38,11 @@
 		rememberMelody = $bindable(),
 		onlyFavorite = $bindable(),
 		selectedRhythm = $bindable(),
+		selectedKeyMode = $bindable(),
 		sortBy = $bindable(),
 		tuneName = $bindable(),
-		rhythms = []
+		rhythms = [],
+		keyModes = []
 	}: Props = $props();
 </script>
 
@@ -114,6 +118,22 @@
 		</div>
 		<div class="filter-block">
 			<div class="label flex items-center">
+				<Fa icon={faMusic} class="w-5 h-5 text-emerald-500 mr-2" />{$t('key_mode')}
+			</div>
+			<select
+				class="input"
+				bind:value={selectedKeyMode}
+				name="selectedKeyMode"
+				id="selectedKeyMode"
+			>
+				<option value="notSelected"></option>
+				{#each keyModes as keyMode}
+					<option value={keyMode}>{keyMode}</option>
+				{/each}
+			</select>
+		</div>
+		<div class="filter-block">
+			<div class="label flex items-center">
 				<Fa icon={faSort} class="w-5 h-5 text-emerald-500 mr-2" />{$t('sort')}
 			</div>
 			<select id="sortByNameSelect" class="input" bind:value={sortBy}>
@@ -165,7 +185,7 @@
 		.filter-form {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
-			grid-template-rows: repeat(2, auto);
+			grid-template-rows: repeat(3, auto);
 			max-width: 1050px;
 			margin: 0 auto;
 			gap: 1.5rem 2rem;
@@ -178,7 +198,7 @@
 		.filter-form {
 			display: grid;
 			grid-template-columns: repeat(2, 1fr);
-			grid-template-rows: repeat(3, auto);
+			grid-template-rows: repeat(4, auto);
 			max-width: 700px;
 			margin: 0 auto;
 			gap: 1.5rem 2rem;

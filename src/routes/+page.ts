@@ -18,6 +18,7 @@ export async function load({ url }: { url: URL }) {
 		rememberName: cookies.rememberName || 'notSelected',
 		rememberMelody: cookies.rememberMelody || 'notSelected',
 		selectedRhythm: cookies.selectedRhythm || 'notSelected',
+		selectedKeyMode: cookies.selectedKeyMode || 'notSelected',
 		sortBy: cookies.sortBy || 'sort_by_number_asc',
 		onlyFavorite: cookies.onlyFavorite || 'off',
 		currentPage: cookies.currentPage || '1',
