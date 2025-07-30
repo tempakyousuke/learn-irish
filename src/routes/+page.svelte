@@ -287,7 +287,6 @@
 	);
 
 	function updateCookie(name: string, value: string) {
-		if (!value) return;
 		document.cookie = serialize(name, value, {
 			path: '/',
 			maxAge: 60 * 60 * 24 * 365
