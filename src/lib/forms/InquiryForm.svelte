@@ -85,13 +85,17 @@
 		submitError = null;
 
 		try {
+			// ユーザーエージェント情報を取得
+			const userAgent = navigator.userAgent;
+
 			// 問い合わせデータを作成
 			const inquiryData = createInquiry(
 				{
 					content: formData.content.trim(),
 					userId: $userStore.uid,
 					createdAt: new Date(),
-					status: 'unconfirmed'
+					status: 'unconfirmed',
+					userAgent
 				},
 				{
 					type: formData.type

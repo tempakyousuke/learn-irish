@@ -26,6 +26,8 @@ export interface InquiryBase {
 	createdAt: Date;
 	/** 問い合わせのステータス */
 	status: InquiryStatus;
+	/** ユーザーエージェント情報 */
+	userAgent?: string;
 }
 
 /**
@@ -117,7 +119,8 @@ export function parseInquiryData(data: Record<string, unknown>, id: string): Inq
 		userId: typeof data.userId === 'string' ? data.userId : '',
 		createdAt,
 		status: isValidStatus(data.status) ? data.status : 'unconfirmed',
-		type: isValidType(data.type) ? data.type : undefined
+		type: isValidType(data.type) ? data.type : undefined,
+		userAgent: typeof data.userAgent === 'string' ? data.userAgent : undefined
 	};
 }
 
@@ -149,6 +152,7 @@ export function inquiryToFirestoreData(inquiry: InquiryCreate): Record<string, u
 		userId: inquiry.userId,
 		createdAt: inquiry.createdAt,
 		status: inquiry.status,
-		...(inquiry.type && { type: inquiry.type })
+		...(inquiry.type && { type: inquiry.type }),
+		...(inquiry.userAgent && { userAgent: inquiry.userAgent })
 	};
 }
