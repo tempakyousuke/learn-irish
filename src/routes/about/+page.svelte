@@ -29,7 +29,15 @@
 	<h2 class="mt-10 text-3xl font-bold">{$t('support_title')}</h2>
 	<div class="mt-5 text-xl">
 		<p class="mb-4">
-			(1) {$t('support_patreon_description')}
+			(1) {$t('support_patreon_description')}<br />
+			<a
+				href="https://www.patreon.com/tune_everyday"
+				class="text-blue-600 underline"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				https://www.patreon.com/tune_everyday
+			</a>
 		</p>
 		<p class="mb-4">
 			(2) {$t('support_paypal_description')}<br />
@@ -40,16 +48,6 @@
 				rel="noopener noreferrer"
 			>
 				https://paypal.me/celtnofue
-			</a>
-		</p>
-		<p class="mb-4">
-			<a
-				href="https://www.patreon.com/tune_everyday"
-				class="text-blue-600 underline"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				https://www.patreon.com/tune_everyday
 			</a>
 		</p>
 	</div>
