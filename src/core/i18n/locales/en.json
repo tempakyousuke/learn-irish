@@ -244,5 +244,21 @@
 	"privacy_contact_content": "If you have any questions about this privacy policy, please contact us through the site creator's contact information.",
 	"support_title": "To support this project.",
 	"support_patreon_description": "By becoming my supporter from $5/Month on Patreon, you can download the printable scores, music tracks, and request traditional tunes you want to learn.",
-	"support_paypal_description": "You can send a few bucks through PayPal for a cup of coffee."
+	"support_paypal_description": "You can send a few bucks through PayPal for a cup of coffee.",
+	"browser_update_notice": "Before reporting bugs, please check if your browser is up to date. If not, updating to the latest version may resolve the issue.",
+	"contact_page_title": "Contact",
+	"contact_page_description": "Please send us your opinions, requests, and bug reports about the system.",
+	"loading_message": "Loading...",
+	"contact_form_success_title": "Submission Complete",
+	"contact_form_success_message": "Your inquiry has been submitted. Thank you for your cooperation.",
+	"contact_form_success_note": "The submitted content will be reviewed by the administrator. Please note that we do not provide individual replies.",
+	"close_message_label": "Close message",
+	"usage_guidelines_title": "Usage Guidelines",
+	"no_individual_replies": "We do not provide individual replies to inquiries",
+	"not_all_requests_handled": "We cannot respond to all inquiries",
+	"content_used_for_improvement": "The submitted content will be reviewed by the administrator and used as reference for system improvement",
+	"bug_report_details": "When reporting bugs, please describe the situation in detail",
+	"login_required_title": "Login Required",
+	"login_required_message": "Please log in to submit an inquiry.",
+	"login_button": "Login"
 }

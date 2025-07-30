@@ -244,5 +244,21 @@
 	"privacy_contact_content": "このプライバシーポリシーについてご質問がございましたら、サイト作成者の連絡先までお問い合わせください。",
 	"support_title": "このプロジェクトをご支援ください！",
 	"support_patreon_description": "Patreonでは、毎月＄５〜のサブスクリプションで、楽譜や音声データのダウンロードができます。",
-	"support_paypal_description": "PayPalでチップをお送りください。"
+	"support_paypal_description": "PayPalでチップをお送りください。",
+	"browser_update_notice": "不具合の報告の前にブラウザが最新バージョンか確認してください。最新でない場合、最新のものに更新することで不具合が発生しなくなる可能性があります",
+	"contact_page_title": "問い合わせ",
+	"contact_page_description": "システムに関するご意見、ご要望、不具合報告をお送りください。",
+	"loading_message": "読み込み中...",
+	"contact_form_success_title": "送信完了",
+	"contact_form_success_message": "問い合わせを送信いたしました。ご協力ありがとうございます。",
+	"contact_form_success_note": "送信された内容は管理者が確認いたします。個別の返信は行っておりませんので、予めご了承ください。",
+	"close_message_label": "メッセージを閉じる",
+	"usage_guidelines_title": "ご利用にあたってのお願い",
+	"no_individual_replies": "問い合わせに対する個別の返信は行っておりません",
+	"not_all_requests_handled": "すべての問い合わせに対応できるわけではありません",
+	"content_used_for_improvement": "送信された内容は管理者が確認し、システム改善の参考とさせていただきます",
+	"bug_report_details": "不具合報告の際は、発生状況を詳しくお書きください",
+	"login_required_title": "ログインが必要です",
+	"login_required_message": "問い合わせを送信するにはログインしてください。",
+	"login_button": "ログイン"
 }
