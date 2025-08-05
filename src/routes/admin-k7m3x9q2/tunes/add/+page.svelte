@@ -3,54 +3,80 @@
 	import { db } from '$core/data/firebase/firebaseClient';
 	import { addDoc, collection } from 'firebase/firestore';
 	import { toast } from 'svelte-sonner';
+	import type { Tune } from '$core/data/models';
+	import Input from '$lib/forms/Input.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 
 	let sheetText = $state('');
+	let editableTunes: Omit<Tune, 'id'>[] = $state([]);
 
-	const rows = $derived(sheetText.split('\n'));
-
-	const parsedTunes = $derived(
-		rows.map((row) => {
+	$effect(() => {
+		if (!sheetText) {
+			editableTunes = [];
+			return;
+		}
+		const rows = sheetText.split('\n').filter((row) => row.trim() !== '');
+		editableTunes = rows.map((row) => {
 			const parsedValue = row.split('\t');
 			return {
-				setNo: parseInt(parsedValue[0]),
-				tuneNo: parseInt(parsedValue[1]),
-				name: parsedValue[2],
-				link: parsedValue[3],
-				genre: parsedValue[4],
-				date: parsedValue[5],
-				rhythm: parsedValue[6],
-				key: parsedValue[7],
-				mode: parsedValue[8],
-				part: parseInt(parsedValue[9]),
-				commonness: parsedValue[10],
-				difficulty: parsedValue[11],
-				range: parsedValue[12],
-				spotify: parsedValue[14],
-				instrument: parsedValue[15],
-				source: parsedValue[16],
-				composer: parsedValue[17],
-				region: parsedValue[18],
-				alsoKnown: parsedValue[19]
+				setNo: parsedValue[0] || '',
+				tuneNo: parseInt(parsedValue[1]) || 0,
+				name: parsedValue[2] || '',
+				link: parsedValue[3] || '',
+				genre: parsedValue[4] || '',
+				date: parsedValue[5] || '',
+				rhythm: parsedValue[6] || '',
+				key: parsedValue[7] || '',
+				mode: parsedValue[8] || '',
+				part: parsedValue[9] || '',
+				commonness: parsedValue[10] || '',
+				difficulty: parsedValue[11] || '',
+				range: parsedValue[12] || '',
+				spotify: parsedValue[14] || '',
+				instrument: parsedValue[15] || '',
+				source: parsedValue[16] || '',
+				composer: parsedValue[17] || '',
+				region: parsedValue[18] || '',
+				alsoKnown: parsedValue[19] || ''
 			};
-		})
-	);
+		});
+	});
 
 	const saveTunes = async () => {
-		if (parsedTunes.length === 0) {
+		if (editableTunes.length === 0) {
 			toast.error($t('no_tunes_to_save'));
 			return;
 		}
 
 		try {
-			const promises = parsedTunes.map((tune) => addDoc(collection(db, 'tunes'), tune));
+			const promises = editableTunes.map((tune) => addDoc(collection(db, 'tunes'), tune));
 			await Promise.all(promises);
 
-			if (parsedTunes.length === 1) {
-				toast.success(`${parsedTunes[0].name}を保存しました。`);
+			if (editableTunes.length === 1) {
+				toast.success(`${editableTunes[0].name}を保存しました。`);
 			} else {
-				toast.success(`${parsedTunes.length}曲を保存しました。`);
+				toast.success(`${editableTunes.length}曲を保存しました。`);
 			}
 			sheetText = '';
+			editableTunes = [];
+		} catch (error) {
+			toast.error($t('save_error'));
+			console.error(error);
+		}
+	};
+
+	const saveTune = async (tuneToSave: Omit<Tune, 'id'>) => {
+		try {
+			await addDoc(collection(db, 'tunes'), tuneToSave);
+			toast.success(`${tuneToSave.name}を保存しました。`);
+
+			// Remove the saved tune from the list
+			editableTunes = editableTunes.filter((t) => t !== tuneToSave);
+
+			// If all tunes are saved, clear the sheet text
+			if (editableTunes.length === 0) {
+				sheetText = '';
+			}
 		} catch (error) {
 			toast.error($t('save_error'));
 			console.error(error);
@@ -67,113 +93,69 @@
 	<textarea class="w-full h-32" bind:value={sheetText} placeholder={$t('paste_spreadsheet_content')}
 	></textarea>
 
-	{#if parsedTunes.length > 0}
-		<div class="mt-4">
-			<h3 class="text-lg font-bold mb-2">追加予定の曲（{parsedTunes.length}曲）:</h3>
-			<div class="overflow-x-auto max-h-96 overflow-y-auto border rounded">
-				<table class="min-w-full divide-y divide-gray-200">
-					<thead class="bg-gray-50 sticky top-0">
-						<tr>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>#</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Set</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>No</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Name</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Genre</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Rhythm</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Key</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Difficulty</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Date</th
-							>
-							<th
-								class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-								>Link</th
-							>
-						</tr>
-					</thead>
-					<tbody class="bg-white divide-y divide-gray-200">
-						{#each parsedTunes as tune, index}
-							<tr class="hover:bg-gray-50">
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900"
-									>{tune.setNo || '-'}</td
-								>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900"
-									>{tune.tuneNo || '-'}</td
-								>
-								<td class="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900"
-									>{tune.name || '-'}</td
-								>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500"
-									>{tune.genre || '-'}</td
-								>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500"
-									>{tune.rhythm || '-'}</td
-								>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{tune.key || '-'}</td>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500"
-									>{tune.difficulty || '-'}</td
-								>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{tune.date || '-'}</td
-								>
-								<td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
-									{#if tune.link}
-										<a
-											href={tune.link}
-											target="_blank"
-											rel="noopener noreferrer"
-											class="text-blue-600 hover:text-blue-900"
-										>
-											Link
-										</a>
-									{:else}
-										-
-									{/if}
-								</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
+	{#if editableTunes.length > 0}
+		<div class="mt-8 space-y-8">
+			<h3 class="text-2xl font-bold mb-4">追加予定の曲（{editableTunes.length}曲）:</h3>
+			{#each editableTunes as tune, index}
+				<div class="border p-6 rounded-xl shadow-md space-y-6">
+					<h3 class="text-xl font-bold">
+						{tune.name || `Tune ${index + 1}`}
+					</h3>
+
+					<div>
+						<h4 class="text-lg font-semibold mb-3">基本情報</h4>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<Input bind:value={tune.tuneNo} label={$t('tune_number')} type="number" />
+							<Input bind:value={tune.name} label={$t('tune_name_label')} />
+						</div>
+					</div>
+
+					<div>
+						<h4 class="text-lg font-semibold mb-3">音楽的特性</h4>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<Input bind:value={tune.rhythm} label={$t('rhythm')} />
+							<Input bind:value={tune.key} label={$t('key_label')} />
+							<Input bind:value={tune.mode} label={$t('mode_label')} />
+							<Input bind:value={tune.part} label={$t('part_count')} />
+						</div>
+					</div>
+
+					<div>
+						<h4 class="text-lg font-semibold mb-3">メタ情報</h4>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<Input bind:value={tune.setNo} label={$t('set_number')} />
+							<Input bind:value={tune.genre} label={$t('genre')} />
+							<Input bind:value={tune.date} label={$t('date')} />
+							<Input bind:value={tune.instrument} label={$t('instrument')} />
+							<Input bind:value={tune.composer} label={$t('composer')} />
+							<Input bind:value={tune.region} label={$t('region')} />
+							<Input bind:value={tune.alsoKnown} label={$t('also_known')} />
+						</div>
+					</div>
+
+					<div>
+						<h4 class="text-lg font-semibold mb-3">外部リンク</h4>
+						<div class="grid grid-cols-1 gap-4">
+							<Input bind:value={tune.link} label={$t('youtube_link')} />
+							<Input bind:value={tune.spotify} label={$t('spotify_link')} />
+							<Input bind:value={tune.source} label={$t('source')} />
+						</div>
+					</div>
+					<div class="flex justify-end">
+						<Button onclick={() => saveTune(tune)}>この曲を保存</Button>
+					</div>
+				</div>
+			{/each}
 		</div>
 	{/if}
 
-	<button
-		class="p-2 rounded bg-green-900 text-white mt-4"
-		onclick={saveTunes}
-		disabled={parsedTunes.length === 0}
-	>
-		{#if parsedTunes.length === 0}
+	<Button className="mt-6" onclick={saveTunes} disabled={editableTunes.length === 0}>
+		{#if editableTunes.length === 0}
 			保存する曲がありません
-		{:else if parsedTunes.length === 1}
+		{:else if editableTunes.length === 1}
 			1曲を保存
 		{:else}
-			{parsedTunes.length}曲を保存
+			{editableTunes.length}曲を保存
 		{/if}
-	</button>
+	</Button>
 </div>
