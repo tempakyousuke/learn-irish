@@ -7,7 +7,8 @@ import {
 	doc,
 	getDoc,
 	setDoc,
-	serverTimestamp
+	serverTimestamp,
+	deleteDoc
 } from 'firebase/firestore';
 import type { TuneFull, TuneListView } from '$core/data/models/Tune';
 import { parseTuneData, parseTuneListViewData } from '$core/data/models/Tune';
@@ -16,6 +17,7 @@ import { createCache } from '$core/utils/cacheStorage';
 import { db } from '$core/data/firebase/firebaseClient';
 import type { UserTuneFull } from '../models/UserTune';
 import { SetRepository } from './setRepository';
+import { TuneSetRepository } from './tuneSetRepository';
 import type { TuneListViewCache } from '../models/Cache';
 import { CACHE_CONFIG } from '../models/Cache';
 
@@ -358,6 +360,36 @@ export const getTunes = TuneRepository.getTunes.bind(TuneRepository);
 export const getTunesForListView = TuneRepository.getTunesForListView.bind(TuneRepository);
 export const refreshTunes = TuneRepository.refreshTunes.bind(TuneRepository);
 export const updateTuneListViewCache = TuneRepository.updateTuneListViewCache.bind(TuneRepository);
+
+/**
+ * 楽曲を削除する（関連するtuneSetsレコードも同時に削除し、キャッシュを更新）
+ * @param tuneId 曲ID
+ */
+export async function deleteTune(tuneId: string): Promise<void> {
+	try {
+		// 関連のtuneSetsを全削除
+		await TuneSetRepository.removeTuneFromAllSets(tuneId);
+
+		// tunesドキュメントを削除
+		const tuneDocRef = doc(db, 'tunes', tuneId);
+		await deleteDoc(tuneDocRef);
+
+		// キャッシュ更新（ローカル/軽量キャッシュ）
+		await TuneRepository.refreshTunes();
+		try {
+			await TuneRepository.updateTuneListViewCache();
+		} catch (e) {
+			// 権限がない環境ではここは失敗しうるので警告に留める
+			console.warn('軽量キャッシュ更新に失敗しました（権限または接続）:', e);
+		}
+	} catch (error) {
+		console.error('楽曲削除エラー:', error);
+		if (error instanceof FirestoreError) {
+			throw new Error(`楽曲の削除に失敗しました: ${error.message}`);
+		}
+		throw error as Error;
+	}
+}
 
 /**
  * 指定ユーザーのUserTune（習得状況）一覧を取得する

@@ -328,6 +328,33 @@ export class TuneSetRepository {
 	}
 
 	/**
+	 * 指定した曲IDに紐づく全てのtuneSetsレコードを削除する
+	 * @param tuneId 曲のID
+	 */
+	public static async removeTuneFromAllSets(tuneId: string): Promise<void> {
+		try {
+			const related = await this.getTuneSetsByTuneId(tuneId);
+			if (related.length === 0) {
+				return;
+			}
+
+			const batch = writeBatch(db);
+			related.forEach((ts) => {
+				batch.delete(doc(db, 'tuneSets', ts.id));
+			});
+			await batch.commit();
+
+			// キャッシュクリア
+			await this.refreshTuneSets();
+		} catch (error) {
+			console.error('曲に紐づくtuneSets一括削除エラー:', error);
+			throw new Error(
+				`曲に紐づく関係レコードの削除に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+			);
+		}
+	}
+
+	/**
 	 * キャッシュをクリアして強制的に再取得する
 	 * @returns 最新の曲-セット関係性データ
 	 */
