@@ -37,6 +37,11 @@
 	let isBookmarked = $state<boolean>(false);
 	let playHistory = $state<{ [key: string]: number }>({});
 
+	// デバウンス用の一時カウンタとタイマー
+	let pendingPlayIncrements = 0;
+	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+	let isFlushing = false;
+
 	$effect(() => {
 		(async () => {
 			const user = $userStore;
@@ -81,25 +86,85 @@
 		}
 		await updateMemoryStatus(uid, tune.id, undefined, rememberMelody);
 	};
-	const updatePlayCount = async () => {
+
+	// バックエンドへまとめて反映（対象を引数で受け取り、UI同期の有無を選択）
+	const flushPlayCount = async (
+		targetUid: string,
+		targetTuneId: string,
+		syncUI: boolean = true
+	) => {
+		if (!targetUid || !targetTuneId || pendingPlayIncrements === 0 || isFlushing) {
+			return;
+		}
+		isFlushing = true;
+		const currentDate = getDate();
+		const incrementsToSend = pendingPlayIncrements;
+		pendingPlayIncrements = 0;
+		try {
+			const success = await incrementUserTunePlayCount(
+				targetUid,
+				targetTuneId,
+				currentDate,
+				incrementsToSend
+			);
+			if (success) {
+				const newDailyCount = await incrementDailyPlayCount(
+					targetUid,
+					currentDate,
+					targetTuneId,
+					incrementsToSend
+				);
+				if (syncUI && newDailyCount > 0) {
+					playHistory[currentDate] = newDailyCount;
+				}
+			} else if (syncUI) {
+				// 失敗時は楽観的更新を巻き戻す（UI同期が必要なときのみ）
+				playCount = Math.max(0, playCount - incrementsToSend);
+				const prev = playHistory[currentDate] || 0;
+				playHistory[currentDate] = Math.max(0, prev - incrementsToSend);
+			}
+		} catch (e) {
+			if (syncUI) {
+				playCount = Math.max(0, playCount - incrementsToSend);
+				const prev = playHistory[currentDate] || 0;
+				playHistory[currentDate] = Math.max(0, prev - incrementsToSend);
+			}
+		} finally {
+			isFlushing = false;
+		}
+	};
+
+	const updatePlayCount = () => {
 		if (!uid) {
 			return;
 		}
-
 		const currentDate = getDate();
+		// UIは即時反映（楽観的更新）
 		playCount++;
-
-		// Update play count using repository
-		const success = await incrementUserTunePlayCount(uid, tune.id, currentDate, 1);
-		if (success) {
-			const newDailyCount = await incrementDailyPlayCount(uid, currentDate, tune.id, 1);
-			if (newDailyCount > 0) {
-				playHistory[currentDate] = newDailyCount;
-			}
-		} else {
-			playCount += -1;
+		playHistory[currentDate] = (playHistory[currentDate] || 0) + 1;
+		pendingPlayIncrements += 1;
+		// デバウンスしてまとめて送信
+		if (debounceTimer) {
+			clearTimeout(debounceTimer);
 		}
+		debounceTimer = setTimeout(() => {
+			debounceTimer = null;
+			void flushPlayCount(uid, tune.id, true);
+		}, 1000);
 	};
+
+	// rune API: $effect のクリーンアップでフラッシュとクリーンアップを実施
+	$effect(() => {
+		const currentUid = uid;
+		const currentTuneId = tune.id;
+		return () => {
+			if (debounceTimer) {
+				clearTimeout(debounceTimer);
+				debounceTimer = null;
+			}
+			void flushPlayCount(currentUid, currentTuneId, false);
+		};
+	});
 	const updateNote = async () => {
 		if (!uid) {
 			return;

@@ -6,6 +6,7 @@
 	import { toast } from 'svelte-sonner';
 	import Fa from 'svelte-fa';
 	import { faPlus, faEdit, faTrash, faEye, faMusic } from '@fortawesome/free-solid-svg-icons';
+	import { deleteTune as deleteTuneApi } from '$core/data/repositories/tuneRepository';
 
 	let tunes = $state<TuneFull[]>([]);
 	let loading = $state(true);
@@ -40,8 +41,11 @@
 		}
 
 		try {
-			// TODO: 楽曲削除のAPI実装が必要
-			toast.info($t('tune_deletion_not_implemented'));
+			await deleteTuneApi(tuneId);
+
+			// ローカル一覧からも即時反映
+			tunes = tunes.filter((t) => t.id !== tuneId);
+			toast.success('楽曲を削除しました');
 		} catch (error) {
 			console.error($t('tune_deletion_error'), error);
 			toast.error($t('tune_deletion_failed'));
