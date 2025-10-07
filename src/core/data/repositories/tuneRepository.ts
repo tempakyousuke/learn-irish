@@ -20,6 +20,10 @@ import { SetRepository } from './setRepository';
 import { TuneSetRepository } from './tuneSetRepository';
 import type { TuneListViewCache } from '../models/Cache';
 import { CACHE_CONFIG } from '../models/Cache';
+import { get } from 'svelte/store';
+import { userId } from '$core/auth/authService';
+import { cleanupUserTuneEntries } from './userTuneRepository';
+import type { Timestamp } from 'firebase/firestore';
 
 /**
  * 曲データのリポジトリクラス
@@ -206,6 +210,17 @@ export class TuneRepository {
 
 						// エラー状態をクリア
 						this.lastError = null;
+
+						// キャッシュ更新に合わせてユーザーの孤児化した曲データをクリーンアップ
+						try {
+							const uid = get(userId);
+							if (uid) {
+								await this.maybeCleanupDeletedUserTunes(uid, cacheData);
+							}
+						} catch (e) {
+							console.warn('ユーザー曲クリーンアップに失敗:', e);
+						}
+
 						return cacheData.data;
 					} else {
 						console.warn('キャッシュドキュメントのデータが無効です');
@@ -229,8 +244,6 @@ export class TuneRepository {
 	 */
 	private static async getTunesFromCollection(): Promise<TuneListView[]> {
 		try {
-			console.log('tunesコレクションから直接取得します');
-
 			// Firestoreから曲データを取得
 			const qu = query(collection(db, 'tunes'), orderBy('tuneNo', 'asc'));
 			const snapshot = await getDocs(qu);
@@ -249,7 +262,6 @@ export class TuneRepository {
 
 			// エラー状態をクリア
 			this.lastError = null;
-			console.log(`tunesコレクションから取得完了: ${fetchedTunes.length}件`);
 			return fetchedTunes;
 		} catch (error) {
 			// エラーをより具体的に変換
@@ -302,8 +314,6 @@ export class TuneRepository {
 	 */
 	public static async updateTuneListViewCache(): Promise<TuneListViewCache> {
 		try {
-			console.log('楽曲一覧キャッシュを更新開始...');
-
 			// tunesコレクションから最新データを取得
 			const qu = query(collection(db, 'tunes'), orderBy('tuneNo', 'asc'));
 			const snapshot = await getDocs(qu);
@@ -319,7 +329,7 @@ export class TuneRepository {
 			// キャッシュドキュメントを作成
 			const cacheData: TuneListViewCache = {
 				data: tuneData,
-				lastUpdated: serverTimestamp() as any,
+				lastUpdated: serverTimestamp() as unknown as Timestamp,
 				version: CACHE_CONFIG.CURRENT_VERSION,
 				totalCount: tuneData.length
 			};
@@ -331,7 +341,6 @@ export class TuneRepository {
 			// ローカルキャッシュも更新
 			this.tunesListViewCache.set(tuneData);
 
-			console.log(`楽曲一覧キャッシュ更新完了: ${tuneData.length}件`);
 			return cacheData;
 		} catch (error) {
 			console.error('楽曲一覧キャッシュ更新エラー:', error);
@@ -351,6 +360,47 @@ export class TuneRepository {
 			}
 
 			throw new Error(errorMessage, { cause: error });
+		}
+	}
+
+	/**
+	 * 楽曲一覧キャッシュ更新に合わせて、ユーザーコレクションに残っている削除済み曲のドキュメントをクリーンアップ
+	 */
+	private static async maybeCleanupDeletedUserTunes(
+		uid: string,
+		cacheData: TuneListViewCache
+	): Promise<void> {
+		try {
+			// キャッシュの lastUpdated が取得できない場合はスキップ
+			const cacheUpdatedAt = cacheData.lastUpdated as Timestamp | undefined;
+			if (!cacheUpdatedAt || typeof cacheUpdatedAt.toMillis !== 'function') {
+				return;
+			}
+
+			// ユーザードキュメントから最終クリーンアップ時刻を取得
+			const userDocRef = doc(db, `users/${uid}`);
+			const userDocSnap = await getDoc(userDocRef);
+			const userData = userDocSnap.data() as { lastTunesCleanupAt?: Timestamp } | undefined;
+			const lastCleanupAt = userData?.lastTunesCleanupAt;
+
+			// 既に同一/新しい時刻でクリーン済みならスキップ
+			if (lastCleanupAt && typeof lastCleanupAt.toMillis === 'function') {
+				if (lastCleanupAt.toMillis() >= cacheUpdatedAt.toMillis()) {
+					return;
+				}
+			}
+
+			// 有効な曲IDの集合を作成
+			const validTuneIds = (cacheData.data || []).map((t) => t.id);
+			if (!validTuneIds.length) return;
+
+			// クリーンアップ実行
+			await cleanupUserTuneEntries(uid, validTuneIds);
+
+			// 実行時刻としてキャッシュの更新時刻を保存（将来の無駄な実行を防止）
+			await setDoc(userDocRef, { lastTunesCleanupAt: cacheUpdatedAt }, { merge: true });
+		} catch (e) {
+			console.warn('maybeCleanupDeletedUserTunes 実行中にエラー:', e);
 		}
 	}
 }

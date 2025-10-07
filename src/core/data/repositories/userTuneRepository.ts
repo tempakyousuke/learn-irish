@@ -1,4 +1,12 @@
-import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
+import {
+	getFirestore,
+	getDoc,
+	doc,
+	setDoc,
+	collection,
+	getDocs,
+	deleteDoc
+} from 'firebase/firestore';
 import { getFirebaseErrorMessage } from '$core/utils/errorHandling';
 import type { UserTuneFull } from '$core/data/models/UserTune';
 import { createUserTune, incrementPlayCount } from '$core/data/models/UserTune';
@@ -171,4 +179,41 @@ export async function updateUserTuneNote(
 		console.error('メモ更新エラー:', getFirebaseErrorMessage(error));
 		return false;
 	}
+}
+
+/**
+ * users/{uid}/tunes に残存している、削除済みの曲IDのドキュメントをクリーンアップする
+ * @param userId ユーザーID
+ * @param validTuneIds 有効な曲ID配列（tunes コレクションに存在するもの）
+ * @returns 削除したドキュメント数
+ */
+export async function cleanupUserTuneEntries(
+	userId: string,
+	validTuneIds: string[]
+): Promise<number> {
+	if (!userId) return 0;
+	if (!Array.isArray(validTuneIds) || validTuneIds.length === 0) return 0;
+
+	const validIdSet = new Set(validTuneIds);
+	let deletedCount = 0;
+
+	try {
+		const tunesCollectionRef = collection(db, `users/${userId}/tunes`);
+		const querySnapshot = await getDocs(tunesCollectionRef);
+
+		for (const d of querySnapshot.docs) {
+			if (!validIdSet.has(d.id)) {
+				try {
+					await deleteDoc(d.ref);
+					deletedCount += 1;
+				} catch (err) {
+					console.warn('ユーザー曲ドキュメント削除に失敗:', d.id, err);
+				}
+			}
+		}
+	} catch (error) {
+		console.error('ユーザー曲クリーンアップ処理に失敗:', error);
+	}
+
+	return deletedCount;
 }
