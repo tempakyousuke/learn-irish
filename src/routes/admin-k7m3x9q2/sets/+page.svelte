@@ -18,8 +18,8 @@
 		try {
 			// セットと曲データを並行して取得
 			const [setsData, tunesData] = await Promise.all([
-				SetRepository.getSets(),
-				TuneRepository.getTunes()
+				SetRepository.getSets(true),
+				TuneRepository.getTunes(true)
 			]);
 
 			sets = setsData.sort((a, b) => Number(b.setNo) - Number(a.setNo));

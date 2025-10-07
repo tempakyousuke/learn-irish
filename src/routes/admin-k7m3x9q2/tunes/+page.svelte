@@ -14,7 +14,7 @@
 
 	onMount(async () => {
 		try {
-			tunes = await TuneRepository.getTunes();
+			tunes = await TuneRepository.getTunes(true);
 		} catch (error) {
 			console.error($t('tune_data_fetch_error'), error);
 			toast.error($t('tune_data_fetch_failed'));
