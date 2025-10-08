@@ -13,6 +13,9 @@
 	let { data }: { data: { tune: Tune } } = $props();
 	let tune = $state(data.tune);
 
+	// theSessionは既存データでは未定義の可能性があるため空文字に正規化
+	tune.theSession ??= '';
+
 	let errorMessage = $state('');
 
 	const submit = async (event: Event) => {
@@ -98,6 +101,7 @@
 			<Input bind:value={tune.link} label={$t('youtube_link')} />
 			<Input bind:value={tune.spotify} label={$t('spotify_link')} />
 			<Input bind:value={tune.source} label={$t('source')} />
+			<Input bind:value={tune.theSession} label={$t('the_session_link')} />
 		</div>
 
 		<Button className="mt-6" type="submit">更新</Button>
