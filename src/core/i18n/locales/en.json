@@ -152,6 +152,7 @@
 	"youtube_link": "YouTube Link",
 	"spotify_link": "Spotify Link",
 	"source": "Source",
+	"the_session_link": "The Session Link",
 	"tune_data_fetch_error": "Tune data fetch error:",
 	"tune_data_fetch_failed": "Failed to fetch tune data",
 	"tune_deletion_not_implemented": "Tune deletion feature is under development",

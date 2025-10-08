@@ -59,6 +59,8 @@ export interface TuneExternalLinks {
 	spotify?: string;
 	/** 楽譜等のソース */
 	source?: string;
+	/** The Session (https://thesession.org) のリンク */
+	theSession?: string;
 }
 
 /**
@@ -151,6 +153,7 @@ export function parseTuneData(data: Record<string, unknown>, id: string): TuneFu
 			instrument: typeof data.instrument === 'string' ? data.instrument : undefined,
 			spotify: typeof data.spotify === 'string' ? data.spotify : undefined,
 			source: typeof data.source === 'string' ? data.source : undefined,
+			theSession: typeof data.theSession === 'string' ? data.theSession : undefined,
 			composer: typeof data.composer === 'string' ? data.composer : undefined,
 			region: typeof data.region === 'string' ? data.region : undefined,
 			alsoKnown: typeof data.alsoKnown === 'string' ? data.alsoKnown : undefined

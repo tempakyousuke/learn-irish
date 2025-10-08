@@ -152,6 +152,7 @@
 	"youtube_link": "YouTube等のリンク",
 	"spotify_link": "Spotifyリンク",
 	"source": "楽譜等のソース",
+	"the_session_link": "the sessionリンク",
 	"tune_data_fetch_error": "楽曲データ取得エラー:",
 	"tune_data_fetch_failed": "楽曲データの取得に失敗しました",
 	"tune_deletion_not_implemented": "楽曲削除機能は実装中です",

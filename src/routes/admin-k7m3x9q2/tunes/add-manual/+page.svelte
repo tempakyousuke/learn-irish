@@ -22,6 +22,7 @@
 		spotify: '',
 		instrument: '',
 		source: '',
+		theSession: '',
 		composer: '',
 		region: '',
 		alsoKnown: ''
@@ -72,7 +73,7 @@
 </svelte:head>
 
 <div class="space-y-8">
-	<h2 class="text-2xl font-bold">{$t('add_new_tune')}</h2>
+	<h2 class="text-2xl font-bold">楽曲追加</h2>
 
 	<div class="space-y-6">
 		<div>
@@ -117,6 +118,7 @@
 				<Input bind:value={form.link} label={$t('youtube_link')} />
 				<Input bind:value={form.spotify} label={$t('spotify_link')} />
 				<Input bind:value={form.source} label={$t('source')} />
+				<Input bind:value={form.theSession} label={$t('the_session_link')} />
 			</div>
 		</div>
 
