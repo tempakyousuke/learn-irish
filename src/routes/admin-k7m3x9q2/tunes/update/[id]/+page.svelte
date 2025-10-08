@@ -3,6 +3,7 @@
 	import type { Tune } from '$core/data/models/Tune';
 	import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 	import Input from '$lib/forms/Input.svelte';
+	import Textarea from '$lib/forms/Textarea.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
@@ -90,7 +91,7 @@
 			<Input bind:value={tune.instrument} label={$t('instrument')} />
 			<Input bind:value={tune.composer} label={$t('composer')} />
 			<Input bind:value={tune.region} label={$t('region')} />
-			<Input bind:value={tune.alsoKnown} label={$t('also_known')} />
+			<Textarea bind:value={tune.alsoKnown} label={$t('also_known')} rows={3} />
 		</div>
 
 		<h2 class="text-xl font-bold mb-4">外部リンク</h2>

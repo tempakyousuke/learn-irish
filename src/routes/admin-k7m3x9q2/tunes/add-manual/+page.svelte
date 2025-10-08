@@ -5,6 +5,7 @@
 	import { toast } from 'svelte-sonner';
 	import type { Tune } from '$core/data/models';
 	import Input from '$lib/forms/Input.svelte';
+	import Textarea from '$lib/forms/Textarea.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 
 	// フォームの初期値
@@ -117,7 +118,7 @@
 				<Input bind:value={form.instrument} label={$t('instrument')} />
 				<Input bind:value={form.composer} label={$t('composer')} />
 				<Input bind:value={form.region} label={$t('region')} />
-				<Input bind:value={form.alsoKnown} label={$t('also_known')} />
+				<Textarea bind:value={form.alsoKnown} label={$t('also_known')} rows={3} />
 			</div>
 		</div>
 

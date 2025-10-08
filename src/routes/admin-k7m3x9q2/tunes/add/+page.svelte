@@ -129,7 +129,11 @@
 							<Input bind:value={tune.instrument} label={$t('instrument')} />
 							<Input bind:value={tune.composer} label={$t('composer')} />
 							<Input bind:value={tune.region} label={$t('region')} />
-							<Input bind:value={tune.alsoKnown} label={$t('also_known')} />
+							<textarea
+								class="w-full h-24 border border-gray-300 rounded p-2"
+								bind:value={tune.alsoKnown}
+								placeholder={$t('also_known')}
+							></textarea>
 						</div>
 					</div>
 
