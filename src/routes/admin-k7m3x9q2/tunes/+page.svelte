@@ -23,6 +23,15 @@
 		}
 	});
 
+	function toSessionHref(input: string | undefined): string {
+		const raw = (input || '').trim();
+		if (!raw) return '';
+		if (/^https?:\/\//.test(raw)) return raw;
+		if (raw.startsWith('/')) return `https://thesession.org${raw}`;
+		if (raw.startsWith('thesession.org')) return `https://${raw}`;
+		return raw;
+	}
+
 	const filteredTunes = $derived.by(() => {
 		if (!searchTerm.trim()) return tunes;
 		const searchLower = searchTerm.toLowerCase();
@@ -181,16 +190,31 @@
 									{/if}
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-									{#if tune.link}
-										<a
-											href={tune.link}
-											target="_blank"
-											rel="noopener noreferrer"
-											class="text-teal-600 hover:text-teal-800 flex items-center space-x-1"
-										>
-											<Fa icon={faEye} size="sm" />
-											<span>動画</span>
-										</a>
+									{#if tune.link || tune.theSession}
+										<div class="flex flex-col items-start space-y-1">
+											{#if tune.link}
+												<a
+													href={tune.link}
+													target="_blank"
+													rel="noopener noreferrer"
+													class="text-teal-600 hover:text-teal-800 flex items-center space-x-1"
+												>
+													<Fa icon={faEye} size="sm" />
+													<span>動画</span>
+												</a>
+											{/if}
+											{#if (tune.theSession || '').trim()}
+												<a
+													href={toSessionHref(tune.theSession)}
+													target="_blank"
+													rel="noopener noreferrer"
+													class="text-teal-600 hover:text-teal-800 flex items-center space-x-1"
+												>
+													<Fa icon={faEye} size="sm" />
+													<span>The Session</span>
+												</a>
+											{/if}
+										</div>
 									{:else}
 										-
 									{/if}
