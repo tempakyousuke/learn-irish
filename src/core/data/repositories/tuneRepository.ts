@@ -213,9 +213,21 @@ export class TuneRepository {
 
 						// キャッシュ更新に合わせてユーザーの孤児化した曲データをクリーンアップ
 						try {
-							const uid = get(userId);
-							if (uid) {
-								await this.maybeCleanupDeletedUserTunes(uid, cacheData);
+							const uidNow = get(userId);
+							if (uidNow) {
+								await this.maybeCleanupDeletedUserTunes(uidNow, cacheData);
+							} else {
+								// 認証未完了の場合は、ユーザーIDが取得できた時点で一度だけ実行
+								const unsubscribe = userId.subscribe(async (uidVal) => {
+									if (!uidVal) return;
+									try {
+										await this.maybeCleanupDeletedUserTunes(uidVal, cacheData);
+									} catch (err) {
+										console.warn('ユーザー曲クリーンアップ（遅延実行）に失敗:', err);
+									} finally {
+										unsubscribe();
+									}
+								});
 							}
 						} catch (e) {
 							console.warn('ユーザー曲クリーンアップに失敗:', e);
