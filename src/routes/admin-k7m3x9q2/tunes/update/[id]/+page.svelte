@@ -21,9 +21,6 @@
 	const submit = async (event: Event) => {
 		event.preventDefault();
 
-		console.log('Submit function called');
-		console.log('Current tune data:', tune);
-
 		// 必須フィールドの検証
 		if (!tune.name || tune.name.trim() === '') {
 			errorMessage = $t('tune_name_required');
@@ -101,7 +98,39 @@
 			<Input bind:value={tune.link} label={$t('youtube_link')} />
 			<Input bind:value={tune.spotify} label={$t('spotify_link')} />
 			<Input bind:value={tune.source} label={$t('source')} />
-			<Input bind:value={tune.theSession} label={$t('the_session_link')} />
+			<div>
+				<Input bind:value={tune.theSession} label={$t('the_session_link')} />
+				{#if (tune.theSession || '').trim()}
+					<div class="mt-1">
+						<a
+							href={(($) => {
+								const raw = ((tune.theSession || '') as string).trim();
+								if (!raw) return '';
+								if (/^https?:\/\//.test(raw)) return raw;
+								if (raw.startsWith('/')) return `https://thesession.org${raw}`;
+								if (raw.startsWith('thesession.org')) return `https://${raw}`;
+								return raw;
+							})(null)}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-teal-600 hover:text-teal-800 underline text-sm"
+						>
+							{$t('open_in_new_tab')}
+						</a>
+					</div>
+				{:else if (tune.name || '').trim()}
+					<div class="mt-1">
+						<a
+							href={`https://thesession.org/tunes/search?q=${encodeURIComponent(tune.name)}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-teal-600 hover:text-teal-800 underline text-sm"
+						>
+							{$t('search_on_the_session')}
+						</a>
+					</div>
+				{/if}
+			</div>
 		</div>
 
 		<Button className="mt-6" type="submit">更新</Button>

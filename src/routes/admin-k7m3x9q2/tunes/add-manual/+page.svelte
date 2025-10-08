@@ -65,6 +65,15 @@
 			console.error(error);
 		}
 	};
+
+	function toSessionHref(input: string): string {
+		const raw = (input || '').trim();
+		if (!raw) return '';
+		if (/^https?:\/\//.test(raw)) return raw;
+		if (raw.startsWith('/')) return `https://thesession.org${raw}`;
+		if (raw.startsWith('thesession.org')) return `https://${raw}`;
+		return raw;
+	}
 </script>
 
 <svelte:head>
@@ -118,7 +127,32 @@
 				<Input bind:value={form.link} label={$t('youtube_link')} />
 				<Input bind:value={form.spotify} label={$t('spotify_link')} />
 				<Input bind:value={form.source} label={$t('source')} />
-				<Input bind:value={form.theSession} label={$t('the_session_link')} />
+				<div>
+					<Input bind:value={form.theSession} label={$t('the_session_link')} />
+					{#if form.theSession?.trim()}
+						<div class="mt-1">
+							<a
+								href={toSessionHref(form.theSession)}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-teal-600 hover:text-teal-800 underline text-sm"
+							>
+								{$t('open_in_new_tab')}
+							</a>
+						</div>
+					{:else if form.name?.trim()}
+						<div class="mt-1">
+							<a
+								href={`https://thesession.org/tunes/search?q=${encodeURIComponent(form.name)}`}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-teal-600 hover:text-teal-800 underline text-sm"
+							>
+								{$t('search_on_the_session')}
+							</a>
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 
