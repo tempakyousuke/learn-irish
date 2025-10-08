@@ -60,13 +60,22 @@
 <div class="max-w-7xl mx-auto p-6">
 	<div class="flex justify-between items-center mb-6">
 		<h1 class="text-3xl font-bold text-teal-800">楽曲管理</h1>
-		<a
-			href="/admin-k7m3x9q2/tunes/add"
-			class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
-		>
-			<Fa icon={faPlus} />
-			<span>新しい楽曲追加</span>
-		</a>
+		<div class="flex items-center space-x-2">
+			<a
+				href="/admin-k7m3x9q2/tunes/add-manual"
+				class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+			>
+				<Fa icon={faPlus} />
+				<span>新しい楽曲追加</span>
+			</a>
+			<a
+				href="/admin-k7m3x9q2/tunes/add"
+				class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+			>
+				<Fa icon={faPlus} />
+				<span>スプレッドシートから追加</span>
+			</a>
+		</div>
 	</div>
 
 	<!-- 検索フィルター -->
