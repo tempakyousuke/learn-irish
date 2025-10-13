@@ -38,6 +38,7 @@
 		return tunes.filter(
 			(tune) =>
 				tune.name.toLowerCase().includes(searchLower) ||
+				tune.alsoKnown?.toLowerCase().includes(searchLower) ||
 				tune.tuneNo.toString().includes(searchTerm) ||
 				tune.rhythm?.toLowerCase().includes(searchLower) ||
 				tune.key?.toLowerCase().includes(searchLower)
