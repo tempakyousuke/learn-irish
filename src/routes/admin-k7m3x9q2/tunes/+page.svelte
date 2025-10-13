@@ -168,7 +168,7 @@
 								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
 									{tune.tuneNo}
 								</td>
-								<td class="px-6 py-4 whitespace-nowrap">
+								<td class="px-6 py-4 whitespace-nowrap max-w-48 overflow-hidden text-ellipsis">
 									<div class="flex items-center">
 										<Fa icon={faMusic} class="text-teal-600 mr-2" size="sm" />
 										<div>
